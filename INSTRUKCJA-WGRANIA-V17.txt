@@ -1,0 +1,5 @@
+1. Usuń starą zawartość repo albo nadpisz ją nową zawartością.
+2. Wgraj zawartość tego ZIP-a, nie sam ZIP.
+3. index.html ma być w katalogu głównym repo.
+4. Po commicie Cloudflare zrobi automatyczny deploy.
+5. Sprawdź: /, /oaza/, /gold/, /antracyt/, /blog/

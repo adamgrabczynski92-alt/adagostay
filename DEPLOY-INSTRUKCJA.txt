@@ -1,0 +1,3 @@
+Wgraj zawartość tego ZIP-a bez dodatkowego folderu nadrzędnego.
+Plik index.html ma znajdować się w katalogu głównym projektu.
+Adres e-mail: adagostay@gmail.com

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://adagostay.pl/sitemap.xml
