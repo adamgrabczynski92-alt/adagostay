@@ -1,0 +1,2 @@
+Wgraj zawartość repo bez ZIP. index.html ma być w katalogu głównym.
+Ta wersja naprawia ścieżki do CSS/JS/obrazów na podstronach i urządzeniach mobilnych.
