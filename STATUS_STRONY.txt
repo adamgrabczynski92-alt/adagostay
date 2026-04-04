@@ -1,0 +1,32 @@
+GOTOWE
+- 5 wersji językowych strony: PL / EN / DE / CZ / UA
+- 3 podstrony apartamentów i blog
+- galerie zdjęć z lightboxem, licznikiem i swipe na telefonie
+- formularz kontaktowy z datami i wyborem apartamentu
+- sekcje FAQ i kontakt
+
+DO PODMIANY / WDROŻONE W TEJ PACZCE
+- poprawiony homepage Ultra Lux we wszystkich językach
+- poprawione dropdowny formularza i pełne nazwy apartamentów
+- Oaza: główne zdjęcie z podświetleniem łóżka
+- Antracyt: główne zdjęcie z łóżkiem i napisem
+- Gold: główne zdjęcie z granatowym narożnikiem oraz poprawiona kolejność galerii
+- dodane strony prawne: regulamin, rezerwacja i anulacja, polityka prywatności, polityka cookies
+- dodane sekcje „Najważniejsze zasady pobytu” na podstronach apartamentów
+- dodane linki prawne w stopce
+- dodany zapis o akceptacji regulaminu i warunków rezerwacji przy formularzach i na stronach prawnych
+- rozszerzone FAQ zgodnie z ustaleniami
+
+DO SPRAWDZENIA PO WRZUCENIU NA SERWER
+- czy formularz wysyła poprawnie przez formsubmit.co
+- czy wszystkie linki w stopce i menu działają poprawnie
+- czy WhatsApp otwiera się prawidłowo na telefonie
+- czy ceny i opisy odpowiadają finalnej ofercie
+- czy parking jest opisany poprawnie przy właściwych apartamentach
+- czy chcesz zostawić skróty językowe /cz/ i /ua/ czy zmienić je na /cs/ i /uk/
+
+
+DODATKOWO WERSJA V4:
+- wdrożony własny premium custom select dla wyboru apartamentu i liczby gości
+- brak białego systemowego dropdownu na homepage i stronie kontaktowej
+- poprawione nazwy oraz wartości formularza hero we wszystkich 5 językach
