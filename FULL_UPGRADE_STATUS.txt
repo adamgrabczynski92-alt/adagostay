@@ -1,0 +1,11 @@
+FULL UPGRADE ZIP
+
+Dodane ulepszenia:
+- manifest.webmanifest i theme-color
+- nowe sekcje konwersyjne na stronie głównej PL
+- rozbudowane local SEO i content dla PL
+- 3 nowe wpisy blogowe PL
+- dodatkowa sekcja kontaktowa na stronie kontaktu PL
+- dodatkowe sekcje sprzedażowe na stronach apartamentów PL
+- aktualizacja sitemap.xml
+- rozszerzenia CSS dla nowych sekcji
