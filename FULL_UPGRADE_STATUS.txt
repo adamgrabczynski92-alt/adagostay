@@ -1,11 +1,17 @@
-FULL UPGRADE ZIP
+ADAGOSTAY FULL REPLACEMENT PACKAGE
 
-Dodane ulepszenia:
-- manifest.webmanifest i theme-color
-- nowe sekcje konwersyjne na stronie głównej PL
-- rozbudowane local SEO i content dla PL
-- 3 nowe wpisy blogowe PL
-- dodatkowa sekcja kontaktowa na stronie kontaktu PL
-- dodatkowe sekcje sprzedażowe na stronach apartamentów PL
-- aktualizacja sitemap.xml
-- rozszerzenia CSS dla nowych sekcji
+Ta paczka jest pelnym zamiennikiem calej strony.
+Zawiera wszystko z wersji full upgrade oraz poprawki dla adresow:
+- /gold/
+- /oaza/
+- /antracyt/
+
+Zakres:
+- GitHub Pages / custom domain (CNAME, .nojekyll, 404)
+- rozbudowane tresci PL i dodatkowe wpisy blogowe
+- local SEO i sekcje konwersyjne
+- manifest.webmanifest
+- poprawione strony skrotowe apartamentow z fallbackiem jezykowym, noindex i lepszym UX
+
+Liczba plikow: 201
+Typ: pelny zamiennik 1:1 do podmiany calej zawartosci repo/hostingu.
