@@ -19,3 +19,5 @@ Po wdrożeniu sprawdź:
 - formularz kontaktowy
 
 - dodano sekcje opinii Booking na homepage PL oraz stronach apartamentów PL (Oaza / Gold / Antracyt)
+
+- poprawka widoczności tekstu wpisywanego w formularzach (input/textarea/select)
