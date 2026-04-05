@@ -1,0 +1,21 @@
+ADAGOSTAY.PL — PACZKA 100% FINAL
+
+Ta paczka jest pełnym zamiennikiem strony 1:1 do wdrożenia.
+
+Zawiera:
+- całą zawartość poprzedniej pełnej wersji,
+- poprawione strony skrótowe /gold/, /oaza/, /antracyt/,
+- dopięte meta SEO i dane techniczne na stronach pomocniczych,
+- manifest i theme-color na brakujących stronach.
+
+Po wdrożeniu sprawdź:
+- /
+- /pl/
+- /gold/
+- /oaza/
+- /antracyt/
+- /robots.txt
+- /sitemap.xml
+- formularz kontaktowy
+
+- dodano sekcje opinii Booking na homepage PL oraz stronach apartamentów PL (Oaza / Gold / Antracyt)
