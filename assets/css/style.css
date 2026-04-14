@@ -406,3 +406,24 @@ body{font-feature-settings:"liga" 1,"kern" 1;-webkit-font-smoothing:antialiased;
   color:#ffffff !important;
   -webkit-text-fill-color:#ffffff !important;
 }
+
+
+/* SEO / conversion additions */
+.section-heading.compact{max-width:760px;margin:0 auto 24px;text-align:center}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+.seo-link-section .container{padding-top:8px;padding-bottom:8px}
+.section-cta-final{padding-top:10px}
+.apartments-grid .apartment-card img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
+.apartment-body{padding:20px}
+.location-tag{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(212,175,55,.12);color:#f2df9a;border:1px solid rgba(212,175,55,.2);font-size:.85rem;margin-bottom:10px}
+.card-actions{margin-top:18px}
+.faq-list{display:grid;gap:12px;max-width:900px;margin:0 auto}
+.faq-list details{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px 18px}
+.faq-list summary{cursor:pointer;font-weight:700;list-style:none}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list p{margin:12px 0 0}
+.seo-landing-page .feature-card h3,.seo-landing-page .apartment-card h3{margin-top:0}
+@media (max-width: 780px){
+  .cta-row{flex-direction:column}
+  .cta-row .premium-button{width:100%;text-align:center}
+}
