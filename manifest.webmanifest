@@ -1,0 +1,16 @@
+{
+  "name": "Adago Stay",
+  "short_name": "Adago Stay",
+  "start_url": "/pl/",
+  "display": "standalone",
+  "background_color": "#171210",
+  "theme_color": "#171210",
+  "icons": [
+    {
+      "src": "/assets/img/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
