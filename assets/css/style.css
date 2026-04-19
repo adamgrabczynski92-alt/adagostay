@@ -123,7 +123,7 @@ textarea{min-height:150px;resize:vertical}
 
 
 /* Premium homepage refresh */
-body.premium-home{background:linear-gradient(180deg,#130f0d 0%,#1f1712 20%,#2a1e17 25%,#f5eee6 25.1%,#fbf8f4 100%)}
+body.premium-home{background:linear-gradient(180deg,#130f0d 0%,#1f1712 12%,#2a1e17 16%,#f5eee6 16.1%,#fbf8f4 100%)}
 .premium-home .topbar{background:rgba(7,7,8,.92);border-bottom:1px solid rgba(210,177,125,.18)}
 .premium-home .header{background:rgba(15,12,11,.68);border-bottom:1px solid rgba(210,177,125,.16)}
 .premium-home .header .nav a{color:#fff}
@@ -828,4 +828,16 @@ body{font-feature-settings:"liga" 1,"kern" 1;-webkit-font-smoothing:antialiased;
 }
 @media (min-width: 769px){
   .sticky-cta-bar{display:none!important}
+}
+
+
+/* April 2026 readability fix for home intro sections */
+.premium-home .section.intro-on-dark{position:relative}
+.premium-home .section.intro-on-dark .reveal-head{position:relative;z-index:1}
+.premium-home .section.intro-on-dark .reveal-head > div{max-width:920px;padding:28px 32px;border-radius:28px;background:linear-gradient(180deg,rgba(18,12,10,.72),rgba(18,12,10,.52));border:1px solid rgba(214,186,142,.14);box-shadow:0 18px 40px rgba(0,0,0,.14);backdrop-filter:blur(6px)}
+.premium-home .section.intro-on-dark .eyebrow{background:rgba(255,248,238,.96);border-color:rgba(255,255,255,.35);color:#9a6f35}
+.premium-home .section.intro-on-dark h2{color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.24)}
+.premium-home .section.intro-on-dark p{color:rgba(255,255,255,.86)}
+@media (max-width: 780px){
+  .premium-home .section.intro-on-dark .reveal-head > div{padding:20px 18px;border-radius:22px}
 }
