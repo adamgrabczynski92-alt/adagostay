@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /oaza/
-Disallow: /gold/
-Disallow: /antracyt/
-Disallow: /pl/nocleg-szczawno-zdroj/
-
-Sitemap: https://adagostay.pl/sitemap.xml
