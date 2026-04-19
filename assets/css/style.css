@@ -577,3 +577,17 @@ body{font-feature-settings:"liga" 1,"kern" 1;-webkit-font-smoothing:antialiased;
 
 .contact-points{margin:0;padding-left:18px;display:grid;gap:10px;color:var(--muted)}
 .contact-points li{line-height:1.6}
+
+
+/* Conversion helpers */
+.floating-whatsapp{position:fixed;right:18px;bottom:18px;z-index:85;display:inline-flex;align-items:center;gap:10px;padding:14px 18px;border-radius:999px;background:#1f8f4d;color:#fff;font-weight:800;box-shadow:0 18px 40px rgba(8,24,14,.28)}
+.floating-whatsapp:hover{transform:translateY(-1px)}
+.mobile-cta-bar{display:none}
+.review-score{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(179,139,89,.12);color:#6f532d;font-weight:800;font-size:13px;margin-bottom:12px}
+.review-quote{margin-top:10px;padding:14px 16px;border-left:3px solid rgba(179,139,89,.45);background:rgba(179,139,89,.06);border-radius:14px;color:#433224;font-style:italic}
+@media (max-width: 780px){
+  .floating-whatsapp{display:none}
+  .mobile-cta-bar{position:fixed;left:12px;right:12px;bottom:12px;z-index:90;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;border-radius:20px;background:rgba(17,17,19,.92);box-shadow:0 20px 50px rgba(0,0,0,.28);backdrop-filter:blur(12px)}
+  .mobile-cta-bar a{min-height:48px;padding:12px 14px;border-radius:14px;font-size:14px}
+  body{padding-bottom:92px}
+}
