@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+# Techniczne aliasy są oznaczone noindex w HTML
 Sitemap: https://adagostay.pl/sitemap.xml

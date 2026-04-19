@@ -1,0 +1,15 @@
+Adago Stay – paczka do podmiany bez Google Tag Manager i bez GA4
+
+Co zostało wdrożone:
+- skrócone title na kluczowych stronach
+- ograniczenie indeksacji słabszych i technicznych URL-i
+- przekierowania HTML dla zduplikowanych wpisów blogowych
+- uproszczona sitemap.xml tylko z najważniejszymi adresami
+- noindex dla zagranicznych wpisów blogowych o niskim priorytecie SEO
+- dodatkowe linkowanie wewnętrzne do stron filarowych
+- przygotowane lokalne eventy JS: form_submit, click_whatsapp, click_phone, click_email, view_apartment (bez zewnętrznych tagów)
+
+Ważne:
+- Na hostingu statycznym przekierowania są zrobione jako HTML redirect (meta refresh + JS).
+- Jeśli masz dostęp do hostingu z prawdziwymi 301, warto je później podmienić na serwerowe.
+- Ta paczka nie zawiera GTM ani GA4.

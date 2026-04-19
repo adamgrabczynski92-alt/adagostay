@@ -22,6 +22,7 @@
   var cfg = labels[locale] || labels.pl;
 
   if (document.querySelector('.sticky-cta') || document.querySelector('.sticky-cta-bar')) return;
+  var hasMobileCtaBar = !!document.querySelector('.mobile-cta-bar');
 
   var desktop = document.createElement('a');
   desktop.className = 'sticky-cta';
@@ -29,12 +30,14 @@
   desktop.setAttribute('aria-label', cfg.text);
   desktop.innerHTML = '<span class="sticky-cta__dot"></span><span>' + cfg.text + '</span>';
 
-  var mobile = document.createElement('a');
-  mobile.className = 'sticky-cta-bar';
-  mobile.href = cfg.href;
-  mobile.setAttribute('aria-label', cfg.mobile);
-  mobile.textContent = cfg.mobile;
-
   document.body.appendChild(desktop);
-  document.body.appendChild(mobile);
+
+  if (!hasMobileCtaBar) {
+    var mobile = document.createElement('a');
+    mobile.className = 'sticky-cta-bar';
+    mobile.href = cfg.href;
+    mobile.setAttribute('aria-label', cfg.mobile);
+    mobile.textContent = cfg.mobile;
+    document.body.appendChild(mobile);
+  }
 })();

@@ -1,3 +1,11 @@
+function adagoTrack(eventName, payload = {}) {
+  try {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(Object.assign({ event: eventName }, payload));
+    document.dispatchEvent(new CustomEvent('adago:' + eventName, { detail: payload }));
+  } catch (e) {}
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.mobile-toggle');
@@ -7,6 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initCustomSelects(document);
+
+  document.querySelectorAll('a[href^="https://wa.me"], a[href*="whatsapp"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_whatsapp', { href: link.getAttribute('href') || '' })));
+  document.querySelectorAll('a[href^="tel:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_phone', { href: link.getAttribute('href') || '' })));
+  document.querySelectorAll('a[href^="mailto:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_email', { href: link.getAttribute('href') || '' })));
+  if (location.pathname.indexOf('/apartament/') !== -1) { adagoTrack('view_apartment', { path: location.pathname }); }
 
   const forms = document.querySelectorAll('form[data-form-type="contact"]');
   forms.forEach(form => {
@@ -29,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Form error');
+        adagoTrack('form_submit', { form_type: form.dataset.formType || 'contact' });
         form.reset();
         form.querySelectorAll('select').forEach(sel => sel.dispatchEvent(new Event('change', { bubbles: true })));
         if (successBox) {
