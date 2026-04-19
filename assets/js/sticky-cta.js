@@ -22,6 +22,7 @@
   var cfg = labels[locale] || labels.pl;
 
   if (document.querySelector('.sticky-cta') || document.querySelector('.sticky-cta-bar')) return;
+  var hasNativeMobileBar = !!document.querySelector('.mobile-cta-bar');
 
   var desktop = document.createElement('a');
   desktop.className = 'sticky-cta';
@@ -36,5 +37,5 @@
   mobile.textContent = cfg.mobile;
 
   document.body.appendChild(desktop);
-  document.body.appendChild(mobile);
+  if (!hasNativeMobileBar) document.body.appendChild(mobile);
 })();

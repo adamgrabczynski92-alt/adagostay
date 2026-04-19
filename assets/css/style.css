@@ -800,3 +800,110 @@ body{font-feature-settings:"liga" 1,"kern" 1;-webkit-font-smoothing:antialiased;
     transition: none !important;
   }
 }
+
+
+/* Lepszy kontrast tekstu w górnych sekcjach na ciemnym tle */
+.premium-home .section-dark-intro{position:relative}
+.premium-home .section-dark-intro .section-head h2,
+.premium-home .section-dark-intro .section-head p{color:#fff}
+.premium-home .section-dark-intro .section-head p{color:rgba(255,255,255,.84)}
+.premium-home .section-dark-intro .eyebrow{background:rgba(255,248,238,.12);border-color:rgba(214,186,142,.34);color:#f2debf}
+.premium-home .section-dark-intro .section-head{margin-bottom:28px}
+.premium-home .section-dark-intro .premium-button.ghost{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18)}
+.premium-home .section-dark-intro + .section{scroll-margin-top:110px}
+
+
+/* === FINAL UX + ACCESSIBILITY POLISH (April 2026) === */
+:root{
+  --focus-ring: 0 0 0 3px rgba(214,186,142,.34), 0 0 0 6px rgba(42,27,19,.16);
+}
+
+html{scroll-padding-top:96px}
+body{overflow-x:hidden}
+
+/* stronger readable defaults on dark premium sections */
+.premium-home .hero-copy h1,
+.premium-home .hero-copy .lead,
+.premium-home .hero-trust span,
+.premium-home .hero-metric span,
+.premium-home .hero-booking h3,
+.premium-home .hero-booking p,
+.premium-home .section-dark-intro h2,
+.premium-home .section-dark-intro p,
+.premium-home .section-dark-intro .content h3,
+.premium-home .section-dark-intro .content p{
+  text-shadow:0 2px 12px rgba(0,0,0,.28);
+}
+
+.premium-home .hero-copy .lead,
+.premium-home .hero-metric span,
+.premium-home .hero-booking p,
+.premium-home .section-dark-intro p{
+  color:rgba(255,255,255,.90);
+}
+
+.premium-home .section-dark-intro .location-panel .content{
+  background:linear-gradient(180deg,rgba(18,12,10,.12) 0%, rgba(18,12,10,.86) 100%);
+}
+.premium-home .section-dark-intro .location-panel .content h3,
+.premium-home .section-dark-intro .location-panel .content p{
+  color:#fff;
+}
+
+/* more legible navigation and action buttons */
+.header{background:rgba(17,14,13,.92);border-bottom:1px solid rgba(214,186,142,.16)}
+.logo img{filter:drop-shadow(0 2px 10px rgba(0,0,0,.18))}
+.nav a:not(.cta),
+.mobile-toggle,
+.topbar,
+.topbar a{color:#f5efe9}
+.nav a:not(.cta):hover,
+.topbar a:hover{color:#e5c796}
+.nav a:not(.cta){font-weight:700}
+.nav .lang-switch a{color:#f5efe9;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.nav .lang-switch a.active{background:#b38b59;color:#1b140f;border-color:#d6ba8e}
+
+/* safer focus visibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.mobile-toggle:focus-visible{
+  outline:none;
+  box-shadow:var(--focus-ring);
+}
+
+/* clear targets for floating CTAs */
+.floating-whatsapp,
+.sticky-cta,
+.sticky-cta-bar,
+.mobile-cta-bar a{
+  min-height:52px;
+}
+
+/* prevent overlap: desktop stack */
+.floating-whatsapp{right:18px;bottom:18px;z-index:95}
+.floating-whatsapp ~ .sticky-cta{right:18px;bottom:88px;z-index:94}
+
+/* prevent overlap: if page already has native mobile CTA bar, suppress injected one */
+.mobile-cta-bar ~ .sticky-cta-bar{display:none !important}
+
+/* stronger mobile bottom spacing when CTA bar exists */
+@media (max-width: 780px){
+  body{padding-bottom:104px}
+  .mobile-cta-bar{left:10px;right:10px;bottom:10px;gap:8px;padding:8px}
+  .mobile-cta-bar a{font-size:14px;min-height:50px;justify-content:center}
+}
+
+/* desktop floating CTA size tune */
+.sticky-cta{max-width:min(92vw,320px);justify-content:center;text-align:center}
+.floating-whatsapp{max-width:min(92vw,280px)}
+
+/* reduce motion and transitions slightly for comfort */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+}
+
+.skip-link{position:absolute;left:12px;top:-56px;z-index:10000;padding:12px 16px;border-radius:12px;background:#fff;color:#171210;font-weight:800;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.skip-link:focus{top:12px}
