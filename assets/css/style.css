@@ -574,3 +574,6 @@ body{font-feature-settings:"liga" 1,"kern" 1;-webkit-font-smoothing:antialiased;
 .hero-stage:after{
   pointer-events:none;
 }
+
+.contact-points{margin:0;padding-left:18px;display:grid;gap:10px;color:var(--muted)}
+.contact-points li{line-height:1.6}
