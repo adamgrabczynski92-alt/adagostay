@@ -24,10 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const forms = document.querySelectorAll('form[data-form-type="contact"]');
   forms.forEach(form => {
     const successBox = form.parentElement.querySelector('.success-box') || form.querySelector('.success-box');
+    form.dataset.loadedAt = String(Date.now());
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const submit = form.querySelector('button[type="submit"]');
       const formData = new FormData(form);
+      const loadedAt = Number(form.dataset.loadedAt || Date.now());
+      const filledHoney = String(formData.get('_honey') || '').trim();
+      if (filledHoney || (Date.now() - loadedAt) < 2500) {
+        return;
+      }
       formData.append('_subject', form.dataset.subject || 'New enquiry from adagostay.pl');
       formData.append('_captcha', 'false');
       if (submit) {
