@@ -1,0 +1,6 @@
+Pakiet został przygotowany do wdrożenia.
+
+
+DODATKOWE POPRAWKI 2026-04-05:
+- ulepszony root index.html (pełne meta SEO, H1, JSON-LD, lepszy fallback językowy)
+- dodane strony przekierowujące /gold/, /oaza/, /antracyt/ z noindex,follow i canonical do właściwych stron PL

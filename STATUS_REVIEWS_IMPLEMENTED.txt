@@ -1,0 +1,1 @@
+Wdrożono sekcję opinii na /pl/, /en/ i /de/ z ocenami Google i Booking.com oraz dopracowano spójność językową stopki EN/DE.

@@ -1,0 +1,29 @@
+FINAL 1:1 – pakiet gotowy do wrzucenia
+
+Zmodyfikowane pliki:
+- pl/apartament/oaza/index.html: 8/8 podmian
+- pl/apartament/antracyt/index.html: 8/8 podmian
+- pl/apartament/gold/index.html: 8/8 podmian
+- en/apartament/oaza/index.html: 8/8 podmian
+- en/apartament/antracyt/index.html: 8/8 podmian
+- en/apartament/gold/index.html: 8/8 podmian
+- de/apartament/oaza/index.html: 8/8 podmian
+- de/apartament/antracyt/index.html: 8/8 podmian
+- de/apartament/gold/index.html: 8/8 podmian
+- cz/apartament/oaza/index.html: 8/8 podmian
+- cz/apartament/antracyt/index.html: 8/8 podmian
+- cz/apartament/gold/index.html: 8/8 podmian
+- ua/apartament/oaza/index.html: 8/8 podmian
+- ua/apartament/antracyt/index.html: 8/8 podmian
+- ua/apartament/gold/index.html: 8/8 podmian
+
+Zakres:
+- zachowany układ 1:1
+- bez zmian w CSS/JS/strukturze sekcji
+- dopracowane title, meta description, Open Graph, Twitter, H1 i lead
+- objęte języki: PL, EN, DE, CZ, UA
+
+Apartamenty:
+- Oaza = Szczawno-Zdrój blisko Wałbrzycha
+- Antracyt = Szczawno-Zdrój blisko Wałbrzycha
+- Gold = Wałbrzych
