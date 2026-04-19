@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Techniczne aliasy mają reguły 301 w plikach serwerowych (.htaccess / nginx-redirects.conf / _redirects)
+Sitemap: https://adagostay.pl/sitemap.xml

@@ -1,0 +1,12 @@
+# Wprowadzone poprawki
+
+1. Ujednolicono numer telefonu we wszystkich plikach HTML do: +48 786 207 695.
+2. Dodano brakujące meta description do stron, które ich nie miały.
+3. Dodano brakujące canonicale do stron, które ich nie miały.
+4. Uzupełniono brakujący H1 na technicznej stronie przekierowującej /pl/nocleg-szczawno-zdroj/.
+5. Uproszczono robots.txt, aby roboty mogły zobaczyć canonical/noindex na stronach technicznych.
+6. Oczyszczono sitemap.xml z głównych technicznych aliasów /oaza/, /gold/, /antracyt/.
+
+Uwagi:
+- Stare techniczne aliasy mieszkań nadal istnieją jako strony pomocnicze, ale zawierają już canonical do właściwych adresów oraz blokadę indeksacji.
+- Nie skracałem automatycznie wszystkich title, bo to wymaga osobnej redakcji SEO per podstrona i język.

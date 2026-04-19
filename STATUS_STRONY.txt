@@ -1,0 +1,52 @@
+GOTOWE
+- 5 wersji językowych strony: PL / EN / DE / CZ / UA
+- 3 podstrony apartamentów i blog
+- galerie zdjęć z lightboxem, licznikiem i swipe na telefonie
+- formularz kontaktowy z datami i wyborem apartamentu
+- sekcje FAQ i kontakt
+
+DO PODMIANY / WDROŻONE W TEJ PACZCE
+- poprawiony homepage Ultra Lux we wszystkich językach
+- poprawione dropdowny formularza i pełne nazwy apartamentów
+- Oaza: główne zdjęcie z podświetleniem łóżka
+- Antracyt: główne zdjęcie z łóżkiem i napisem
+- Gold: główne zdjęcie z granatowym narożnikiem oraz poprawiona kolejność galerii
+- dodane strony prawne: regulamin, rezerwacja i anulacja, polityka prywatności, polityka cookies
+- dodane sekcje „Najważniejsze zasady pobytu” na podstronach apartamentów
+- dodane linki prawne w stopce
+- dodany zapis o akceptacji regulaminu i warunków rezerwacji przy formularzach i na stronach prawnych
+- rozszerzone FAQ zgodnie z ustaleniami
+
+DO SPRAWDZENIA PO WRZUCENIU NA SERWER
+- czy formularz wysyła poprawnie przez formsubmit.co
+- czy wszystkie linki w stopce i menu działają poprawnie
+- czy WhatsApp otwiera się prawidłowo na telefonie
+- czy ceny i opisy odpowiadają finalnej ofercie
+- czy parking jest opisany poprawnie przy właściwych apartamentach
+- czy chcesz zostawić skróty językowe /cz/ i /ua/ czy zmienić je na /cs/ i /uk/
+
+
+DODATKOWO WERSJA V4:
+- wdrożony własny premium custom select dla wyboru apartamentu i liczby gości
+- brak białego systemowego dropdownu na homepage i stronie kontaktowej
+- poprawione nazwy oraz wartości formularza hero we wszystkich 5 językach
+
+
+DODATKOWA POPRAWKA v5:
+- aktywacja custom select we wszystkich stronach po załadowaniu DOM
+- ukrycie natywnego selecta, aby nie pojawiał się biały panel systemowy
+- podmiana zdjęcia Gold w sekcji lokalizacji na granatowy narożnik
+- podmiana zdjęcia Oaza w sekcji lokalizacji na ujęcie z podświetleniem łóżka
+
+
+Wersja v6:
+- formularz na homepage rozbudowany o telefon, imię i nazwisko, e-mail i wiadomość
+- formularz homepage wysyła bez przekierowania, jak formularz kontaktowy
+- strona Kontakt uproszczona: bez dużego drugiego formularza, z szybkim przejściem do formularza na homepage
+- CTA w menu kierują teraz do formularza na homepage
+
+Wersja v7:
+- naprawione linki menu i logo na wszystkich podstronach
+- wszystkie przyciski „Sprawdź dostępność” kierują do formularza na homepage (#booking-form)
+- dodana pozycja „Zasady pobytu” w menu we wszystkich językach
+- w formularzu homepage wybór apartamentu i liczby gości jest wymagany
