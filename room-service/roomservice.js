@@ -206,6 +206,25 @@
     const storeKey = 'adagoRoomService.v2';
     const whatsappPhone = '48786207695';
     const whatsappDisplay = '+48 786 207 695';
+    function openWhatsAppToAdmin(message=''){
+      const text = String(message || '').trim();
+      window.location.href = `https://wa.me/${whatsappPhone}${text ? '?text=' + encodeURIComponent(text) : ''}`;
+    }
+    function photoShareMessage(t, type){
+      const a = getApartment(t.apartmentId);
+      const label = type === 'before' ? 'przed sprzątaniem' : 'po sprzątaniu';
+      const started = t.startedAt ? `\nRozpoczęcie sprzątania: ${fmtDateTime(t.startedAt)}` : '';
+      const ended = t.endedAt ? `\nZakończenie sprzątania: ${fmtDateTime(t.endedAt)}` : '';
+      return [
+        `Zdjęcia ${label} — ${a.name}`,
+        `Data: ${fmtDate(t.date)}`,
+        `Godzina zadania: ${t.time || '-'}`,
+        started.trim(),
+        ended.trim(),
+        '',
+        `Proszę dodać i wysłać zdjęcia ${label} w tej rozmowie WhatsApp.`
+      ].filter(Boolean).join('\n');
+    }
     const pad = n => String(n).padStart(2,'0');
     const dateToISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
     const todayISO = () => dateToISO(new Date());
@@ -345,10 +364,10 @@
         <div class="task-card"><strong>Postęp checklisty: ${progress.doneCount}/${progress.total} — ${progress.percent}%</strong><div class="progress-bar" aria-label="Postęp checklisty"><div class="progress-fill" style="width:${progress.percent}%"></div></div><p class="inline-room-note">Wszystkie czynności są widoczne od razu i podzielone na strefy: zdjęcia, pilne przed check-in, kuchnia, łazienka, sypialnia/salon, uzupełnienia i problemy techniczne.</p></div>
         <div class="task-card"><strong>Standard przygotowania</strong><div class="meta"><span class="tag">Pościel: ${escapeHTML(t.bedding || a.bedding || '—')}</span><span class="tag">Ręczniki: ${escapeHTML(t.towels || a.towels || '—')}</span></div><p class="note">${escapeHTML(a.individual || '')}</p></div>
         <div class="inline-room-tools"><button class="btn small secondary" onclick="markAllChecks('${t.id}', true, 'inline')">Zaznacz wszystko</button><button class="btn small secondary" onclick="markAllChecks('${t.id}', false, 'inline')">Odznacz wszystko</button><button class="btn small danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn small secondary" onclick="openTask('${t.id}')">Szczegóły</button></div>
-        <div class="inline-room-checklist"><div class="checklist">${renderChecklist(t)}</div></div>
+        <div class="inline-room-checklist"><div class="checklist">${renderChecklist(t, 'inline')}</div></div>
         <div><label>Uwagi Room Service</label><textarea onchange="updateServiceNotes('${t.id}', this.value)" placeholder="Np. uwagi po serwisie, informacja dla Administratora...">${escapeHTML(t.serviceNotes||'')}</textarea></div>
         <div class="missing-field"><label>Braki / do uzupełnienia</label><textarea onchange="updateMissingItems('${t.id}', this.value)" placeholder="Np. papier, kapsułki, mydło, ręczniki, worki, żarówka, usterka młynka WC...">${escapeHTML(t.missingItems||'')}</textarea><p class="note">Jeśli to pole jest uzupełnione, raport oznaczy apartament jako wymagający sprawdzenia.</p></div>
-        <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Zdjęcia wyślij osobno przez systemowe udostępnianie telefonu, najlepiej do WhatsAppa Administratora.</p><div class="share-photo-grid"><input class="hidden-file-input" id="shareBeforeInline-${panelId}-${t.id}" type="file" accept="image/*" multiple onchange="shareSelectedPhotos('${t.id}', 'before', this.files, 'inline'); this.value=''"><input class="hidden-file-input" id="shareAfterInline-${panelId}-${t.id}" type="file" accept="image/*" multiple onchange="shareSelectedPhotos('${t.id}', 'after', this.files, 'inline'); this.value=''"><button class="btn secondary" onclick="document.getElementById('shareBeforeInline-${panelId}-${t.id}').click()">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="document.getElementById('shareAfterInline-${panelId}-${t.id}').click()">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed udostępnione: ${photoBeforeCount(t)}</span><span class="tag">Po udostępnione: ${photoAfterCount(t)}</span></div></div>
+        <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Przyciski otwierają WhatsApp bezpośrednio do Administratora ${whatsappDisplay}. Zdjęcia Beata wybiera i dodaje już w rozmowie WhatsApp.</p><div class="share-photo-grid"><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed: WhatsApp otwarty ${photoBeforeCount(t)}×</span><span class="tag">Po: WhatsApp otwarty ${photoAfterCount(t)}×</span></div></div>
         <div class="hero-actions"><button class="btn ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania / Gotowe</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button></div>
       </div>`;
     }
@@ -467,7 +486,10 @@
       if(beataPhone) setTimeout(() => openWhatsAppAssignment(task), 350);
     });
 
-    function renderChecklist(t){
+    function sectionSafeArg(value){
+      return String(value || '').replace(/\\/g,'\\\\').replace(/'/g, "\\'");
+    }
+    function renderChecklist(t, context='modal'){
       return taskChecklistGroups(t).map(group => {
         const items = group.items.map(entry => {
           const current = entry.index;
@@ -477,7 +499,15 @@
           const locked = photoItem ? ' data-photo-check="1" title="Ten punkt zaznacza się automatycznie po użyciu przycisku udostępniania zdjęć."' : '';
           return `<label class="check-item ${checked ? 'is-done' : 'is-missing'}"${locked}><input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleCheck('${t.id}',${current},this.checked,this)"><span class="check-symbol" aria-hidden="true">${checked ? '✓' : '✗'}</span><span>${item}${photoItem ? ' <small class="photo-auto-note">— automatycznie po udostępnieniu</small>' : ''}</span></label>`;
         }).join('');
-        return `<div class="check-section"><div class="check-section-title">${group.section}</div>${items}</div>`;
+        const sectionDoneCount = group.items.filter(entry => {
+          const current = entry.index;
+          return isPhotoChecklistIndex(current) ? photoCountForIndex(t, current) > 0 : (t.done || []).includes(current);
+        }).length;
+        const sectionComplete = group.items.length > 0 && sectionDoneCount === group.items.length;
+        const sectionActions = group.section === 'Zdjęcia'
+          ? `<span class="section-progress ${sectionComplete ? 'ok' : 'warn'}">${sectionDoneCount}/${group.items.length}</span>`
+          : `<div class="section-actions"><span class="section-progress ${sectionComplete ? 'ok' : 'warn'}">${sectionDoneCount}/${group.items.length}</span><button type="button" class="btn tiny ok" onclick="markSectionChecks('${t.id}', '${sectionSafeArg(group.section)}', true, '${context}')">Strefa wykonana</button><button type="button" class="btn tiny secondary" onclick="markSectionChecks('${t.id}', '${sectionSafeArg(group.section)}', false, '${context}')">Odznacz strefę</button></div>`;
+        return `<div class="check-section"><div class="check-section-head"><div class="check-section-title">${group.section}</div>${sectionActions}</div>${items}</div>`;
       }).join('');
     }
 
@@ -492,12 +522,14 @@
     function completeCleaningValidation(t){
       syncPhotoChecklist(t);
       const progress = checklistProgress(t);
-      if(!t.startedAt) return {ok:false, message:'Najpierw kliknij „Rozpoczęcie sprzątania”'};
-      if(!requiredPhotoCount(t)) return {ok:false, message:'Udostępnij zdjęcia przed i po Room Service'};
-      if(!progress.complete) return {ok:false, message:`Checklist nie jest kompletna: ${progress.doneCount}/${progress.total}`};
-      if(hasMissingItems(t)) return {ok:false, status:'problem', message:'Wpisane są braki — ustawiam Alert jakości'};
-      if(Array.isArray(t.technicalIssues) && t.technicalIssues.length) return {ok:false, status:'problem', message:'Zgłoszono problem techniczny — ustawiam Alert jakości'};
-      return {ok:true};
+      if(!t.startedAt) return {ok:false, block:true, message:'Najpierw kliknij „Rozpoczęcie sprzątania”'};
+      const issues = [];
+      if(!requiredPhotoCount(t)) issues.push('zdjęcia przed/po nie są potwierdzone');
+      if(!progress.complete) issues.push(`checklista ${progress.doneCount}/${progress.total}`);
+      if(hasMissingItems(t)) issues.push('wpisane braki do uzupełnienia');
+      if(Array.isArray(t.technicalIssues) && t.technicalIssues.length) issues.push('zgłoszony problem techniczny');
+      if(issues.length) return {ok:false, status:'problem', message:'Raport oznaczony jako Alert jakości: ' + issues.join(', ')};
+      return {ok:true, status:'done', message:'Apartament oznaczony jako Gotowe'};
     }
     window.startCleaning = function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
@@ -510,16 +542,15 @@
     window.finishCleaning = function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
       const validation = completeCleaningValidation(t);
-      if(!validation.ok){
-        if(validation.status) t.status = validation.status;
-        save(); render(); openTask(id);
+      if(validation.block){
         toast(validation.message);
         return;
       }
       if(!t.endedAt) t.endedAt = autoStamp();
-      t.status = 'done';
+      t.status = validation.ok ? 'done' : 'problem';
       save(); render();
-      toast(`Zakończenie sprzątania zapisane automatycznie: ${fmtTimeOnly(t.endedAt)}`);
+      toast(`Zakończenie sprzątania zapisane automatycznie: ${fmtTimeOnly(t.endedAt)}. Generuję Raport i otwieram WhatsApp.`);
+      autoGenerateReportAndWhatsApp(id);
     }
     window.reportTechnicalIssue = function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
@@ -572,6 +603,22 @@ ${idx+1}. ${label}`).join(''), '');
       save(); render(); if(context !== 'inline') openTask(id);
       toast(checked ? 'Zaznaczono całą checklistę' : 'Odznaczono checklistę');
     }
+    window.markSectionChecks = function(id, section, checked, context='modal'){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      const group = taskChecklistGroups(t).find(g => g.section === section);
+      if(!group) return;
+      t.done = Array.isArray(t.done) ? t.done : [];
+      const indexes = group.items.map(item => item.index).filter(i => !isPhotoChecklistIndex(i));
+      if(checked){
+        indexes.forEach(i => { if(!t.done.includes(i)) t.done.push(i); });
+      }else{
+        const remove = new Set(indexes);
+        t.done = t.done.filter(i => !remove.has(i));
+      }
+      syncPhotoChecklist(t);
+      save(); render(); if(context !== 'inline') openTask(id);
+      toast(checked ? `Strefa „${section}” oznaczona jako wykonana` : `Strefa „${section}” odznaczona`);
+    }
     window.copyWhatsAppReport = async function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
       const ok = await copyText(buildReport(t));
@@ -596,13 +643,13 @@ ${idx+1}. ${label}`).join(''), '');
         ${!t.startedAt ? `<div class="start-gate"><strong>Najpierw rozpocznij sprzątanie</strong><p class="note">Po kliknięciu aplikacja automatycznie zapisze godzinę rozpoczęcia i pokaże checklistę w strefach.</p><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button></div>` : ''}
         ${t.startedAt ? `<div class="task-card"><strong>Postęp checklisty: ${progress.doneCount}/${progress.total} — ${progress.percent}%</strong><div class="progress-bar" aria-label="Postęp checklisty"><div class="progress-fill" style="width:${progress.percent}%"></div></div><p class="note">Odhacz każdy punkt po wykonaniu. Raport pokaże pełną checklistę: wykonane i niewykonane punkty.</p></div>` : ''}
         <div class="task-card"><strong>Standard przygotowania</strong><div class="meta"><span class="tag">Pościel: ${escapeHTML(t.bedding || a.bedding || '—')}</span><span class="tag">Ręczniki: ${escapeHTML(t.towels || a.towels || '—')}</span></div><p class="note">${escapeHTML(a.individual || '')}</p></div>
-        <h3>Checklista jakości</h3>
+        ${t.startedAt ? `<h3>Checklista jakości</h3>
         <div class="checklist-toolbar"><button class="btn small secondary" onclick="markAllChecks('${t.id}', true)">Zaznacz wszystko</button><button class="btn small secondary" onclick="markAllChecks('${t.id}', false)">Odznacz wszystko</button></div>
         <div class="checklist">${renderChecklist(t)}</div>
         <div style="margin-top:16px"><label>Uwagi Room Service</label><textarea onchange="updateServiceNotes('${t.id}', this.value)" placeholder="Np. uwagi po serwisie, informacja dla Administratora...">${escapeHTML(t.serviceNotes||'')}</textarea></div>
         <div class="missing-field" style="margin-top:12px"><label>Braki / do uzupełnienia</label><textarea onchange="updateMissingItems('${t.id}', this.value)" placeholder="Np. papier, kapsułki, mydło, ręczniki, worki, żarówka, usterka młynka WC...">${escapeHTML(t.missingItems||'')}</textarea><p class="note">Jeśli to pole jest uzupełnione, raport oznaczy apartament jako wymagający sprawdzenia.</p></div>
-        <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Nie zapisujemy zdjęć w aplikacji. Beata wybiera zdjęcia z telefonu i udostępnia je od razu przez systemowe udostępnianie, najlepiej do WhatsAppa Administratora.</p><div class="share-photo-grid"><input class="hidden-file-input" id="shareBefore-${t.id}" type="file" accept="image/*" multiple onchange="shareSelectedPhotos('${t.id}', 'before', this.files); this.value=''"><input class="hidden-file-input" id="shareAfter-${t.id}" type="file" accept="image/*" multiple onchange="shareSelectedPhotos('${t.id}', 'after', this.files); this.value=''"><button class="btn secondary" onclick="document.getElementById('shareBefore-${t.id}').click()">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="document.getElementById('shareAfter-${t.id}').click()">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed udostępnione: ${photoBeforeCount(t)}</span><span class="tag">Po udostępnione: ${photoAfterCount(t)}</span></div></div>
-        <p class="note">Aby zakończyć jako Gotowe, trzeba użyć przycisków „Udostępnij zdjęcia przed” i „Udostępnij zdjęcia po”, a potem odhaczyć całą checklistę. Punktów zdjęć nie da się zaliczyć samym kliknięciem checkboxa.</p>
+        <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Przyciski otwierają WhatsApp bezpośrednio do Administratora ${whatsappDisplay}. Zdjęcia Beata wybiera i dodaje już w rozmowie WhatsApp.</p><div class="share-photo-grid"><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed: WhatsApp otwarty ${photoBeforeCount(t)}×</span><span class="tag">Po: WhatsApp otwarty ${photoAfterCount(t)}×</span></div></div>
+        <p class="note">Po kliknięciu „Zakończenie sprzątania / Gotowe” aplikacja automatycznie zapisze godzinę zakończenia, wygeneruje Raport i otworzy WhatsApp do Administratora. Jeśli zdjęcia albo punkty checklisty nie są kompletne, raport oznaczy Alert jakości.</p>` : `<div class="task-card"><strong>Checklista ukryta do rozpoczęcia</strong><p class="note">Pełna checklista w strefach pojawi się dopiero po kliknięciu „Rozpoczęcie sprzątania”.</p></div>`}
         ${isAdmin() ? `<div class="task-card"><strong>Wiadomość dla Beaty</strong><p class="note">Wyślij Beacie gotowe zlecenie WhatsApp z linkiem do aplikacji, datą, godziną, apartamentem i pełną checklistą.</p><button class="btn gold" onclick="sendWhatsAppAssignment('${t.id}')">Wyślij WhatsApp do Beaty</button></div>` : ''}
         <div class="task-card"><strong>Raport dla Administratora</strong><p class="note">Wygeneruj Raport w osobnym widoku. Możesz go wydrukować, zapisać jako PDF albo udostępnić jako plik.</p><div class="hero-actions"><button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button>${isAdmin() ? `<button class="btn secondary" onclick="sendWhatsAppReport('${t.id}')">Wyślij raport WhatsApp</button>` : ''}</div></div>
         <div class="hero-actions"><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button><button class="btn ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania / Gotowe</button><button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn secondary" onclick="downloadICS('${t.id}')">Dodaj do kalendarza</button></div>`;
@@ -792,33 +839,19 @@ ${idx+1}. ${label}`).join(''), '');
         return dataUrlToFile(src, `${label}.${extensionFromMime(type)}`, type);
       });
     }
-    window.shareSelectedPhotos = async function(id,type,files,context='modal'){
+    window.openWhatsAppPhotoShare = function(id,type){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
-      const selected = [...files].filter(file => String(file.type || '').startsWith('image/')).slice(0,12);
-      if(!selected.length){ toast('Wybierz zdjęcia do udostępnienia'); return; }
-      const a = getApartment(t.apartmentId);
-      const label = type === 'before' ? 'przed sprzątaniem' : 'po sprzątaniu';
-      const shareData = {
-        title:`Zdjęcia ${label} — ${a.name}`,
-        text:`Zdjęcia ${label} — ${a.name}, ${fmtDate(t.date)}, godz. ${t.time}`,
-        files:selected
-      };
-      try{
-        if(navigator.canShare && navigator.canShare({files:selected}) && navigator.share){
-          await navigator.share(shareData);
-          if(type === 'before') t.photosBeforeShared = Number(t.photosBeforeShared || 0) + selected.length;
-          else t.photosAfterShared = Number(t.photosAfterShared || 0) + selected.length;
-          syncPhotoChecklist(t);
-          save();
-          render();
-          if(context !== 'inline' && taskModal.classList.contains('show')) openTask(id);
-          toast(type === 'before' ? 'Zdjęcia przed udostępnione' : 'Zdjęcia po udostępnione');
-        }else{
-          toast('Ten telefon/przeglądarka nie obsługuje udostępniania zdjęć z aplikacji. Otwórz WhatsApp i dodaj zdjęcia ręcznie.');
-        }
-      }catch(e){
-        toast('Udostępnianie zdjęć przerwane lub niedostępne');
-      }
+      if(type === 'before') t.photosBeforeShared = Math.max(1, Number(t.photosBeforeShared || 0) + 1);
+      else t.photosAfterShared = Math.max(1, Number(t.photosAfterShared || 0) + 1);
+      syncPhotoChecklist(t);
+      save();
+      render();
+      if(taskModal.classList.contains('show')) openTask(id);
+      openWhatsAppToAdmin(photoShareMessage(t, type));
+      toast(`Otwieram WhatsApp do Administratora: ${whatsappDisplay}`);
+    }
+    window.shareSelectedPhotos = async function(id,type,files,context='modal'){
+      window.openWhatsAppPhotoShare(id,type);
     }
     window.shareTaskPhotos = async function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
@@ -926,6 +959,8 @@ ${idx+1}. ${label}`).join(''), '');
       const createdAt = new Date();
       const status = summary.ok ? 'GOTOWE' : 'WYMAGA SPRAWDZENIA';
       const fileTitle = `Raport sprzątania — ${a.name} — ${fmtDate(t.date)}`;
+      const whatsappReport = buildReport(t) + '\n\nRaport został wygenerowany w aplikacji AdagoStay Room Service. Pełny układ raportu można zapisać jako PDF z widoku Raportu.';
+      const whatsappReportJSON = JSON.stringify(whatsappReport);
       return `<!doctype html>
 <html lang="pl">
 <head>
@@ -984,6 +1019,8 @@ ${idx+1}. ${label}`).join(''), '');
     <footer class="footer"><span>Wygenerowano: ${escapeHTML(fmtDateTime(createdAt.toISOString()))}</span><span>Godziny rozpoczęcia i zakończenia są zapisem automatycznym aplikacji.</span></footer>
   </main>
 <script>
+const ADMIN_WHATSAPP = '48786207695';
+const REPORT_MESSAGE = ${whatsappReportJSON};
 function reportFile(){
   const html = '<!doctype html>\n' + document.documentElement.outerHTML;
   return new File([html], 'raport-adagostay-room-service.html', {type:'text/html'});
@@ -995,12 +1032,8 @@ function downloadHTML(){
   a.href = url; a.download = file.name; a.click();
   setTimeout(()=>URL.revokeObjectURL(url), 1000);
 }
-async function shareHTML(){
-  const file = reportFile();
-  if(navigator.canShare && navigator.canShare({files:[file]})){
-    try{ await navigator.share({title:'Raport AdagoStay Room Service', text:'Raport sprzątania AdagoStay Room Service', files:[file]}); return; }catch(e){}
-  }
-  alert('Ten telefon lub przeglądarka nie obsługuje udostępniania raportu jako pliku. Użyj przycisku „Drukuj / zapisz jako PDF” albo „Pobierz raport HTML”.');
+function shareHTML(){
+  window.location.href = 'https://wa.me/' + ADMIN_WHATSAPP + '?text=' + encodeURIComponent(REPORT_MESSAGE);
 }
 <\/script>
 </body>
@@ -1036,12 +1069,28 @@ async function shareHTML(){
         toast('Przeglądarka zablokowała nowe okno — pobieram raport HTML');
       }
     }
+    function autoGenerateReportAndWhatsApp(id){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      syncPhotoChecklist(t);
+      save();
+      const html = buildPremiumReportHTML(t);
+      const reportWindow = window.open('', '_blank');
+      if(reportWindow){
+        reportWindow.document.open();
+        reportWindow.document.write(html);
+        reportWindow.document.close();
+      }else{
+        downloadPremiumReportHTML(t);
+      }
+      const report = buildReport(t) + '\n\nRaport został automatycznie wygenerowany po kliknięciu „Zakończenie sprzątania / Gotowe”. Zdjęcia są wysyłane osobno przyciskami „Udostępnij zdjęcia przed/po”.';
+      openWhatsAppToAdmin(report);
+    }
     async function copyText(text){
       try{ await navigator.clipboard.writeText(text); return true; }catch(e){ return false; }
     }
     function openWhatsAppReport(report){
-      const message = report + '\n\nZdjęcia: raport zawiera liczbę udostępnionych zdjęć. Same zdjęcia są wysyłane osobno przyciskami „Udostępnij zdjęcia przed” i „Udostępnij zdjęcia po”.';
-      window.location.href = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(message)}`;
+      const message = report + '\n\nZdjęcia: Beata wysyła je osobno przez przyciski „Udostępnij zdjęcia przed” i „Udostępnij zdjęcia po”, które otwierają WhatsApp do Administratora.';
+      openWhatsAppToAdmin(message);
     }
     window.sendWhatsAppReport = async function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
