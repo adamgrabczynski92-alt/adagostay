@@ -1,7 +1,7 @@
 {
   "name": "Adago Stay",
   "short_name": "Adago Stay",
-  "start_url": "/pl/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#171210",
   "theme_color": "#171210",

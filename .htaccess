@@ -3,6 +3,8 @@
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
+RewriteRule ^pl/?$ https://adagostay.pl/ [R=301,L,NE]
+RewriteRule ^pl/index\.html$ https://adagostay.pl/ [R=301,L,NE]
 RewriteRule ^antracyt/?$ https://adagostay.pl/pl/apartament/antracyt/ [R=301,L,NE]
 RewriteRule ^gold/?$ https://adagostay.pl/pl/apartament/gold/ [R=301,L,NE]
 RewriteRule ^oaza/?$ https://adagostay.pl/pl/apartament/oaza/ [R=301,L,NE]

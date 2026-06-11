@@ -1,0 +1,8 @@
+Dodatkowy audyt i poprawki po ponownej analizie:
+- poprawiono pozostałą etykietę “Guest feedback” w wersjach CZ/DE/UA,
+- poprawiono czeskie “fakturou VAT” na “fakturou s DPH”,
+- poprawiono ukraińską kartę “VAT invoice” na “Рахунок VAT”,
+- dodano ukryte pola _subject i _captcha do formularzy jako pełniejszy fallback bez JavaScript,
+- zmieniono JS formularza tak, aby nie dublował pól _subject i _captcha,
+- dodano width/height do lokalnych obrazów i logo, aby ograniczyć layout shift podczas ładowania strony,
+- ponownie sprawdzono linki, zasoby, meta, canonicale, H1, alty, formularze i mapę Google.

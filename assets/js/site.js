@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.mobile-toggle');
   const nav = document.querySelector('.nav');
   if (toggle && nav) {
-    toggle.addEventListener('click', () => nav.classList.toggle('open'));
+    toggle.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
   }
 
   initCustomSelects(document);
@@ -34,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (filledHoney || (Date.now() - loadedAt) < 2500) {
         return;
       }
-      formData.append('_subject', form.dataset.subject || 'New enquiry from adagostay.pl');
-      formData.append('_captcha', 'false');
+      if (!formData.has('_subject')) formData.append('_subject', form.dataset.subject || 'New enquiry from adagostay.pl');
+      if (!formData.has('_captcha')) formData.append('_captcha', 'false');
       if (submit) {
         submit.disabled = true;
         submit.textContent = submit.dataset.loading || 'Sending...';
@@ -46,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Accept': 'application/json' },
           body: formData
         });
-        const data = await res.json();
+        let data = {};
+        try { data = await res.json(); } catch (e) { data = {}; }
         if (!res.ok) throw new Error(data.message || 'Form error');
         adagoTrack('form_submit', { form_type: form.dataset.formType || 'contact' });
         form.reset();
@@ -55,10 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
           successBox.style.display = 'block';
           successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
-          alert('Thank you! We will reply as soon as possible.');
+          alert(form.dataset.alertSuccess || 'Thank you! We will reply as soon as possible.');
         }
       } catch (err) {
-        alert('Unable to send the form automatically right now. Please call or write on WhatsApp.');
+        alert(form.dataset.errorMessage || 'Unable to send the form automatically right now. Please call or write on WhatsApp.');
       } finally {
         if (submit) {
           submit.disabled = false;
@@ -93,6 +97,8 @@ function initCustomSelects(scope = document) {
     trigger.className = 'custom-select-trigger';
     trigger.setAttribute('aria-haspopup', 'listbox');
     trigger.setAttribute('aria-expanded', 'false');
+    const fieldLabel = select.getAttribute('aria-label') || select.closest('div')?.querySelector('label')?.textContent?.trim() || select.name || 'Select';
+    trigger.setAttribute('aria-label', fieldLabel);
 
     const triggerText = document.createElement('span');
     triggerText.className = 'custom-select-text';
@@ -258,7 +264,3 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-gallery]').forEach(initLightboxGallery);
 });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  initCustomSelects();
-});

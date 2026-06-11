@@ -1,0 +1,12 @@
+{
+  "name": "Adago Stay — Room Service",
+  "short_name": "Adago RS",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fbf8f2",
+  "theme_color": "#1f1c18",
+  "description": "Panel Room Service dla Apartamentów Adago Stay",
+  "icons": [
+    {"src":"icon.svg", "sizes":"any", "type":"image/svg+xml"}
+  ]
+}

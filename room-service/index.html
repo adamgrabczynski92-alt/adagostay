@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1f1c18" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Adago Stay — Room Service</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root{
+      --ink:#1f1c18;
+      --muted:#6f675e;
+      --paper:#fbf8f2;
+      --soft:#f2eadf;
+      --line:#e3d8c8;
+      --card:#fffdf8;
+      --gold:#b18a55;
+      --gold-2:#d6b37c;
+      --green:#2f7d5a;
+      --red:#a64e43;
+      --blue:#456a86;
+      --shadow:0 24px 70px rgba(31,28,24,.12);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at top left, rgba(214,179,124,.34), transparent 34rem),
+        radial-gradient(circle at top right, rgba(31,28,24,.08), transparent 28rem),
+        linear-gradient(180deg,var(--paper),#f6efe6 70%,#efe3d5);
+      color:var(--ink);
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height:100vh;
+    }
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .app-shell{max-width:1200px;margin:0 auto;padding:18px 18px 110px}
+    .topbar{
+      position:sticky;top:0;z-index:40;
+      margin:-18px -18px 18px;
+      padding:14px 18px;
+      background:rgba(251,248,242,.82);
+      backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(227,216,200,.8);
+    }
+    .topbar-inner{max-width:1200px;margin:0 auto;display:flex;gap:14px;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand-mark{
+      width:44px;height:44px;border-radius:16px;
+      background:linear-gradient(135deg,var(--ink),#453c33);
+      color:#fff;display:grid;place-items:center;box-shadow:0 14px 35px rgba(31,28,24,.22);font-weight:800;letter-spacing:.08em
+    }
+    .brand small{display:block;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+    .brand strong{display:block;font-size:18px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pill{border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:rgba(255,253,248,.74);color:var(--muted);font-weight:700;font-size:13px;white-space:nowrap}
+    .hero{
+      display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:stretch;margin:22px 0 18px
+    }
+    .hero-card{
+      background:linear-gradient(135deg,rgba(255,253,248,.94),rgba(242,234,223,.9));
+      border:1px solid rgba(227,216,200,.9);
+      border-radius:calc(var(--radius) + 8px);
+      padding:30px;box-shadow:var(--shadow);overflow:hidden;position:relative
+    }
+    .hero-card:after{
+      content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:rgba(177,138,85,.12)
+    }
+    .eyebrow{color:var(--gold);font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:12px;margin:0 0 12px}
+    h1{font-size:clamp(34px,5vw,62px);line-height:.96;margin:0 0 14px;letter-spacing:-.045em}
+    .lead{font-size:18px;line-height:1.62;color:var(--muted);margin:0;max-width:720px}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+    .btn{
+      border:0;border-radius:999px;padding:13px 17px;background:var(--ink);color:#fff;font-weight:850;box-shadow:0 14px 34px rgba(31,28,24,.18);display:inline-flex;align-items:center;gap:8px;text-decoration:none
+    }
+    .btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#fff}
+    .btn.danger{background:var(--red)}
+    .btn.ok{background:var(--green)}
+    .btn.blue{background:var(--blue)}
+    .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .btn.small{padding:9px 12px;font-size:13px}
+    .quick-panel{display:grid;gap:12px}
+    .mini-stat{background:rgba(255,253,248,.86);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 14px 40px rgba(31,28,24,.08)}
+    .mini-stat span{display:block;color:var(--muted);font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.09em}
+    .mini-stat strong{display:block;font-size:34px;line-height:1;margin-top:8px;letter-spacing:-.04em}
+    .tabs{position:sticky;top:74px;z-index:35;display:flex;gap:8px;overflow:auto;padding:8px;margin:0 -4px 20px;background:rgba(251,248,242,.75);backdrop-filter:blur(18px);border-radius:999px;border:1px solid rgba(227,216,200,.65)}
+    .tab{border:0;background:transparent;color:var(--muted);font-weight:850;padding:12px 15px;border-radius:999px;white-space:nowrap}
+    .tab.active{background:var(--ink);color:#fff;box-shadow:0 8px 24px rgba(31,28,24,.16)}
+    .view{display:none;animation:fade .18s ease}
+    .view.active{display:block}
+    @keyframes fade{from{opacity:.35;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .span-4{grid-column:span 4}.span-5{grid-column:span 5}.span-6{grid-column:span 6}.span-7{grid-column:span 7}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
+    .card{background:rgba(255,253,248,.92);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 16px 48px rgba(31,28,24,.08)}
+    .section-title{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+    .section-title h2{margin:0;font-size:25px;letter-spacing:-.03em}
+    .section-title p{margin:6px 0 0;color:var(--muted);line-height:1.45}
+    .task-list{display:grid;gap:12px}
+    .task-card{border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,#fffdf8,#fbf5ed);padding:16px;display:grid;gap:12px;position:relative;overflow:hidden}
+    .task-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--gold)}
+    .task-card.problem:before{background:var(--red)}.task-card.done:before{background:var(--green)}.task-card.progress:before{background:var(--blue)}
+    .task-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start}
+    .timebox{display:grid;place-items:center;background:var(--ink);color:#fff;border-radius:17px;min-width:72px;padding:10px 8px;font-weight:900;box-shadow:0 12px 26px rgba(31,28,24,.18)}
+    .timebox small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;opacity:.72}
+    .task-main{min-width:0;flex:1}
+    .task-main h3{margin:0;font-size:22px;letter-spacing:-.03em}
+    .meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;color:var(--muted)}
+    .tag{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800;color:var(--muted)}
+    .status{font-weight:900}.status.todo{color:var(--gold)}.status.progress{color:var(--blue)}.status.done{color:var(--green)}.status.problem{color:var(--red)}
+    .task-actions{display:flex;gap:8px;flex-wrap:wrap}
+    label{display:block;color:var(--muted);font-size:13px;font-weight:850;margin:0 0 7px;letter-spacing:.02em}
+    input,select,textarea{
+      width:100%;border:1px solid var(--line);border-radius:16px;background:#fffdf8;padding:13px 13px;color:var(--ink);outline:none
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(177,138,85,.13)}
+    textarea{min-height:96px;resize:vertical}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid .full{grid-column:1 / -1}
+    .checklist{display:grid;gap:10px;margin-top:10px}
+    .check-section{display:grid;gap:8px;border:1px solid rgba(227,216,200,.75);border-radius:18px;padding:12px;background:rgba(255,253,248,.62)}
+    .check-section-title{font-weight:950;color:var(--ink);letter-spacing:-.01em;margin-bottom:2px}
+    .check-item{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid var(--line);border-radius:16px;background:#fff}
+    .check-item input{width:18px;height:18px;accent-color:var(--gold);box-shadow:none}
+    .photo-row{display:flex;gap:8px;overflow:auto;margin-top:8px}.photo-row img{width:76px;height:76px;object-fit:cover;border-radius:16px;border:1px solid var(--line)}
+    .apartment-card{min-height:190px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(135deg,#fffdf8,#f1e7db);position:relative;overflow:hidden}
+    .apartment-card:after{content:"";position:absolute;right:-42px;bottom:-42px;width:140px;height:140px;border-radius:50%;background:rgba(177,138,85,.13)}
+    .apartment-card h3{font-size:30px;margin:0 0 6px;letter-spacing:-.04em;position:relative;z-index:1}
+    .apartment-card p{margin:0;color:var(--muted);position:relative;z-index:1}
+    .apartment-card .tag{position:relative;z-index:1}
+    .empty{padding:22px;border:1px dashed var(--line);border-radius:20px;color:var(--muted);background:rgba(255,253,248,.55);text-align:center}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:13px 16px;border-radius:999px;box-shadow:0 18px 50px rgba(0,0,0,.25);z-index:90;font-weight:800;transition:.25s ease;max-width:calc(100vw - 34px);text-align:center}.toast.show{transform:translateX(-50%) translateY(0)}
+    .install-banner{display:none;position:fixed;left:16px;right:16px;bottom:16px;background:#fffdf8;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:15px;z-index:80;gap:12px;align-items:center;justify-content:space-between}.install-banner.show{display:flex}
+    .modal{position:fixed;inset:0;background:rgba(31,28,24,.42);display:none;place-items:center;padding:16px;z-index:70}.modal.show{display:grid}.modal-card{width:min(720px,100%);max-height:90vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);padding:20px}
+    .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(760px,calc(100vw - 20px));background:rgba(31,28,24,.93);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px;display:none;gap:6px;z-index:60;box-shadow:0 22px 60px rgba(31,28,24,.32)}
+    .bottom-nav button{flex:1;border:0;border-radius:999px;background:transparent;color:rgba(255,255,255,.76);padding:10px 7px;font-size:12px;font-weight:850}.bottom-nav button.active{background:#fff;color:var(--ink)}
+    .note{font-size:13px;color:var(--muted);line-height:1.55;margin:10px 0 0}.desktop-only{display:block}.mobile-only{display:none}
+
+    .topbar-actions{display:flex;align-items:center;gap:8px;min-width:0}
+    .login-screen{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at top left, rgba(214,179,124,.34), transparent 34rem),linear-gradient(180deg,var(--paper),#efe3d5)}
+    body:not(.auth-locked) .login-screen{display:none}
+    body.auth-locked .topbar,body.auth-locked .app-shell,body.auth-locked .bottom-nav,body.auth-locked .install-banner{display:none!important}
+    .login-card{width:min(470px,100%);background:rgba(255,253,248,.94);border:1px solid var(--line);border-radius:34px;padding:28px;box-shadow:var(--shadow);display:grid;gap:16px;text-align:left}
+    .login-card h1{font-size:clamp(34px,8vw,52px);margin-bottom:0}
+    .login-card .lead{font-size:16px}
+    .login-mark{width:62px;height:62px;border-radius:22px}
+    .login-fields{display:grid;gap:12px}
+    .remember-row{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--muted);font-size:14px;cursor:pointer}
+    .remember-row input{width:18px;height:18px;accent-color:var(--gold)}
+    .hidden-by-role{display:none!important}
+
+    @media (max-width:860px){
+      .app-shell{padding:14px 14px 98px}.hero{grid-template-columns:1fr}.hero-card{padding:22px}.topbar{margin:-14px -14px 14px;padding:12px 14px}.brand strong{font-size:16px}.pill{display:none}.tabs{display:none}.bottom-nav{display:flex}.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 12}.form-grid{grid-template-columns:1fr}.desktop-only{display:none}.mobile-only{display:block}.section-title{align-items:flex-start}.task-head{display:grid;grid-template-columns:auto 1fr}.task-actions{grid-column:1 / -1}.timebox{min-width:64px}.hero-actions .btn{flex:1;justify-content:center}.quick-panel{grid-template-columns:repeat(3,1fr)}.mini-stat{padding:14px}.mini-stat strong{font-size:26px}.mini-stat span{font-size:10px}.brand-mark{width:40px;height:40px;border-radius:14px}
+    }
+    @media (max-width:480px){h1{font-size:39px}.lead{font-size:16px}.quick-panel{grid-template-columns:1fr}.task-head{grid-template-columns:1fr}.timebox{width:max-content}.btn{width:100%;justify-content:center}.btn.small{width:auto}.task-actions .btn.small{flex:1}.card{padding:16px}.apartment-card h3{font-size:25px}}
+    @media print{.topbar,.tabs,.bottom-nav,.hero-actions,.task-actions,.install-banner{display:none!important}body{background:#fff}.card,.hero-card,.task-card{box-shadow:none}}
+  </style>
+</head>
+<body class="auth-locked">
+  <div class="login-screen" id="loginScreen">
+    <form class="login-card" id="loginForm" autocomplete="on">
+      <div class="brand-mark login-mark">AS</div>
+      <p class="eyebrow">Adago Stay</p>
+      <h1>Room Service Control</h1>
+      <p class="lead">Zaloguj się, aby przejść do panelu operacyjnego apartamentów.</p>
+      <div class="login-fields">
+        <div><label for="loginUser">Login</label><input id="loginUser" type="text" placeholder="Wpisz login" autocomplete="username" required /></div>
+        <div><label for="loginPassword">Hasło</label><input id="loginPassword" type="password" placeholder="Wpisz hasło" autocomplete="current-password" required /></div>
+        <label class="remember-row" for="rememberLogin"><input id="rememberLogin" type="checkbox" /> <span>Zapamiętaj logowanie na tym urządzeniu</span></label>
+      </div>
+      <button class="btn gold" type="submit">Zaloguj</button>
+      <p class="note" id="loginError" style="display:none;color:var(--red);font-weight:850">Nieprawidłowy użytkownik lub hasło.</p>
+    </form>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">AS</div>
+        <div><small>Adago Stay</small><strong>Room Service Control</strong></div>
+      </div>
+      <div class="topbar-actions"><div class="pill" id="currentUserPill">Zalogowano</div><button class="btn small secondary" id="logoutBtn" type="button">Wyloguj</button><div class="pill" id="todayPill">Dzisiaj</div></div>
+    </div>
+  </div>
+
+  <main class="app-shell">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="eyebrow">Premium operations panel</p>
+        <h1>Room Service dla apartamentów Adago Stay.</h1>
+        <p class="lead">Plan dnia, powiadomienia, checklista jakości, zdjęcia przed i po Room Service oraz szybkie zgłoszenia problemów — wszystko dla Oazy, Antracytu i Gold w jednym eleganckim panelu.</p>
+        <div class="hero-actions">
+          <button class="btn gold" data-open="admin">+ Dodaj service</button>
+          <button class="btn secondary" id="enableNotifications">Włącz powiadomienia</button>
+          <button class="btn secondary" id="exportData">Eksport danych</button>
+        </div>
+      </div>
+      <div class="quick-panel">
+        <div class="mini-stat"><span>Dzisiaj</span><strong id="statToday">0</strong></div>
+        <div class="mini-stat"><span>Gotowe</span><strong id="statDone">0</strong></div>
+        <div class="mini-stat"><span>Quality alerts</span><strong id="statProblems">0</strong></div>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Główna nawigacja">
+      <button class="tab active" data-view="dashboard">Dashboard</button>
+      <button class="tab" data-view="roomservice">Room Service</button>
+      <button class="tab" data-view="admin">Planowanie</button>
+      <button class="tab" data-view="apartments">Apartamenty</button>
+    </nav>
+
+    <section id="dashboard" class="view active">
+      <div class="grid">
+        <div class="card span-8">
+          <div class="section-title"><div><h2>Dzisiejszy plan</h2><p>Zadania ustawione na dzisiaj, z godziną i przypisanym apartamentem.</p></div><button class="btn small gold" data-open="admin">Dodaj</button></div>
+          <div id="todayTasks" class="task-list"></div>
+        </div>
+        <div class="card span-4">
+          <div class="section-title"><div><h2>Najbliższe powiadomienia</h2><p>Przypomnienia działają w przeglądarce/PWA, a wydarzenie można dodać do kalendarza.</p></div></div>
+          <div id="reminderList" class="task-list"></div>
+          <p class="note">Wersja bez serwera zapisuje dane na tym urządzeniu. Do prawdziwych pushy przy zamkniętym telefonie dodamy Firebase/Supabase.</p>
+        </div>
+        <div class="card span-12">
+          <div class="section-title"><div><h2>Wszystkie zadania</h2><p>Pełna lista service planów.</p></div></div>
+          <div id="allTasks" class="task-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="roomservice" class="view">
+      <div class="grid">
+        <div class="card span-12">
+          <div class="section-title"><div><h2>Room Service — widok telefonu</h2><p>To jest ekran dla osoby wykonującej serwis apartamentu. Bez technicznego języka, tylko konkretne kroki.</p></div></div>
+          <div id="roomServiceTasks" class="task-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin" class="view">
+      <div class="grid">
+        <form class="card span-5" id="taskForm">
+          <div class="section-title"><div><h2>Nowy service plan</h2><p>Ustaw apartament, dzień, godzinę i instrukcje.</p></div></div>
+          <div class="form-grid">
+            <div><label for="apartment">Apartament</label><select id="apartment" required></select></div>
+            <div><label for="assigned">Zespół</label><input id="assigned" value="Room Service" required /></div>
+            <div><label for="date">Data</label><input id="date" type="date" required /></div>
+            <div><label for="time">Godzina service</label><input id="time" type="time" value="11:00" required /></div>
+            <div><label for="checkout">Check-out</label><input id="checkout" type="time" value="10:00" /></div>
+            <div><label for="checkin">Check-in</label><input id="checkin" type="time" value="15:00" /></div>
+            <div><label for="guests">Liczba gości</label><input id="guests" type="number" min="1" max="4" value="2" required /></div>
+            <div><label for="bedding">Pościel</label><input id="bedding" placeholder="Np. 1 komplet podwójny + sofa" /></div>
+            <div class="full"><label for="towels">Ręczniki</label><input id="towels" placeholder="Np. 4 duże + 4 małe" /></div>
+            <div class="full"><span class="tag" id="apartmentHelp">Standard apartamentu</span></div>
+            <div class="full"><label for="notes">Instrukcje / uwagi</label><textarea id="notes" placeholder="Np. wymienić pościel, 4 ręczniki, sprawdzić ekspres..."></textarea></div>
+          </div>
+          <div class="hero-actions"><button class="btn gold" type="submit">Zapisz i powiadom</button><button class="btn secondary" type="button" id="resetDemo">Przywróć demo</button></div>
+          <p class="note">Po zapisie aplikacja pokaże powiadomienie testowe i dopisze zadanie do planu. Każde zadanie można też pobrać jako plik kalendarza.</p>
+        </form>
+        <div class="card span-7">
+          <div class="section-title"><div><h2>Plan operacyjny</h2><p>Podgląd tego, co widzisz jako właściciel/koordynator.</p></div></div>
+          <div id="adminTasks" class="task-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="apartments" class="view">
+      <div class="grid" id="apartmentsGrid"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Nawigacja mobilna">
+    <button class="active" data-view="dashboard">Dashboard</button>
+    <button data-view="roomservice">Room Service</button>
+    <button data-view="admin">Plan</button>
+    <button data-view="apartments">Apartamenty</button>
+  </nav>
+
+  <div class="modal" id="taskModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="section-title"><div><h2 id="modalTitle">Service details</h2><p id="modalSub"></p></div><button class="btn small secondary" id="closeModal">Zamknij</button></div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="install-banner" id="installBanner"><div><strong>Dodaj jako aplikację</strong><br><span class="note">Zapisz panel Room Service na ekranie telefonu.</span></div><button class="btn small gold" id="installApp">Dodaj</button></div>
+  <div class="toast" id="toast">Gotowe</div>
+
+  <script>
+    const users = {
+      Administrator:{password:'AdagoApartamenty792.', role:'admin', display:'Administrator'},
+      Beata:{password:'AdagoApartamenty531.', role:'room', display:'Beata'}
+    };
+    const authKey = 'adagoRoomService.auth.v1';
+    const authSessionKey = 'adagoRoomService.auth.session.v1';
+    let currentUser = null;
+    function normalizeLogin(value){
+      const typed = String(value || '').trim();
+      return Object.keys(users).find(name => name.toLowerCase() === typed.toLowerCase()) || typed;
+    }
+    function getSavedUser(){
+      try{
+        const name = localStorage.getItem(authKey) || sessionStorage.getItem(authSessionKey);
+        return users[name] ? {name, ...users[name]} : null;
+      }catch(e){ return null; }
+    }
+    function isAdmin(){ return currentUser?.role === 'admin'; }
+    function allowedView(view){ return (!isAdmin() && view === 'admin') ? 'roomservice' : view; }
+    function applyAuthUI(){
+      if(!currentUser) return;
+      document.body.classList.remove('auth-locked');
+      document.getElementById('currentUserPill').textContent = currentUser.display + (isAdmin() ? ' • Admin' : ' • Room Service');
+      document.querySelectorAll('[data-view="admin"],[data-open="admin"],#exportData,#resetDemo').forEach(el=>{
+        el.classList.toggle('hidden-by-role', !isAdmin());
+      });
+    }
+    function showLogin(){
+      currentUser = null;
+      document.body.classList.add('auth-locked');
+      document.getElementById('loginUser').value = '';
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('rememberLogin').checked = false;
+      document.getElementById('loginError').style.display = 'none';
+    }
+    function setupLogin(){
+      currentUser = getSavedUser();
+      document.getElementById('loginForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const name = normalizeLogin(document.getElementById('loginUser').value);
+        const pass = document.getElementById('loginPassword').value;
+        const remember = document.getElementById('rememberLogin').checked;
+        if(users[name]?.password === pass){
+          localStorage.removeItem(authKey);
+          sessionStorage.removeItem(authSessionKey);
+          if(remember){ localStorage.setItem(authKey, name); }
+          else{ sessionStorage.setItem(authSessionKey, name); }
+          currentUser = {name, ...users[name]};
+          document.getElementById('loginError').style.display = 'none';
+          applyAuthUI();
+          render();
+          setView(allowedView(state.activeView || (isAdmin() ? 'dashboard' : 'roomservice')));
+          toast('Zalogowano');
+        }else{
+          document.getElementById('loginError').style.display = 'block';
+        }
+      });
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem(authKey);
+        sessionStorage.removeItem(authSessionKey);
+        showLogin();
+      });
+    }
+
+    const apartments = [
+      {id:'oaza', name:'Oaza', location:'Szczawno-Zdrój', tone:'Spokojny apartament premium', max:4, defaultGuests:4, bedding:'1 komplet podwójny + komplet na sofę według rezerwacji', towels:'4 duże + 4 małe', individual:'Max 4 osoby. Zawsze sprawdzić zapas kawy/herbaty, komplet ręczników i przygotowanie sofy przy 3–4 gościach.'},
+      {id:'antracyt', name:'Antracyt', location:'Szczawno-Zdrój', tone:'Nowoczesny apartament premium', max:2, defaultGuests:2, bedding:'1 komplet podwójny', towels:'2 duże + 2 małe', individual:'Max 2 osoby. Stały standard pościeli i ręczników — bez dodatkowej sofy.'},
+      {id:'gold', name:'Gold', location:'Wałbrzych', tone:'Elegancki apartament z osobną sypialnią', max:4, defaultGuests:4, bedding:'1 komplet podwójny + komplet na sofę według rezerwacji', towels:'4 duże + 4 małe', individual:'Max 4 osoby. Kontrola standardu premium, zapachu i przygotowania salonu/sofy przy 3–4 gościach.'}
+    ];
+    const checklistGroups = [
+      {section:'Zdjęcia', items:[
+        'Zdjęcia przed rozpoczęciem dodane',
+        'Zdjęcia po zakończeniu dodane'
+      ]},
+      {section:'Kuchnia', items:[
+        'Kapsułki do kawy / herbata uzupełnione',
+        'Płyn do mycia naczyń uzupełniony',
+        'Gąbka kuchenna przygotowana',
+        'Ścierka kuchenna przygotowana',
+        'Worki na śmieci uzupełnione',
+        'Kosz opróżniony',
+        'Lodówka pusta i czysta',
+        'Blat kuchenny czysty',
+        'Płyta indukcyjna dokładnie wyczyszczona',
+        'Naczynia czyste i odłożone',
+        'Czajnik / ekspres sprawdzony',
+        'Zmywarka pusta'
+      ]},
+      {section:'Łazienka', items:[
+        'Papier toaletowy uzupełniony',
+        'Młynek WC działa poprawnie',
+        'Mydło do rąk uzupełnione',
+        'Płyn pod prysznic uzupełniony',
+        'Ręczniki uzupełnione zgodnie z liczbą gości',
+        'Suszarka sprawdzona',
+        'Prysznic / wanna bez zacieków',
+        'Odpływ w kabinie prysznicowej wyczyszczony',
+        'Lustro czyste',
+        'Kosz łazienkowy opróżniony',
+        'Zapach / odświeżacz sprawdzony'
+      ]},
+      {section:'Sypialnia / salon', items:[
+        'Pościel wymieniona',
+        'Łóżko przygotowane hotelowo',
+        'Pilot do TV na miejscu',
+        'TV / Wi‑Fi sprawdzone',
+        'Kanapa / fotele bez plam',
+        'Podłoga odkurzona i umyta',
+        'Okna / parapety sprawdzone',
+        'Zasłony / rolety ustawione'
+      ]},
+      {section:'Przed przyjazdem gościa', items:[
+        'Temperatura / ogrzewanie ustawione',
+        'Światła sprawdzone',
+        'Drzwi i zamek sprawdzone',
+        'Kod do wejścia działa',
+        'Instrukcja dla gościa na miejscu',
+        'Brak rzeczy po poprzednim gościu',
+        'Apartament pachnie świeżo'
+      ]},
+      {section:'Problemy techniczne', items:[
+        'Brak usterek',
+        'Brak przepalonych żarówek',
+        'Brak przecieków',
+        'Brak uszkodzonych mebli',
+        'Brak problemu z Wi‑Fi',
+        'Brak problemu z zamkiem / drzwiami'
+      ]}
+    ];
+    const checklist = checklistGroups.flatMap(group => group.items);
+    const storeKey = 'adagoRoomService.v2';
+    const whatsappPhone = '48786207695';
+    const whatsappDisplay = '+48 786 207 695';
+    const today = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    const todayISO = () => `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+    const tomorrowISO = () => { const d = new Date(); d.setDate(d.getDate()+1); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+    const fmtDate = iso => new Date(iso + 'T12:00:00').toLocaleDateString('pl-PL',{weekday:'long', day:'2-digit', month:'2-digit', year:'numeric'});
+    const getApartment = id => apartments.find(a => a.id === id) || apartments[0];
+    const defaultTasks = () => [
+      {id:crypto.randomUUID(), apartmentId:'oaza', assigned:'Room Service', date:todayISO(), time:'11:00', checkout:'10:00', checkin:'15:00', guests:4, bedding:'1 komplet podwójny + komplet na sofę', towels:'4 duże + 4 małe', notes:'Przygotować dla 4 osób. Sprawdzić zapas kawy/herbaty i komplet tekstyliów.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}},
+      {id:crypto.randomUUID(), apartmentId:'antracyt', assigned:'Room Service', date:todayISO(), time:'13:00', checkout:'11:00', checkin:'16:00', guests:2, bedding:'1 komplet podwójny', towels:'2 duże + 2 małe', notes:'Stały standard max 2 osoby. Quality check łazienki i kuchni.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}},
+      {id:crypto.randomUUID(), apartmentId:'gold', assigned:'Room Service', date:tomorrowISO(), time:'11:00', checkout:'10:00', checkin:'15:00', guests:4, bedding:'1 komplet podwójny + komplet na sofę', towels:'4 duże + 4 małe', notes:'Przygotować dla 4 osób. Sprawdzić zapach, salon i instrukcję self check-in.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}}
+    ];
+    let state = load();
+    let deferredPrompt;
+
+    function load(){
+      try{
+        const parsed = JSON.parse(localStorage.getItem(storeKey));
+        if(parsed?.tasks){
+          parsed.tasks = parsed.tasks.map(normalizeTask);
+          return parsed;
+        }
+      }catch(e){}
+      return {tasks:defaultTasks(), activeView:'dashboard'};
+    }
+    function normalizePhotoList(list, prefix){
+      return (Array.isArray(list) ? list : []).map((photo, index) => {
+        if(typeof photo === 'string') return {src:photo, name:`${prefix}-${index+1}.jpg`, type:dataUrlMime(photo) || 'image/jpeg'};
+        return {src:photo.src || '', name:photo.name || `${prefix}-${index+1}.jpg`, type:photo.type || dataUrlMime(photo.src) || 'image/jpeg'};
+      }).filter(photo => photo.src);
+    }
+    function normalizeTask(t){
+      const rawAfter = Array.isArray(t.photosAfter) ? t.photosAfter : (Array.isArray(t.photos) ? t.photos : []);
+      const rawBefore = Array.isArray(t.photosBefore) ? t.photosBefore : [];
+      const before = normalizePhotoList(rawBefore, 'przed-room-service');
+      const after = normalizePhotoList(rawAfter, 'po-room-service');
+      const a = getApartment(t.apartmentId);
+      return {...t, guests:t.guests||a.defaultGuests||1, bedding:t.bedding||a.bedding||'', towels:t.towels||a.towels||'', photosBefore:before, photosAfter:after, done:Array.isArray(t.done)?t.done:[], reminders:t.reminders||{}};
+    }
+    function requiredPhotoCount(t){ return (t.photosBefore||[]).length && (t.photosAfter||[]).length; }
+    function syncPhotoChecklist(t){
+      t.done = t.done || [];
+      const beforeIndex = checklist.indexOf('Zdjęcia przed rozpoczęciem dodane');
+      const afterIndex = checklist.indexOf('Zdjęcia po zakończeniu dodane');
+      if((t.photosBefore||[]).length && beforeIndex >= 0 && !t.done.includes(beforeIndex)) t.done.push(beforeIndex);
+      if((t.photosAfter||[]).length && afterIndex >= 0 && !t.done.includes(afterIndex)) t.done.push(afterIndex);
+    }
+    function save(){ localStorage.setItem(storeKey, JSON.stringify(state)); }
+    function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2400); }
+    function sortTasks(tasks){ return [...tasks].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)); }
+    function statusText(status){ return ({todo:'Do wykonania', progress:'W trakcie', done:'Gotowe', problem:'Quality alert'})[status] || status; }
+    function statusClass(status){ return ({todo:'todo', progress:'progress', done:'done', problem:'problem'})[status] || 'todo'; }
+    function cardClass(status){ return status === 'done' ? 'done' : status === 'problem' ? 'problem' : status === 'progress' ? 'progress' : ''; }
+    function taskDateObj(t){ return new Date(`${t.date}T${t.time || '00:00'}:00`); }
+    function isToday(t){ return t.date === todayISO(); }
+
+    function render(){
+      document.getElementById('todayPill').textContent = new Date().toLocaleDateString('pl-PL',{weekday:'long', day:'2-digit', month:'long'});
+      renderStats(); renderTasks(); renderApartments(); populateForm();
+    }
+    function renderStats(){
+      const todayTasks = state.tasks.filter(isToday);
+      document.getElementById('statToday').textContent = todayTasks.length;
+      document.getElementById('statDone').textContent = todayTasks.filter(t=>t.status==='done').length;
+      document.getElementById('statProblems').textContent = state.tasks.filter(t=>t.status==='problem').length;
+    }
+    function taskCard(t, mode='admin'){
+      if(!isAdmin() && mode !== 'room') mode = 'room';
+      const a = getApartment(t.apartmentId);
+      const progress = checklist.length ? Math.round(((t.done||[]).length/checklist.length)*100) : 0;
+      const buttons = mode === 'room'
+        ? `<button class="btn small blue" onclick="setStatus('${t.id}','progress')">Rozpocznij</button><button class="btn small ok" onclick="openTask('${t.id}')">Checklist</button><button class="btn small danger" onclick="setStatus('${t.id}','problem')">Problem</button>`
+        : `<button class="btn small secondary" onclick="openTask('${t.id}')">Podgląd</button><button class="btn small ok" onclick="setStatus('${t.id}','done')">Gotowe</button><button class="btn small ghost" onclick="downloadICS('${t.id}')">Kalendarz</button><button class="btn small danger" onclick="deleteTask('${t.id}')">Usuń</button>`;
+      return `<article class="task-card ${cardClass(t.status)}">
+        <div class="task-head">
+          <div class="timebox"><small>${t.date.slice(5)}</small>${t.time}</div>
+          <div class="task-main">
+            <h3>${a.name}</h3>
+            <div class="meta">
+              <span class="tag">${a.location}</span>
+              <span class="tag">Goście ${t.guests || a.defaultGuests || '—'}/${a.max}</span>
+              <span class="tag">Check-out ${t.checkout || '—'}</span>
+              <span class="tag">Check-in ${t.checkin || '—'}</span>
+              <span class="tag status ${statusClass(t.status)}">${statusText(t.status)}</span>
+              <span class="tag">Quality ${progress}%</span>
+              <span class="tag">Przed ${(t.photosBefore||[]).length}</span>
+              <span class="tag">Po ${(t.photosAfter||[]).length}</span>
+            </div>
+          </div>
+        </div>
+        ${t.notes ? `<p class="note">${escapeHTML(t.notes)}</p>` : ''}
+        <div class="task-actions">${buttons}</div>
+      </article>`;
+    }
+    function renderTasks(){
+      const todayTasks = sortTasks(state.tasks.filter(isToday));
+      const allTasks = sortTasks(state.tasks);
+      const mainMode = isAdmin() ? 'admin' : 'room';
+      document.getElementById('todayTasks').innerHTML = todayTasks.length ? todayTasks.map(t=>taskCard(t, mainMode)).join('') : `<div class="empty">Brak service planów na dzisiaj.</div>`;
+      document.getElementById('allTasks').innerHTML = allTasks.length ? allTasks.map(t=>taskCard(t, mainMode)).join('') : `<div class="empty">Dodaj pierwsze zadanie.</div>`;
+      document.getElementById('adminTasks').innerHTML = isAdmin() ? (allTasks.length ? allTasks.map(t=>taskCard(t,'admin')).join('') : `<div class="empty">Plan jest pusty.</div>`) : `<div class="empty">Planowanie jest dostępne tylko dla Administratora.</div>`;
+      document.getElementById('roomServiceTasks').innerHTML = todayTasks.length ? todayTasks.map(t=>taskCard(t,'room')).join('') : `<div class="empty">Na dzisiaj nie ma zaplanowanego Room Service.</div>`;
+      const upcoming = sortTasks(state.tasks.filter(t => taskDateObj(t) >= new Date())).slice(0,4);
+      document.getElementById('reminderList').innerHTML = upcoming.length ? upcoming.map(t=>{const a=getApartment(t.apartmentId);return `<div class="task-card"><strong>${t.date} • ${t.time}</strong><span class="note">${a.name} — ${a.location}</span><button class="btn small secondary" onclick="downloadICS('${t.id}')">Dodaj do kalendarza</button></div>`}).join('') : `<div class="empty">Brak nadchodzących przypomnień.</div>`;
+    }
+    function renderApartments(){
+      document.getElementById('apartmentsGrid').innerHTML = apartments.map(a => {
+        const count = state.tasks.filter(t=>t.apartmentId===a.id && t.status !== 'done').length;
+        return `<div class="card apartment-card span-4"><div><span class="tag">${a.location}</span><h3>${a.name}</h3><p>${a.tone}</p><p class="note">${escapeHTML(a.individual)}</p></div><div class="meta"><span class="tag">max ${a.max} osoby</span><span class="tag">${escapeHTML(a.towels)}</span><span class="tag">aktywnych: ${count}</span></div></div>`;
+      }).join('');
+    }
+    function applyApartmentDefaults(){
+      const a = getApartment(document.getElementById('apartment').value);
+      const guestsEl = document.getElementById('guests');
+      guestsEl.max = a.max;
+      if(!guestsEl.value || Number(guestsEl.value) > a.max) guestsEl.value = a.defaultGuests || a.max;
+      document.getElementById('bedding').value = a.bedding || '';
+      document.getElementById('towels').value = a.towels || '';
+      document.getElementById('apartmentHelp').textContent = `${a.name}: max ${a.max} osoby • ${a.individual}`;
+    }
+    function populateForm(){
+      const select = document.getElementById('apartment');
+      if(!select.dataset.ready){
+        select.innerHTML = apartments.map(a=>`<option value="${a.id}">${a.name} — ${a.location}</option>`).join('');
+        document.getElementById('date').value = todayISO();
+        select.addEventListener('change', applyApartmentDefaults);
+        select.dataset.ready = '1';
+        applyApartmentDefaults();
+      }
+    }
+    function setView(view){
+      view = allowedView(view);
+      document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id===view));
+      document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+      state.activeView = view; save();
+    }
+    document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>setView(btn.dataset.view)));
+    document.querySelectorAll('[data-open]').forEach(btn=>btn.addEventListener('click',()=>setView(btn.dataset.open)));
+
+    document.getElementById('taskForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if(!isAdmin()){ toast('Tylko Administrator może dodawać service plan'); return; }
+      const a = getApartment(apartment.value);
+      const safeGuests = Math.min(Math.max(Number(guests.value || a.defaultGuests || 1), 1), a.max);
+      const task = {id:crypto.randomUUID(), apartmentId:apartment.value, assigned:assigned.value.trim() || 'Room Service', date:date.value, time:time.value, checkout:checkout.value, checkin:checkin.value, guests:safeGuests, bedding:bedding.value.trim(), towels:towels.value.trim(), notes:notes.value.trim(), status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}};
+      state.tasks.push(task); save(); render();
+      toast('Service plan zapisany');
+      await notifyNow('Nowy service plan', `${getApartment(task.apartmentId).name} • ${task.date}, godz. ${task.time}`);
+      e.target.reset(); document.getElementById('date').value = todayISO(); document.getElementById('time').value = '11:00'; document.getElementById('checkout').value = '10:00'; document.getElementById('checkin').value = '15:00'; applyApartmentDefaults();
+    });
+
+    function renderChecklist(t){
+      let index = 0;
+      return checklistGroups.map(group => {
+        const items = group.items.map(item => {
+          const current = index++;
+          return `<label class="check-item"><input type="checkbox" ${t.done?.includes(current)?'checked':''} onchange="toggleCheck('${t.id}',${current},this.checked)"><span>${item}</span></label>`;
+        }).join('');
+        return `<div class="check-section"><div class="check-section-title">${group.section}</div>${items}</div>`;
+      }).join('');
+    }
+
+    window.setStatus = function(id,status){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      syncPhotoChecklist(t);
+      if(status==='done' && !requiredPhotoCount(t)){
+        openTask(id);
+        toast('Dodaj zdjęcia przed i po Room Service');
+        return;
+      }
+      t.status = status;
+      if(status==='done') t.done = checklist.map((_,i)=>i);
+      save(); render(); toast(statusText(status));
+    }
+    window.deleteTask = function(id){
+      if(!isAdmin()){ toast('Tylko Administrator może usuwać service plan'); return; }
+      if(!confirm('Usunąć ten service plan?')) return;
+      state.tasks = state.tasks.filter(t=>t.id!==id); save(); render(); toast('Usunięto');
+    }
+    window.openTask = function(id){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return; const a=getApartment(t.apartmentId);
+      modalTitle.textContent = `${a.name} — ${t.time}`;
+      modalSub.textContent = `${fmtDate(t.date)} • ${a.location} • ${statusText(t.status)}`;
+      modalBody.innerHTML = `<div class="task-card ${cardClass(t.status)}"><div class="meta"><span class="tag">Check-out ${t.checkout || '—'}</span><span class="tag">Check-in ${t.checkin || '—'}</span><span class="tag">${t.assigned}</span><span class="tag">Goście ${t.guests || a.defaultGuests}/${a.max}</span></div>${t.notes ? `<p class="note">${escapeHTML(t.notes)}</p>`:''}</div>
+        <div class="task-card"><strong>Standard przygotowania</strong><div class="meta"><span class="tag">Pościel: ${escapeHTML(t.bedding || a.bedding || '—')}</span><span class="tag">Ręczniki: ${escapeHTML(t.towels || a.towels || '—')}</span></div><p class="note">${escapeHTML(a.individual || '')}</p></div>
+        <h3>Quality checklist</h3>
+        <div class="checklist">${renderChecklist(t)}</div>
+        <div style="margin-top:16px"><label>Uwagi Room Service</label><textarea onchange="updateServiceNotes('${t.id}', this.value)" placeholder="Np. brak papieru, uszkodzona rzecz, uwagi po serwisie...">${escapeHTML(t.serviceNotes||'')}</textarea></div>
+        <div style="margin-top:12px"><label>Zdjęcia przed rozpoczęciem Room Service</label><input type="file" accept="image/*" multiple onchange="addPhotos('${t.id}', 'before', this.files)"><div class="photo-row">${(t.photosBefore||[]).map(photo=>`<img src="${photoSrc(photo)}" alt="Zdjęcie przed rozpoczęciem">`).join('')}</div></div>
+        <div style="margin-top:12px"><label>Zdjęcia po zakończeniu Room Service</label><input type="file" accept="image/*" multiple onchange="addPhotos('${t.id}', 'after', this.files)"><div class="photo-row">${(t.photosAfter||[]).map(photo=>`<img src="${photoSrc(photo)}" alt="Zdjęcie po zakończeniu">`).join('')}</div></div>
+        <p class="note">Aby zakończyć jako Gotowe, dodaj minimum jedno zdjęcie przed rozpoczęciem i minimum jedno zdjęcie po zakończeniu.</p>
+        <div class="task-card"><strong>Raport dla Administratora</strong><p class="note">Po zakończeniu wyślij raport przez WhatsApp na numer ${whatsappDisplay}. Aplikacja otworzy gotowy raport w WhatsAppie; zdjęcia przed i po dodaj w czacie jako załączniki z galerii telefonu.</p><button class="btn gold" onclick="sendWhatsAppReport('${t.id}')">Wyślij raport WhatsApp</button></div>
+        <div class="hero-actions"><button class="btn blue" onclick="setStatus('${t.id}','progress')">W trakcie</button><button class="btn ok" onclick="setStatus('${t.id}','done')">Zakończ jako gotowe</button><button class="btn danger" onclick="setStatus('${t.id}','problem')">Quality alert</button><button class="btn secondary" onclick="downloadICS('${t.id}')">Dodaj do kalendarza</button></div>`;
+      taskModal.classList.add('show');
+    }
+    window.toggleCheck = function(id,i,checked){ const t=state.tasks.find(x=>x.id===id); if(!t) return; t.done = t.done || []; if(checked && !t.done.includes(i)) t.done.push(i); if(!checked) t.done = t.done.filter(x=>x!==i); save(); render(); }
+    window.updateServiceNotes = function(id,value){ const t=state.tasks.find(x=>x.id===id); if(!t) return; t.serviceNotes=value; save(); }
+    window.addPhotos = function(id,type,files){
+      const t=state.tasks.find(x=>x.id===id); if(!t) return;
+      const key = type === 'before' ? 'photosBefore' : 'photosAfter';
+      [...files].slice(0,8).forEach(file=>{
+        const reader=new FileReader();
+        reader.onload=()=>{
+          t[key]=t[key]||[];
+          t[key].push({src:reader.result, name:file.name || `${type}-room-service.jpg`, type:file.type || dataUrlMime(reader.result) || 'image/jpeg'});
+          syncPhotoChecklist(t);
+          save(); openTask(id);
+          toast(type === 'before' ? 'Zdjęcie przed dodane' : 'Zdjęcie po dodane');
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function photoSrc(photo){ return typeof photo === 'string' ? photo : (photo?.src || ''); }
+    function dataUrlMime(dataUrl){
+      const match = String(dataUrl || '').match(/^data:([^;]+);base64,/);
+      return match ? match[1] : '';
+    }
+    function extensionFromMime(mime){
+      return ({'image/jpeg':'jpg','image/jpg':'jpg','image/png':'png','image/webp':'webp','image/heic':'heic','image/heif':'heif'})[String(mime || '').toLowerCase()] || 'jpg';
+    }
+    function dataUrlToFile(dataUrl, filename, fallbackType='image/jpeg'){
+      const parts = String(dataUrl || '').split(',');
+      const meta = parts[0] || '';
+      const base64 = parts[1] || '';
+      const type = dataUrlMime(dataUrl) || fallbackType;
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
+      return new File([bytes], filename, {type});
+    }
+    function buildReport(t){
+      const a = getApartment(t.apartmentId);
+      const checked = (t.done || []).map(i => checklist[i]).filter(Boolean);
+      const missing = checklist.filter((_,i) => !(t.done || []).includes(i));
+      return [
+        'Adago Stay — Room Service Report',
+        '',
+        `Apartament: ${a.name}`,
+        `Lokalizacja: ${a.location}`,
+        `Data: ${t.date}`,
+        `Godzina Room Service: ${t.time}`,
+        `Check-out: ${t.checkout || '-'}`,
+        `Check-in: ${t.checkin || '-'}`,
+        `Status: ${statusText(t.status)}`,
+        `Goście: ${t.guests || a.defaultGuests}/${a.max}`,
+        `Pościel: ${t.bedding || a.bedding || '-'}`,
+        `Ręczniki: ${t.towels || a.towels || '-'}`,
+        '',
+        'Instrukcje Administratora:',
+        t.notes || '-',
+        '',
+        'Uwagi Room Service:',
+        t.serviceNotes || '-',
+        '',
+        `Zdjęcia przed: ${(t.photosBefore || []).length}`,
+        `Zdjęcia po: ${(t.photosAfter || []).length}`,
+        '',
+        'Wykonane punkty checklisty:',
+        checked.length ? checked.map(x => `✓ ${x}`).join('\n') : '-',
+        '',
+        'Niewykonane / do sprawdzenia:',
+        missing.length ? missing.map(x => `• ${x}`).join('\n') : '-'
+      ].join('\n');
+    }
+    async function copyText(text){
+      try{ await navigator.clipboard.writeText(text); return true; }catch(e){ return false; }
+    }
+    function openWhatsAppReport(report){
+      const message = report + '\n\nZdjęcia: dodaj w WhatsAppie jako załączniki z galerii telefonu.';
+      window.location.href = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(message)}`;
+    }
+    window.sendWhatsAppReport = async function(id){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      const report = buildReport(t);
+      await copyText(report);
+      openWhatsAppReport(report);
+      toast(`Otwieram WhatsApp: ${whatsappDisplay}`);
+    }
+
+    closeModal.addEventListener('click',()=>taskModal.classList.remove('show'));
+    taskModal.addEventListener('click',e=>{if(e.target===taskModal) taskModal.classList.remove('show')});
+
+    document.getElementById('resetDemo').addEventListener('click',()=>{ if(!isAdmin()){ toast('Tylko Administrator'); return; } if(confirm('Przywrócić dane demo?')){ state.tasks=defaultTasks(); save(); render(); toast('Demo przywrócone'); }});
+    document.getElementById('exportData').addEventListener('click',()=>{
+      if(!isAdmin()){ toast('Tylko Administrator'); return; }
+      const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='adago-room-service-export.json'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    async function notifyNow(title, body){
+      if(!('Notification' in window)) return false;
+      if(Notification.permission === 'default') await Notification.requestPermission();
+      if(Notification.permission === 'granted') { new Notification(title,{body, icon:'icon.svg'}); return true; }
+      return false;
+    }
+    document.getElementById('enableNotifications').addEventListener('click', async()=>{ const ok = await notifyNow('Powiadomienia włączone', 'Adago Room Service może pokazywać przypomnienia.'); toast(ok ? 'Powiadomienia włączone' : 'Brak zgody na powiadomienia'); });
+    function checkReminders(){
+      const now = new Date();
+      let changed = false;
+      state.tasks.forEach(t=>{
+        if(t.status === 'done') return;
+        const due = taskDateObj(t); const mins = Math.round((due-now)/60000); const a=getApartment(t.apartmentId);
+        [[60,'1h'],[30,'30m'],[0,'now']].forEach(([m,key])=>{
+          if(mins <= m && mins > m-2 && !t.reminders?.[key]){
+            t.reminders = t.reminders || {}; t.reminders[key] = true; changed=true;
+            const text = key==='now' ? `Teraz: ${a.name}` : `Za ${m} min: ${a.name}, godz. ${t.time}`;
+            notifyNow('Room Service', text); toast(text);
+          }
+        });
+      });
+      if(changed) save();
+    }
+    setInterval(checkReminders, 60000); setTimeout(checkReminders, 1800);
+
+    window.downloadICS = function(id){
+      const t=state.tasks.find(x=>x.id===id); if(!t) return; const a=getApartment(t.apartmentId);
+      const start = new Date(`${t.date}T${t.time}:00`); const end = new Date(start.getTime()+90*60000);
+      const stamp = d => d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+      const body = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Adago Stay//Room Service//PL','BEGIN:VEVENT',`UID:${t.id}@adago-room-service`,`DTSTAMP:${stamp(new Date())}`,`DTSTART:${stamp(start)}`,`DTEND:${stamp(end)}`,`SUMMARY:Room Service — ${a.name}`,`DESCRIPTION:${escapeICS(t.notes || 'Service apartamentu')}. Goście: ${t.guests || '-'}/${a.max}. Pościel: ${escapeICS(t.bedding || a.bedding || '-')}. Ręczniki: ${escapeICS(t.towels || a.towels || '-')}. Check-in: ${t.checkin || '-'}. Check-out: ${t.checkout || '-'}.`,`LOCATION:${a.name}, ${a.location}`,'BEGIN:VALARM','TRIGGER:-PT30M','ACTION:DISPLAY',`DESCRIPTION:Za 30 minut Room Service — ${a.name}`,'END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+      const blob = new Blob([body],{type:'text/calendar'}); const url=URL.createObjectURL(blob); const link=document.createElement('a'); link.href=url; link.download=`room-service-${a.name}-${t.date}.ics`; link.click(); URL.revokeObjectURL(url);
+    }
+    function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+    function escapeICS(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
+
+    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; installBanner.classList.add('show'); });
+    installApp.addEventListener('click', async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBanner.classList.remove('show'); } });
+    if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{})); }
+    setupLogin();
+    if(currentUser){
+      applyAuthUI();
+      render();
+      setView(allowedView(state.activeView || (isAdmin() ? 'dashboard' : 'roomservice')));
+    }else{
+      showLogin();
+    }
+  </script>
+</body>
+</html>

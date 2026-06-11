@@ -1,0 +1,12 @@
+AUDYT 5 — Adago Stay — 2026-06-11
+
+Wprowadzone poprawki po dodatkowym audycie przedprodukcyjnym:
+
+1. Ujednolicono og:url z canonicalem na wszystkich stronach, w tym aliasach /pl/, /oaza/, /gold/ i /antracyt/.
+2. Ujednolicono top-level url w JSON-LD z canonicalem, żeby dane strukturalne nie wskazywały starych aliasów.
+3. Uporządkowano techniczne nazwy pól formularzy: apartment, check_in, check_out, guests, phone, name, email, message. Dzięki temu wiadomości z formularza i ewentualne integracje są czytelniejsze także dla wersji EN/DE/CZ/UA.
+4. Dodano minimalne hreflang self + x-default dla indeksowanych polskich landing page’y i wpisów blogowych, które nie mają pełnych odpowiedników językowych.
+5. Wykonano ponowną kontrolę: HTML, canonical/OG/JSON-LD, formularze, linki wewnętrzne, zasoby, sitemap, robots i mapa Google.
+
+Uwaga wdrożeniowa:
+Mapa Google korzysta z linku CID: https://www.google.com/maps?cid=9439642969662825551. Po publikacji warto kliknąć mapę na stronie kontaktowej i potwierdzić, że Google otwiera właściwą wizytówkę.

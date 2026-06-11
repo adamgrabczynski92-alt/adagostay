@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="128" fill="#1f1c18"/>
+  <circle cx="385" cy="125" r="90" fill="#b18a55" opacity=".35"/>
+  <text x="256" y="286" text-anchor="middle" font-family="Arial, sans-serif" font-size="132" font-weight="800" fill="#fffdf8" letter-spacing="8">AS</text>
+  <text x="256" y="344" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#d6b37c" letter-spacing="7">ROOM</text>
+</svg>

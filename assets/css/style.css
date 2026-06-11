@@ -841,3 +841,11 @@ body{font-feature-settings:"liga" 1,"kern" 1;-webkit-font-smoothing:antialiased;
 @media (max-width: 780px){
   .premium-home .section.intro-on-dark .reveal-head > div{padding:20px 18px;border-radius:22px}
 }
+
+
+/* Google Maps contact section */
+.map-section .reveal-head{margin-bottom:22px}
+.map-card{overflow:hidden;border-radius:28px;background:#fff;box-shadow:0 24px 70px rgba(20,16,10,.10);border:1px solid rgba(139,92,43,.14)}
+.map-card iframe{display:block;width:100%;min-height:420px;border:0}
+.map-actions{display:flex;justify-content:flex-end;padding:18px 20px;background:linear-gradient(180deg,#fffaf4,#f7efe5)}
+@media (max-width: 768px){.map-card{border-radius:22px}.map-card iframe{min-height:340px}.map-actions{justify-content:stretch}.map-actions .premium-button{width:100%;justify-content:center;text-align:center}}
