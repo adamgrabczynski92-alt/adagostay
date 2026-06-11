@@ -1,11 +1,11 @@
 {
-  "name": "Room Service AdagoStay",
+  "name": "AdagoStay Room Service",
   "short_name": "AdagoStay RS",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#fbf8f2",
-  "theme_color": "#1f1c18",
-  "description": "Panel Room Service AdagoStay — zadania, checklisty, zdjęcia i raport WhatsApp.",
+  "background_color": "#f6efe4",
+  "theme_color": "#15110b",
+  "description": "Panel AdagoStay Room Service — zadania, checklisty, zdjęcia, raport generowany i obsługę WhatsApp.",
   "icons": [
     {
       "src": "icon.svg",

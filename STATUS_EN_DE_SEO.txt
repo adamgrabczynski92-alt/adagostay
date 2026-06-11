@@ -1,7 +1,0 @@
-Wdrożone rozszerzenie SEO dla wersji EN i DE
-
-- dodano 10 nowych wpisów SEO w /en/blog/
-- dodano 10 nowych wpisów SEO w /de/blog/
-- zaktualizowano /en/blog/index.html i /de/blog/index.html
-- dodano sekcje linkujące na /en/ i /de/
-- zaktualizowano sitemap.xml

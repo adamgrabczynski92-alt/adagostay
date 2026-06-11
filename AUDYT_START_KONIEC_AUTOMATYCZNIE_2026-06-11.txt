@@ -1,0 +1,13 @@
+Dodano automatyczny Start/Koniec sprzątania i zgłaszanie problemów technicznych.
+
+Zmiany:
+- przycisk Start sprzątania zapisuje automatycznie datę i godzinę startu, bez pola edycji,
+- przed kliknięciem Start checklisty w widoku Beaty nie są rozwinięte,
+- po kliknięciu Start pokazuje się pełna checklista podzielona na strefy,
+- przycisk Koniec sprzątania / Gotowe zapisuje automatycznie godzinę zakończenia,
+- raport WhatsApp zawiera start i koniec jako zapisy automatyczne aplikacji,
+- dodano Zgłoś problem techniczny z wiadomością WhatsApp do Administratora,
+- problemy techniczne zapisują się w zadaniu i trafiają do raportu,
+- cache PWA podbity do v18-start-end-auto.
+
+Uwaga: WhatsApp pozwala użytkownikowi ręcznie edytować treść przed wysłaniem. Aplikacja nie ma technicznej możliwości zablokowania edycji tekstu w WhatsAppie, ale w samej aplikacji godziny nie są edytowalne i są generowane automatycznie.

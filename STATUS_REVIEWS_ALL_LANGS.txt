@@ -1,2 +1,0 @@
-Dodano sekcje opinii Booking na homepage i stronach apartamentow w jezykach: PL, EN, DE, CZ, UA.
-Paczka jest pelnym zamiennikiem 1:1 calej strony.

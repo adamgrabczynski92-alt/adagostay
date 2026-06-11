@@ -1,0 +1,10 @@
+AUDYT OAZA BEZ MŁYNKA WC — 2026-06-11
+
+Wprowadzone zmiany:
+- Oaza ustawiona jako apartament bez młynka WC (hasGrinder:false).
+- Gold i Antracyt pozostają apartamentami z młynkiem WC.
+- Checklista Oazy automatycznie nie pokazuje punktów: „Młynek WC działa poprawnie” oraz „Brak problemu z młynkiem WC”.
+- Zlecenie WhatsApp dla Oazy nie zawiera punktów checklisty dotyczących młynka WC.
+- Raport generowany dla Oazy pokazuje: „Młynek WC: Nie dotyczy”.
+- Lista zgłoszeń problemu technicznego dla Oazy nie proponuje opcji „Młynek WC”.
+- Service worker podbity do wersji cache v22-oaza-bez-mlynka.

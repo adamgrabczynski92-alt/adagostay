@@ -1,7 +1,0 @@
-Wdrożono końcowe poprawki konwersyjne na homepage'ach PL/EN/DE:
-- mocniejszy komunikat hero
-- CTA skupione na dostępności i cenie
-- mocniejszy akcent na rezerwację bez pośredników
-- sekcja dwóch lokalizacji oznaczona jako wybór lokalizacji
-- dodatkowe CTA pod sekcjami opinii
-- zachowana struktura Wałbrzych + Szczawno-Zdrój
