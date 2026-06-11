@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1f1c18" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Adago Stay — Room Service</title>
+  <title>Room Service AdagoStay</title>
+  <meta name="description" content="Prywatny panel Room Service AdagoStay — plan dnia, checklisty, zdjęcia i raport WhatsApp." />
+  <link rel="canonical" href="https://adagostay.pl/room-service/" />
   <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <style>
     :root{
       --ink:#1f1c18;
@@ -119,6 +122,10 @@
     textarea{min-height:96px;resize:vertical}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid .full{grid-column:1 / -1}
     .checklist{display:grid;gap:10px;margin-top:10px}
+    .checklist-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    .progress-bar{height:12px;border-radius:999px;background:var(--soft);border:1px solid var(--line);overflow:hidden;margin-top:8px}
+    .progress-fill{height:100%;background:linear-gradient(135deg,var(--gold),var(--gold-2));border-radius:999px;transition:width .2s ease}
+    .report-box{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;color:var(--muted);font-size:13px;line-height:1.45;max-height:240px;overflow:auto}
     .check-section{display:grid;gap:8px;border:1px solid rgba(227,216,200,.75);border-radius:18px;padding:12px;background:rgba(255,253,248,.62)}
     .check-section-title{font-weight:950;color:var(--ink);letter-spacing:-.01em;margin-bottom:2px}
     .check-item{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid var(--line);border-radius:16px;background:#fff}
@@ -161,8 +168,8 @@
   <div class="login-screen" id="loginScreen">
     <form class="login-card" id="loginForm" autocomplete="on">
       <div class="brand-mark login-mark">AS</div>
-      <p class="eyebrow">Adago Stay</p>
-      <h1>Room Service Control</h1>
+      <p class="eyebrow">Room Service AdagoStay</p>
+      <h1>Room Service AdagoStay</h1>
       <p class="lead">Zaloguj się, aby przejść do panelu operacyjnego apartamentów.</p>
       <div class="login-fields">
         <div><label for="loginUser">Login</label><input id="loginUser" type="text" placeholder="Wpisz login" autocomplete="username" required /></div>
@@ -178,7 +185,7 @@
     <div class="topbar-inner">
       <div class="brand">
         <div class="brand-mark">AS</div>
-        <div><small>Adago Stay</small><strong>Room Service Control</strong></div>
+        <div><small>AdagoStay</small><strong>Room Service AdagoStay</strong></div>
       </div>
       <div class="topbar-actions"><div class="pill" id="currentUserPill">Zalogowano</div><button class="btn small secondary" id="logoutBtn" type="button">Wyloguj</button><div class="pill" id="todayPill">Dzisiaj</div></div>
     </div>
@@ -188,8 +195,8 @@
     <section class="hero">
       <div class="hero-card">
         <p class="eyebrow">Premium operations panel</p>
-        <h1>Room Service dla apartamentów Adago Stay.</h1>
-        <p class="lead">Plan dnia, powiadomienia, checklista jakości, zdjęcia przed i po Room Service oraz szybkie zgłoszenia problemów — wszystko dla Oazy, Antracytu i Gold w jednym eleganckim panelu.</p>
+        <h1>Room Service AdagoStay</h1>
+        <p class="lead">Plan dnia, wiadomości WhatsApp do Beaty, checklista jakości, zdjęcia przed i po Room Service oraz szybkie zgłoszenia problemów — wszystko dla Oazy, Antracytu i Gold w jednym eleganckim panelu.</p>
         <div class="hero-actions">
           <button class="btn gold" data-open="admin">+ Dodaj service</button>
           <button class="btn secondary" id="enableNotifications">Włącz powiadomienia</button>
@@ -219,7 +226,7 @@
         <div class="card span-4">
           <div class="section-title"><div><h2>Najbliższe powiadomienia</h2><p>Przypomnienia działają w przeglądarce/PWA, a wydarzenie można dodać do kalendarza.</p></div></div>
           <div id="reminderList" class="task-list"></div>
-          <p class="note">Wersja bez serwera zapisuje dane na tym urządzeniu. Do prawdziwych pushy przy zamkniętym telefonie dodamy Firebase/Supabase.</p>
+          <p class="note">Wersja bez serwera zapisuje dane na tym urządzeniu. Zadania do Beaty wysyłasz przez przycisk WhatsApp z panelu Administratora.</p>
         </div>
         <div class="card span-12">
           <div class="section-title"><div><h2>Wszystkie zadania</h2><p>Pełna lista service planów.</p></div></div>
@@ -231,7 +238,7 @@
     <section id="roomservice" class="view">
       <div class="grid">
         <div class="card span-12">
-          <div class="section-title"><div><h2>Room Service — widok telefonu</h2><p>To jest ekran dla osoby wykonującej serwis apartamentu. Bez technicznego języka, tylko konkretne kroki.</p></div></div>
+          <div class="section-title"><div><h2>Room Service — widok telefonu</h2><p>To jest ekran dla Beaty: pokazuje aktywne zadania Room Service. Zadanie można otworzyć z linku WhatsApp, odhaczyć checklistę, dodać uwagi/zdjęcia i wysłać raport WhatsApp do Administratora.</p></div></div>
           <div id="roomServiceTasks" class="task-list"></div>
         </div>
       </div>
@@ -243,7 +250,8 @@
           <div class="section-title"><div><h2>Nowy service plan</h2><p>Ustaw apartament, dzień, godzinę i instrukcje.</p></div></div>
           <div class="form-grid">
             <div><label for="apartment">Apartament</label><select id="apartment" required></select></div>
-            <div><label for="assigned">Zespół</label><input id="assigned" value="Room Service" required /></div>
+            <div><label for="assigned">Zespół</label><input id="assigned" value="Beata" required /></div>
+            <div class="full"><label for="beataPhone">Telefon WhatsApp Beaty</label><input id="beataPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+48 792 607 695" /><p class="note">Wpisz numer Beaty raz. Aplikacja zapisze go lokalnie w panelu Administratora i użyje do wiadomości WhatsApp.</p></div>
             <div><label for="date">Data</label><input id="date" type="date" required /></div>
             <div><label for="time">Godzina service</label><input id="time" type="time" value="11:00" required /></div>
             <div><label for="checkout">Check-out</label><input id="checkout" type="time" value="10:00" /></div>
@@ -254,8 +262,8 @@
             <div class="full"><span class="tag" id="apartmentHelp">Standard apartamentu</span></div>
             <div class="full"><label for="notes">Instrukcje / uwagi</label><textarea id="notes" placeholder="Np. wymienić pościel, 4 ręczniki, sprawdzić ekspres..."></textarea></div>
           </div>
-          <div class="hero-actions"><button class="btn gold" type="submit">Zapisz i powiadom</button><button class="btn secondary" type="button" id="resetDemo">Przywróć demo</button></div>
-          <p class="note">Po zapisie aplikacja pokaże powiadomienie testowe i dopisze zadanie do planu. Każde zadanie można też pobrać jako plik kalendarza.</p>
+          <div class="hero-actions"><button class="btn gold" type="submit">Zapisz i wyślij pełną checklistę do Beaty</button><button class="btn secondary" type="button" id="resetDemo">Przywróć demo</button></div>
+          <p class="note">Po zapisie aplikacja dopisze zadanie do planu i otworzy WhatsApp z pełnym zleceniem dla Beaty. Wiadomość zawiera też link do aplikacji Room Service — po kliknięciu Beata może zaimportować zadanie, odhaczyć checklistę i wysłać raport WhatsApp do Administratora.</p>
         </form>
         <div class="card span-7">
           <div class="section-title"><div><h2>Plan operacyjny</h2><p>Podgląd tego, co widzisz jako właściciel/koordynator.</p></div></div>
@@ -283,7 +291,7 @@
     </div>
   </div>
 
-  <div class="install-banner" id="installBanner"><div><strong>Dodaj jako aplikację</strong><br><span class="note">Zapisz panel Room Service na ekranie telefonu.</span></div><button class="btn small gold" id="installApp">Dodaj</button></div>
+  <div class="install-banner" id="installBanner"><div><strong>Dodaj jako aplikację</strong><br><span class="note">Zapisz Room Service AdagoStay na ekranie telefonu.</span></div><button class="btn small gold" id="installApp">Dodaj</button></div>
   <div class="toast" id="toast">Gotowe</div>
 
   <script>
@@ -293,7 +301,39 @@
     };
     const authKey = 'adagoRoomService.auth.v1';
     const authSessionKey = 'adagoRoomService.auth.session.v1';
+    const settingsKey = 'adagoRoomService.settings.v1';
     let currentUser = null;
+    let settings = loadSettings();
+    function loadSettings(){
+      try{
+        return {beataPhone:'48792607695', ...(JSON.parse(localStorage.getItem(settingsKey)) || {})};
+      }catch(e){ return {beataPhone:'48792607695'}; }
+    }
+    function saveSettings(){
+      try{ localStorage.setItem(settingsKey, JSON.stringify(settings)); }catch(e){}
+    }
+    function normalizeWhatsAppPhone(value){
+      let digits = String(value || '').replace(/\D/g,'');
+      if(digits.length === 9) digits = '48' + digits;
+      return digits;
+    }
+    function displayWhatsAppPhone(value){
+      const digits = normalizeWhatsAppPhone(value);
+      if(!digits) return '';
+      if(digits.startsWith('48') && digits.length === 11){
+        return `+48 ${digits.slice(2,5)} ${digits.slice(5,8)} ${digits.slice(8)}`;
+      }
+      return '+' + digits;
+    }
+    function saveBeataPhoneFromInput(){
+      const input = document.getElementById('beataPhone');
+      if(!input) return '';
+      const normalized = normalizeWhatsAppPhone(input.value);
+      settings.beataPhone = normalized;
+      input.value = displayWhatsAppPhone(normalized);
+      saveSettings();
+      return normalized;
+    }
     function normalizeLogin(value){
       const typed = String(value || '').trim();
       return Object.keys(users).find(name => name.toLowerCase() === typed.toLowerCase()) || typed;
@@ -339,6 +379,12 @@
           applyAuthUI();
           render();
           setView(allowedView(state.activeView || (isAdmin() ? 'dashboard' : 'roomservice')));
+          if(pendingIncomingTaskId){
+            setView('roomservice');
+            const taskIdToOpen = pendingIncomingTaskId;
+            pendingIncomingTaskId = null;
+            setTimeout(() => openTask(taskIdToOpen), 250);
+          }
           toast('Zalogowano');
         }else{
           document.getElementById('loginError').style.display = 'block';
@@ -420,19 +466,21 @@
     const storeKey = 'adagoRoomService.v2';
     const whatsappPhone = '48786207695';
     const whatsappDisplay = '+48 786 207 695';
-    const today = new Date();
     const pad = n => String(n).padStart(2,'0');
-    const todayISO = () => `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
-    const tomorrowISO = () => { const d = new Date(); d.setDate(d.getDate()+1); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+    const dateToISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const todayISO = () => dateToISO(new Date());
+    const tomorrowISO = () => { const d = new Date(); d.setDate(d.getDate()+1); return dateToISO(d); };
+    const uid = () => (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function' ? globalThis.crypto.randomUUID() : `task-${Date.now()}-${Math.random().toString(16).slice(2)}`);
     const fmtDate = iso => new Date(iso + 'T12:00:00').toLocaleDateString('pl-PL',{weekday:'long', day:'2-digit', month:'2-digit', year:'numeric'});
     const getApartment = id => apartments.find(a => a.id === id) || apartments[0];
     const defaultTasks = () => [
-      {id:crypto.randomUUID(), apartmentId:'oaza', assigned:'Room Service', date:todayISO(), time:'11:00', checkout:'10:00', checkin:'15:00', guests:4, bedding:'1 komplet podwójny + komplet na sofę', towels:'4 duże + 4 małe', notes:'Przygotować dla 4 osób. Sprawdzić zapas kawy/herbaty i komplet tekstyliów.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}},
-      {id:crypto.randomUUID(), apartmentId:'antracyt', assigned:'Room Service', date:todayISO(), time:'13:00', checkout:'11:00', checkin:'16:00', guests:2, bedding:'1 komplet podwójny', towels:'2 duże + 2 małe', notes:'Stały standard max 2 osoby. Quality check łazienki i kuchni.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}},
-      {id:crypto.randomUUID(), apartmentId:'gold', assigned:'Room Service', date:tomorrowISO(), time:'11:00', checkout:'10:00', checkin:'15:00', guests:4, bedding:'1 komplet podwójny + komplet na sofę', towels:'4 duże + 4 małe', notes:'Przygotować dla 4 osób. Sprawdzić zapach, salon i instrukcję self check-in.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}}
+      {id:uid(), apartmentId:'oaza', assigned:'Room Service', date:todayISO(), time:'11:00', checkout:'10:00', checkin:'15:00', guests:4, bedding:'1 komplet podwójny + komplet na sofę', towels:'4 duże + 4 małe', notes:'Przygotować dla 4 osób. Sprawdzić zapas kawy/herbaty i komplet tekstyliów.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}},
+      {id:uid(), apartmentId:'antracyt', assigned:'Room Service', date:todayISO(), time:'13:00', checkout:'11:00', checkin:'16:00', guests:2, bedding:'1 komplet podwójny', towels:'2 duże + 2 małe', notes:'Stały standard max 2 osoby. Quality check łazienki i kuchni.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}},
+      {id:uid(), apartmentId:'gold', assigned:'Room Service', date:tomorrowISO(), time:'11:00', checkout:'10:00', checkin:'15:00', guests:4, bedding:'1 komplet podwójny + komplet na sofę', towels:'4 duże + 4 małe', notes:'Przygotować dla 4 osób. Sprawdzić zapach, salon i instrukcję self check-in.', status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}}
     ];
     let state = load();
     let deferredPrompt;
+    let pendingIncomingTaskId = null;
 
     function load(){
       try{
@@ -442,7 +490,7 @@
           return parsed;
         }
       }catch(e){}
-      return {tasks:defaultTasks(), activeView:'dashboard'};
+      return {tasks:[], activeView:'dashboard'};
     }
     function normalizePhotoList(list, prefix){
       return (Array.isArray(list) ? list : []).map((photo, index) => {
@@ -490,8 +538,8 @@
       const a = getApartment(t.apartmentId);
       const progress = checklist.length ? Math.round(((t.done||[]).length/checklist.length)*100) : 0;
       const buttons = mode === 'room'
-        ? `<button class="btn small blue" onclick="setStatus('${t.id}','progress')">Rozpocznij</button><button class="btn small ok" onclick="openTask('${t.id}')">Checklist</button><button class="btn small danger" onclick="setStatus('${t.id}','problem')">Problem</button>`
-        : `<button class="btn small secondary" onclick="openTask('${t.id}')">Podgląd</button><button class="btn small ok" onclick="setStatus('${t.id}','done')">Gotowe</button><button class="btn small ghost" onclick="downloadICS('${t.id}')">Kalendarz</button><button class="btn small danger" onclick="deleteTask('${t.id}')">Usuń</button>`;
+        ? `<button class="btn small blue" onclick="setStatus('${t.id}','progress')">Rozpocznij</button><button class="btn small ok" onclick="openTask('${t.id}')">Otwórz checklistę</button><button class="btn small gold" onclick="sendWhatsAppReport('${t.id}')">Raport WhatsApp</button><button class="btn small danger" onclick="setStatus('${t.id}','problem')">Problem</button>`
+        : `<button class="btn small secondary" onclick="openTask('${t.id}')">Podgląd</button><button class="btn small gold" onclick="sendWhatsAppAssignment('${t.id}')">WhatsApp do Beaty</button><button class="btn small ok" onclick="setStatus('${t.id}','done')">Gotowe</button><button class="btn small ghost" onclick="downloadICS('${t.id}')">Kalendarz</button><button class="btn small danger" onclick="deleteTask('${t.id}')">Usuń</button>`;
       return `<article class="task-card ${cardClass(t.status)}">
         <div class="task-head">
           <div class="timebox"><small>${t.date.slice(5)}</small>${t.time}</div>
@@ -520,7 +568,8 @@
       document.getElementById('todayTasks').innerHTML = todayTasks.length ? todayTasks.map(t=>taskCard(t, mainMode)).join('') : `<div class="empty">Brak service planów na dzisiaj.</div>`;
       document.getElementById('allTasks').innerHTML = allTasks.length ? allTasks.map(t=>taskCard(t, mainMode)).join('') : `<div class="empty">Dodaj pierwsze zadanie.</div>`;
       document.getElementById('adminTasks').innerHTML = isAdmin() ? (allTasks.length ? allTasks.map(t=>taskCard(t,'admin')).join('') : `<div class="empty">Plan jest pusty.</div>`) : `<div class="empty">Planowanie jest dostępne tylko dla Administratora.</div>`;
-      document.getElementById('roomServiceTasks').innerHTML = todayTasks.length ? todayTasks.map(t=>taskCard(t,'room')).join('') : `<div class="empty">Na dzisiaj nie ma zaplanowanego Room Service.</div>`;
+      const roomTasks = sortTasks(state.tasks.filter(t => t.status !== 'done'));
+      document.getElementById('roomServiceTasks').innerHTML = roomTasks.length ? roomTasks.map(t=>taskCard(t,'room')).join('') : `<div class="empty">Brak aktywnych zadań Room Service.</div>`;
       const upcoming = sortTasks(state.tasks.filter(t => taskDateObj(t) >= new Date())).slice(0,4);
       document.getElementById('reminderList').innerHTML = upcoming.length ? upcoming.map(t=>{const a=getApartment(t.apartmentId);return `<div class="task-card"><strong>${t.date} • ${t.time}</strong><span class="note">${a.name} — ${a.location}</span><button class="btn small secondary" onclick="downloadICS('${t.id}')">Dodaj do kalendarza</button></div>`}).join('') : `<div class="empty">Brak nadchodzących przypomnień.</div>`;
     }
@@ -548,6 +597,14 @@
         select.dataset.ready = '1';
         applyApartmentDefaults();
       }
+      const beataPhoneInput = document.getElementById('beataPhone');
+      if(beataPhoneInput && !beataPhoneInput.dataset.ready){
+        if(!settings.beataPhone){ settings.beataPhone = '48792607695'; saveSettings(); }
+        beataPhoneInput.value = displayWhatsAppPhone(settings.beataPhone || '48792607695');
+        beataPhoneInput.addEventListener('change', saveBeataPhoneFromInput);
+        beataPhoneInput.addEventListener('blur', saveBeataPhoneFromInput);
+        beataPhoneInput.dataset.ready = '1';
+      }
     }
     function setView(view){
       view = allowedView(view);
@@ -562,12 +619,14 @@
       e.preventDefault();
       if(!isAdmin()){ toast('Tylko Administrator może dodawać service plan'); return; }
       const a = getApartment(apartment.value);
+      const beataPhone = saveBeataPhoneFromInput();
       const safeGuests = Math.min(Math.max(Number(guests.value || a.defaultGuests || 1), 1), a.max);
-      const task = {id:crypto.randomUUID(), apartmentId:apartment.value, assigned:assigned.value.trim() || 'Room Service', date:date.value, time:time.value, checkout:checkout.value, checkin:checkin.value, guests:safeGuests, bedding:bedding.value.trim(), towels:towels.value.trim(), notes:notes.value.trim(), status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}};
+      const task = {id:uid(), apartmentId:apartment.value, assigned:assigned.value.trim() || 'Beata', date:date.value, time:time.value, checkout:checkout.value, checkin:checkin.value, guests:safeGuests, bedding:bedding.value.trim(), towels:towels.value.trim(), notes:notes.value.trim(), status:'todo', done:[], photosBefore:[], photosAfter:[], serviceNotes:'', reminders:{}};
       state.tasks.push(task); save(); render();
-      toast('Service plan zapisany');
+      toast(beataPhone ? 'Service plan zapisany — otwieram WhatsApp z pełną checklistą' : 'Service plan zapisany — uzupełnij telefon Beaty, aby wysłać WhatsApp');
       await notifyNow('Nowy service plan', `${getApartment(task.apartmentId).name} • ${task.date}, godz. ${task.time}`);
-      e.target.reset(); document.getElementById('date').value = todayISO(); document.getElementById('time').value = '11:00'; document.getElementById('checkout').value = '10:00'; document.getElementById('checkin').value = '15:00'; applyApartmentDefaults();
+      e.target.reset(); document.getElementById('assigned').value = 'Beata'; document.getElementById('beataPhone').value = displayWhatsAppPhone(settings.beataPhone || '48792607695'); document.getElementById('date').value = todayISO(); document.getElementById('time').value = '11:00'; document.getElementById('checkout').value = '10:00'; document.getElementById('checkin').value = '15:00'; applyApartmentDefaults();
+      if(beataPhone) setTimeout(() => openWhatsAppAssignment(task), 350);
     });
 
     function renderChecklist(t){
@@ -581,17 +640,42 @@
       }).join('');
     }
 
+    function checklistProgress(t){
+      const doneCount = (t.done || []).filter(i => checklist[i]).length;
+      const total = checklist.length;
+      const percent = total ? Math.round((doneCount / total) * 100) : 0;
+      return {doneCount, total, percent, complete: total > 0 && doneCount === total};
+    }
     window.setStatus = function(id,status){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
       syncPhotoChecklist(t);
-      if(status==='done' && !requiredPhotoCount(t)){
-        openTask(id);
-        toast('Dodaj zdjęcia przed i po Room Service');
-        return;
+      if(status==='done'){
+        const progress = checklistProgress(t);
+        if(!requiredPhotoCount(t)){
+          openTask(id);
+          toast('Dodaj zdjęcia przed i po Room Service');
+          return;
+        }
+        if(!progress.complete){
+          openTask(id);
+          toast(`Checklist nie jest kompletna: ${progress.doneCount}/${progress.total}`);
+          return;
+        }
       }
       t.status = status;
-      if(status==='done') t.done = checklist.map((_,i)=>i);
       save(); render(); toast(statusText(status));
+    }
+    window.markAllChecks = function(id, checked){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      t.done = checked ? checklist.map((_,i)=>i) : [];
+      syncPhotoChecklist(t);
+      save(); render(); openTask(id);
+      toast(checked ? 'Zaznaczono całą checklistę' : 'Odznaczono checklistę');
+    }
+    window.copyWhatsAppReport = async function(id){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      const ok = await copyText(buildReport(t));
+      toast(ok ? 'Raport skopiowany' : 'Nie udało się skopiować raportu');
     }
     window.deleteTask = function(id){
       if(!isAdmin()){ toast('Tylko Administrator może usuwać service plan'); return; }
@@ -600,35 +684,87 @@
     }
     window.openTask = function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return; const a=getApartment(t.apartmentId);
+      syncPhotoChecklist(t);
+      const progress = checklistProgress(t);
       modalTitle.textContent = `${a.name} — ${t.time}`;
-      modalSub.textContent = `${fmtDate(t.date)} • ${a.location} • ${statusText(t.status)}`;
-      modalBody.innerHTML = `<div class="task-card ${cardClass(t.status)}"><div class="meta"><span class="tag">Check-out ${t.checkout || '—'}</span><span class="tag">Check-in ${t.checkin || '—'}</span><span class="tag">${t.assigned}</span><span class="tag">Goście ${t.guests || a.defaultGuests}/${a.max}</span></div>${t.notes ? `<p class="note">${escapeHTML(t.notes)}</p>`:''}</div>
+      modalSub.textContent = `${fmtDate(t.date)} • ${a.location} • ${statusText(t.status)} • Checklist ${progress.doneCount}/${progress.total}`;
+      modalBody.innerHTML = `<div class="task-card ${cardClass(t.status)}"><div class="meta"><span class="tag">Check-out ${t.checkout || '—'}</span><span class="tag">Check-in ${t.checkin || '—'}</span><span class="tag">${escapeHTML(t.assigned || 'Beata')}</span><span class="tag">Goście ${t.guests || a.defaultGuests}/${a.max}</span><span class="tag status ${statusClass(t.status)}">${statusText(t.status)}</span></div>${t.notes ? `<p class="note">${escapeHTML(t.notes)}</p>`:''}</div>
+        <div class="task-card"><strong>Postęp checklisty: ${progress.doneCount}/${progress.total} — ${progress.percent}%</strong><div class="progress-bar" aria-label="Postęp checklisty"><div class="progress-fill" style="width:${progress.percent}%"></div></div><p class="note">Odhacz każdy punkt po wykonaniu. Raport WhatsApp pokaże pełną checklistę: wykonane i niewykonane punkty.</p></div>
         <div class="task-card"><strong>Standard przygotowania</strong><div class="meta"><span class="tag">Pościel: ${escapeHTML(t.bedding || a.bedding || '—')}</span><span class="tag">Ręczniki: ${escapeHTML(t.towels || a.towels || '—')}</span></div><p class="note">${escapeHTML(a.individual || '')}</p></div>
         <h3>Quality checklist</h3>
+        <div class="checklist-toolbar"><button class="btn small secondary" onclick="markAllChecks('${t.id}', true)">Zaznacz wszystko</button><button class="btn small secondary" onclick="markAllChecks('${t.id}', false)">Odznacz wszystko</button><button class="btn small ghost" onclick="copyWhatsAppReport('${t.id}')">Kopiuj raport</button></div>
         <div class="checklist">${renderChecklist(t)}</div>
         <div style="margin-top:16px"><label>Uwagi Room Service</label><textarea onchange="updateServiceNotes('${t.id}', this.value)" placeholder="Np. brak papieru, uszkodzona rzecz, uwagi po serwisie...">${escapeHTML(t.serviceNotes||'')}</textarea></div>
         <div style="margin-top:12px"><label>Zdjęcia przed rozpoczęciem Room Service</label><input type="file" accept="image/*" multiple onchange="addPhotos('${t.id}', 'before', this.files)"><div class="photo-row">${(t.photosBefore||[]).map(photo=>`<img src="${photoSrc(photo)}" alt="Zdjęcie przed rozpoczęciem">`).join('')}</div></div>
         <div style="margin-top:12px"><label>Zdjęcia po zakończeniu Room Service</label><input type="file" accept="image/*" multiple onchange="addPhotos('${t.id}', 'after', this.files)"><div class="photo-row">${(t.photosAfter||[]).map(photo=>`<img src="${photoSrc(photo)}" alt="Zdjęcie po zakończeniu">`).join('')}</div></div>
-        <p class="note">Aby zakończyć jako Gotowe, dodaj minimum jedno zdjęcie przed rozpoczęciem i minimum jedno zdjęcie po zakończeniu.</p>
-        <div class="task-card"><strong>Raport dla Administratora</strong><p class="note">Po zakończeniu wyślij raport przez WhatsApp na numer ${whatsappDisplay}. Aplikacja otworzy gotowy raport w WhatsAppie; zdjęcia przed i po dodaj w czacie jako załączniki z galerii telefonu.</p><button class="btn gold" onclick="sendWhatsAppReport('${t.id}')">Wyślij raport WhatsApp</button></div>
+        <p class="note">Aby zakończyć jako Gotowe, dodaj minimum jedno zdjęcie przed rozpoczęciem, minimum jedno zdjęcie po zakończeniu i odhacz całą checklistę. Raport WhatsApp wyśle tekst i liczbę zdjęć. Same zdjęcia wyślij przyciskiem „Udostępnij zdjęcia” albo dodaj je ręcznie jako załączniki w WhatsAppie.</p>
+        ${isAdmin() ? `<div class="task-card"><strong>Wiadomość dla Beaty</strong><p class="note">Wyślij Beacie gotowe zlecenie WhatsApp z linkiem do aplikacji, datą, godziną, apartamentem i pełną checklistą.</p><button class="btn gold" onclick="sendWhatsAppAssignment('${t.id}')">Wyślij WhatsApp do Beaty</button></div>` : ''}
+        <div class="task-card"><strong>Raport dla Administratora</strong><p class="note">Po zakończeniu wyślij raport przez WhatsApp na numer ${whatsappDisplay}. Potem możesz udostępnić zdjęcia przez systemowe udostępnianie telefonu i wybrać WhatsApp.</p><div class="hero-actions"><button class="btn gold" onclick="sendWhatsAppReport('${t.id}')">Wyślij raport WhatsApp</button><button class="btn secondary" onclick="shareTaskPhotos('${t.id}')">Udostępnij zdjęcia</button></div></div>
         <div class="hero-actions"><button class="btn blue" onclick="setStatus('${t.id}','progress')">W trakcie</button><button class="btn ok" onclick="setStatus('${t.id}','done')">Zakończ jako gotowe</button><button class="btn danger" onclick="setStatus('${t.id}','problem')">Quality alert</button><button class="btn secondary" onclick="downloadICS('${t.id}')">Dodaj do kalendarza</button></div>`;
+      save();
       taskModal.classList.add('show');
     }
     window.toggleCheck = function(id,i,checked){ const t=state.tasks.find(x=>x.id===id); if(!t) return; t.done = t.done || []; if(checked && !t.done.includes(i)) t.done.push(i); if(!checked) t.done = t.done.filter(x=>x!==i); save(); render(); }
     window.updateServiceNotes = function(id,value){ const t=state.tasks.find(x=>x.id===id); if(!t) return; t.serviceNotes=value; save(); }
-    window.addPhotos = function(id,type,files){
+    window.addPhotos = async function(id,type,files){
       const t=state.tasks.find(x=>x.id===id); if(!t) return;
       const key = type === 'before' ? 'photosBefore' : 'photosAfter';
-      [...files].slice(0,8).forEach(file=>{
-        const reader=new FileReader();
-        reader.onload=()=>{
+      const selected = [...files].slice(0,8);
+      if(!selected.length) return;
+      toast('Przygotowuję zdjęcia...');
+      for(const file of selected){
+        try{
+          const compressed = await imageFileToCompressedDataUrl(file);
           t[key]=t[key]||[];
-          t[key].push({src:reader.result, name:file.name || `${type}-room-service.jpg`, type:file.type || dataUrlMime(reader.result) || 'image/jpeg'});
-          syncPhotoChecklist(t);
-          save(); openTask(id);
-          toast(type === 'before' ? 'Zdjęcie przed dodane' : 'Zdjęcie po dodane');
-        };
+          t[key].push({
+            src: compressed.src,
+            name: file.name || `${type}-room-service.jpg`,
+            type: compressed.type || 'image/jpeg',
+            originalSize: file.size || 0,
+            storedSize: compressed.size || 0
+          });
+        }catch(e){
+          const fallback = await fileToDataUrl(file);
+          t[key]=t[key]||[];
+          t[key].push({src:fallback, name:file.name || `${type}-room-service.jpg`, type:file.type || dataUrlMime(fallback) || 'image/jpeg'});
+        }
+      }
+      syncPhotoChecklist(t);
+      save();
+      openTask(id);
+      toast(type === 'before' ? 'Zdjęcia przed dodane' : 'Zdjęcia po dodane');
+    }
+
+    function fileToDataUrl(file){
+      return new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=reject;
         reader.readAsDataURL(file);
+      });
+    }
+    function imageFileToCompressedDataUrl(file, maxSize=1600, quality=.78){
+      return new Promise((resolve,reject)=>{
+        if(!file || !String(file.type || '').startsWith('image/')){ reject(new Error('To nie jest obraz')); return; }
+        const img = new Image();
+        const objectUrl = URL.createObjectURL(file);
+        img.onload = () => {
+          try{
+            const scale = Math.min(1, maxSize / Math.max(img.width || maxSize, img.height || maxSize));
+            const width = Math.max(1, Math.round((img.width || maxSize) * scale));
+            const height = Math.max(1, Math.round((img.height || maxSize) * scale));
+            const canvas = document.createElement('canvas');
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const type = 'image/jpeg';
+            const src = canvas.toDataURL(type, quality);
+            URL.revokeObjectURL(objectUrl);
+            resolve({src, type, size:Math.round((src.length * 3) / 4)});
+          }catch(e){ URL.revokeObjectURL(objectUrl); reject(e); }
+        };
+        img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Nie udało się odczytać zdjęcia')); };
+        img.src = objectUrl;
       });
     }
 
@@ -650,20 +786,186 @@
       for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
       return new File([bytes], filename, {type});
     }
+    function base64UrlEncodeUnicode(value){
+      const utf8 = encodeURIComponent(JSON.stringify(value)).replace(/%([0-9A-F]{2})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+      return btoa(utf8).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    }
+    function base64UrlDecodeUnicode(value){
+      const normalized = String(value || '').replace(/-/g,'+').replace(/_/g,'/');
+      const padded = normalized + '='.repeat((4 - normalized.length % 4) % 4);
+      const binary = atob(padded);
+      const escaped = Array.from(binary).map(ch => '%' + ch.charCodeAt(0).toString(16).padStart(2,'0')).join('');
+      return JSON.parse(decodeURIComponent(escaped));
+    }
+    function taskForShare(t){
+      const a = getApartment(t.apartmentId);
+      return {
+        id:t.id, apartmentId:t.apartmentId, assigned:t.assigned || 'Beata', date:t.date, time:t.time, checkout:t.checkout || '', checkin:t.checkin || '',
+        guests:t.guests || a.defaultGuests || 1, bedding:t.bedding || a.bedding || '', towels:t.towels || a.towels || '', notes:t.notes || '',
+        status:t.status === 'done' ? 'todo' : (t.status || 'todo'), done:Array.isArray(t.done) ? t.done : [], photosBefore:[], photosAfter:[], serviceNotes:t.serviceNotes || '', reminders:{}
+      };
+    }
+    function roomServiceTaskLink(t){
+      const encoded = base64UrlEncodeUnicode(taskForShare(t));
+      return `https://adagostay.pl/room-service/#task=${encoded}`;
+    }
+    function importTaskFromPayload(payload){
+      const incoming = normalizeTask({...payload, importedFromWhatsApp:true});
+      if(!incoming.id || !incoming.apartmentId || !incoming.date || !incoming.time) return null;
+      const index = state.tasks.findIndex(x => x.id === incoming.id);
+      if(index >= 0){
+        state.tasks[index] = {...state.tasks[index], ...incoming, photosBefore:state.tasks[index].photosBefore || [], photosAfter:state.tasks[index].photosAfter || [], done:state.tasks[index].done || incoming.done || [], serviceNotes:state.tasks[index].serviceNotes || incoming.serviceNotes || ''};
+      }else{
+        state.tasks.push(incoming);
+      }
+      save();
+      return incoming.id;
+    }
+    function handleIncomingTaskLink(){
+      try{
+        const hashParams = new URLSearchParams(String(window.location.hash || '').replace(/^#/,''));
+        const queryParams = new URLSearchParams(window.location.search || '');
+        const encoded = hashParams.get('task') || queryParams.get('task');
+        if(!encoded) return null;
+        const payload = base64UrlDecodeUnicode(encoded);
+        const id = importTaskFromPayload(payload);
+        if(id){
+          pendingIncomingTaskId = id;
+          history.replaceState(null, document.title, window.location.pathname);
+          toast('Zadanie z WhatsApp zostało dodane do aplikacji');
+        }
+        return id;
+      }catch(e){
+        toast('Nie udało się odczytać zadania z linku WhatsApp');
+        return null;
+      }
+    }
+
+    function buildAssignmentChecklist(){
+      return checklistGroups.flatMap(group => [
+        '',
+        group.section.toUpperCase(),
+        ...group.items.map(item => `☐ ${item}`)
+      ]).join('\n');
+    }
+    function buildAssignmentMessage(t){
+      const a = getApartment(t.apartmentId);
+      const checklistText = buildAssignmentChecklist();
+      return [
+        `SPRZĄTANIE — ${a.name}`,
+        '',
+        'Cześć Beata,',
+        '',
+        `Masz zaplanowane sprzątanie apartamentu ${a.name}.`,
+        '',
+        'SZCZEGÓŁY ZLECENIA',
+        `Apartament: ${a.name}`,
+        `Lokalizacja: ${a.location}`,
+        `Data: ${fmtDate(t.date)}`,
+        `Godzina sprzątania: ${t.time}`,
+        `Check-out: ${t.checkout || '-'}`,
+        `Check-in: ${t.checkin || '-'}`,
+        `Goście: ${t.guests || a.defaultGuests}/${a.max}`,
+        `Pościel: ${t.bedding || a.bedding || '-'}`,
+        `Ręczniki: ${t.towels || a.towels || '-'}`,
+        '',
+        'STANDARD APARTAMENTU',
+        a.individual || '-',
+        '',
+        'UWAGI OD ADMINISTRATORA',
+        t.notes || '-',
+        '',
+        'LINK DO APLIKACJI DLA BEATY',
+        roomServiceTaskLink(t),
+        '',
+        'Instrukcja: kliknij link, zaloguj się jako Beata, odhacz checklistę w aplikacji i po sprzątaniu wyślij raport WhatsApp do Administratora.',
+        '',
+        'PEŁNA CHECKLISTA SPRZĄTANIA',
+        checklistText,
+        '',
+        'Po wykonaniu proszę zaznaczyć checklistę w aplikacji Room Service, dodać zdjęcia przed i po oraz wysłać raport WhatsApp.'
+      ].join('\n');
+    }
+    function openWhatsAppAssignment(t){
+      const phone = saveBeataPhoneFromInput();
+      if(!phone){
+        setView('admin');
+        toast('Uzupełnij telefon WhatsApp Beaty');
+        document.getElementById('beataPhone')?.focus();
+        return false;
+      }
+      const message = buildAssignmentMessage(t);
+      copyText(message);
+      window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      toast(`Otwieram WhatsApp do Beaty: ${displayWhatsAppPhone(phone)}`);
+      return true;
+    }
+    window.sendWhatsAppAssignment = function(id){
+      if(!isAdmin()){ toast('Tylko Administrator może wysłać zadanie'); return; }
+      const t = state.tasks.find(x=>x.id===id);
+      if(!t) return;
+      openWhatsAppAssignment(t);
+    }
+
+    function taskPhotoFiles(t){
+      const a = getApartment(t.apartmentId);
+      const photos = [
+        ...(t.photosBefore || []).map((photo, i) => ({photo, label:`${a.name}-przed-${i+1}`})),
+        ...(t.photosAfter || []).map((photo, i) => ({photo, label:`${a.name}-po-${i+1}`}))
+      ];
+      return photos.map(({photo, label}) => {
+        const src = photoSrc(photo);
+        const type = (photo && photo.type) || dataUrlMime(src) || 'image/jpeg';
+        return dataUrlToFile(src, `${label}.${extensionFromMime(type)}`, type);
+      });
+    }
+    window.shareTaskPhotos = async function(id){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      const files = taskPhotoFiles(t);
+      if(!files.length){ toast('Brak zdjęć do udostępnienia'); return; }
+      const a = getApartment(t.apartmentId);
+      const shareData = {
+        title:`Zdjęcia Room Service — ${a.name}`,
+        text:`Zdjęcia Room Service — ${a.name}, ${fmtDate(t.date)}, ${t.time}`,
+        files
+      };
+      try{
+        if(navigator.canShare && navigator.canShare({files}) && navigator.share){
+          await navigator.share(shareData);
+          toast('Zdjęcia przekazane do udostępnienia');
+        }else{
+          toast('Ten telefon/przeglądarka nie obsługuje automatycznego udostępniania zdjęć. Dodaj zdjęcia ręcznie w WhatsAppie.');
+        }
+      }catch(e){
+        toast('Udostępnianie zdjęć przerwane lub niedostępne');
+      }
+    }
+
+    function buildChecklistReport(t){
+      let index = 0;
+      return checklistGroups.map(group => {
+        const lines = group.items.map(item => {
+          const checked = (t.done || []).includes(index++);
+          return `${checked ? '✓' : '☐'} ${item}`;
+        });
+        return [group.section.toUpperCase(), ...lines].join('\n');
+      }).join('\n\n');
+    }
     function buildReport(t){
       const a = getApartment(t.apartmentId);
-      const checked = (t.done || []).map(i => checklist[i]).filter(Boolean);
+      const progress = checklistProgress(t);
       const missing = checklist.filter((_,i) => !(t.done || []).includes(i));
       return [
-        'Adago Stay — Room Service Report',
+        `RAPORT SPRZĄTANIA — ${a.name}`,
         '',
         `Apartament: ${a.name}`,
         `Lokalizacja: ${a.location}`,
-        `Data: ${t.date}`,
+        `Data: ${fmtDate(t.date)}`,
         `Godzina Room Service: ${t.time}`,
         `Check-out: ${t.checkout || '-'}`,
         `Check-in: ${t.checkin || '-'}`,
         `Status: ${statusText(t.status)}`,
+        `Checklist: ${progress.doneCount}/${progress.total} — ${progress.percent}%`,
         `Goście: ${t.guests || a.defaultGuests}/${a.max}`,
         `Pościel: ${t.bedding || a.bedding || '-'}`,
         `Ręczniki: ${t.towels || a.towels || '-'}`,
@@ -677,22 +979,24 @@
         `Zdjęcia przed: ${(t.photosBefore || []).length}`,
         `Zdjęcia po: ${(t.photosAfter || []).length}`,
         '',
-        'Wykonane punkty checklisty:',
-        checked.length ? checked.map(x => `✓ ${x}`).join('\n') : '-',
+        'PEŁNA CHECKLISTA:',
+        buildChecklistReport(t),
         '',
         'Niewykonane / do sprawdzenia:',
-        missing.length ? missing.map(x => `• ${x}`).join('\n') : '-'
+        missing.length ? missing.map(x => `• ${x}`).join('\n') : 'Brak — wszystko odhaczone.'
       ].join('\n');
     }
     async function copyText(text){
       try{ await navigator.clipboard.writeText(text); return true; }catch(e){ return false; }
     }
     function openWhatsAppReport(report){
-      const message = report + '\n\nZdjęcia: dodaj w WhatsAppie jako załączniki z galerii telefonu.';
+      const message = report + '\n\nZdjęcia: raport zawiera liczbę zdjęć. Same zdjęcia wyślij osobno przyciskiem „Udostępnij zdjęcia” albo dodaj je ręcznie jako załączniki w WhatsAppie.';
       window.location.href = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(message)}`;
     }
     window.sendWhatsAppReport = async function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      syncPhotoChecklist(t);
+      save();
       const report = buildReport(t);
       await copyText(report);
       openWhatsAppReport(report);
@@ -715,7 +1019,7 @@
       if(Notification.permission === 'granted') { new Notification(title,{body, icon:'icon.svg'}); return true; }
       return false;
     }
-    document.getElementById('enableNotifications').addEventListener('click', async()=>{ const ok = await notifyNow('Powiadomienia włączone', 'Adago Room Service może pokazywać przypomnienia.'); toast(ok ? 'Powiadomienia włączone' : 'Brak zgody na powiadomienia'); });
+    document.getElementById('enableNotifications').addEventListener('click', async()=>{ const ok = await notifyNow('Powiadomienia włączone', 'Room Service AdagoStay może pokazywać przypomnienia.'); toast(ok ? 'Powiadomienia włączone' : 'Brak zgody na powiadomienia'); });
     function checkReminders(){
       const now = new Date();
       let changed = false;
@@ -738,7 +1042,7 @@
       const t=state.tasks.find(x=>x.id===id); if(!t) return; const a=getApartment(t.apartmentId);
       const start = new Date(`${t.date}T${t.time}:00`); const end = new Date(start.getTime()+90*60000);
       const stamp = d => d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
-      const body = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Adago Stay//Room Service//PL','BEGIN:VEVENT',`UID:${t.id}@adago-room-service`,`DTSTAMP:${stamp(new Date())}`,`DTSTART:${stamp(start)}`,`DTEND:${stamp(end)}`,`SUMMARY:Room Service — ${a.name}`,`DESCRIPTION:${escapeICS(t.notes || 'Service apartamentu')}. Goście: ${t.guests || '-'}/${a.max}. Pościel: ${escapeICS(t.bedding || a.bedding || '-')}. Ręczniki: ${escapeICS(t.towels || a.towels || '-')}. Check-in: ${t.checkin || '-'}. Check-out: ${t.checkout || '-'}.`,`LOCATION:${a.name}, ${a.location}`,'BEGIN:VALARM','TRIGGER:-PT30M','ACTION:DISPLAY',`DESCRIPTION:Za 30 minut Room Service — ${a.name}`,'END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+      const body = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//AdagoStay//Room Service AdagoStay//PL','BEGIN:VEVENT',`UID:${t.id}@adago-room-service`,`DTSTAMP:${stamp(new Date())}`,`DTSTART:${stamp(start)}`,`DTEND:${stamp(end)}`,`SUMMARY:Room Service — ${a.name}`,`DESCRIPTION:${escapeICS(t.notes || 'Service apartamentu')}. Goście: ${t.guests || '-'}/${a.max}. Pościel: ${escapeICS(t.bedding || a.bedding || '-')}. Ręczniki: ${escapeICS(t.towels || a.towels || '-')}. Check-in: ${t.checkin || '-'}. Check-out: ${t.checkout || '-'}.`,`LOCATION:${a.name}, ${a.location}`,'BEGIN:VALARM','TRIGGER:-PT30M','ACTION:DISPLAY',`DESCRIPTION:Za 30 minut Room Service — ${a.name}`,'END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
       const blob = new Blob([body],{type:'text/calendar'}); const url=URL.createObjectURL(blob); const link=document.createElement('a'); link.href=url; link.download=`room-service-${a.name}-${t.date}.ics`; link.click(); URL.revokeObjectURL(url);
     }
     function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
@@ -747,11 +1051,17 @@
     window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; installBanner.classList.add('show'); });
     installApp.addEventListener('click', async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBanner.classList.remove('show'); } });
     if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{})); }
+    handleIncomingTaskLink();
     setupLogin();
     if(currentUser){
       applyAuthUI();
       render();
-      setView(allowedView(state.activeView || (isAdmin() ? 'dashboard' : 'roomservice')));
+      setView(pendingIncomingTaskId ? 'roomservice' : allowedView(state.activeView || (isAdmin() ? 'dashboard' : 'roomservice')));
+      if(pendingIncomingTaskId){
+        const taskIdToOpen = pendingIncomingTaskId;
+        pendingIncomingTaskId = null;
+        setTimeout(() => openTask(taskIdToOpen), 250);
+      }
     }else{
       showLogin();
     }

@@ -1,0 +1,9 @@
+AUDYT NAZWY ROOM SERVICE — 2026-06-11
+
+Wprowadzono wymagane nazewnictwo aplikacji:
+- główna nazwa: Room Service AdagoStay
+- usunięto poprzednią opisową nazwę aplikacji
+- poprawiono title, meta description, H1, topbar, ekran logowania, manifest PWA i tekst instalacji.
+- podbito cache service workera do v11.
+
+Numer WhatsApp Beaty pozostaje: +48 792 607 695 / 48792607695.

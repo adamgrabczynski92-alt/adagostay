@@ -1,0 +1,17 @@
+Aktualizacja WhatsApp dla Room Service
+
+Wiadomość wysyłana z panelu Administratora do Beaty zawiera teraz pełne zlecenie sprzątania dla wybranego apartamentu.
+
+W wiadomości są:
+- nazwa apartamentu, np. Oaza, Antracyt albo Gold,
+- lokalizacja,
+- data i godzina sprzątania,
+- check-out i check-in,
+- liczba gości,
+- pościel i ręczniki,
+- indywidualny standard apartamentu,
+- uwagi Administratora,
+- pełna checklista sprzątania pogrupowana sekcjami.
+
+Działanie:
+Administrator wybiera apartament i uzupełnia plan. Po kliknięciu zapisu aplikacja otwiera WhatsApp z gotową wiadomością do Beaty. Administrator musi kliknąć Wyślij w WhatsApp, ponieważ zwykła strona internetowa nie może wysyłać wiadomości automatycznie w tle.

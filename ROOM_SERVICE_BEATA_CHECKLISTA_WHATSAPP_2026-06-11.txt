@@ -1,0 +1,10 @@
+Zmiany dla przepływu Beata → checklista → WhatsApp:
+
+1. Wiadomość WhatsApp od Administratora zawiera link do aplikacji Room Service z zakodowanym zadaniem.
+2. Po kliknięciu linku zadanie importuje się lokalnie w aplikacji Beaty.
+3. Beata może otworzyć zadanie, zaznaczać każdy punkt checklisty, dodać uwagi i zdjęcia przed/po.
+4. Dodano przyciski: Zaznacz wszystko, Odznacz wszystko, Kopiuj raport, Wyślij raport WhatsApp.
+5. Raport WhatsApp do Administratora zawiera pełną checklistę z oznaczeniami ✓ / ☐ oraz postęp procentowy.
+6. Status Gotowe wymaga pełnej checklisty oraz zdjęcia przed i po.
+
+Uwaga: bez Firebase/backendu zadania nie synchronizują się automatycznie między urządzeniami. Przekazanie zadania do telefonu Beaty odbywa się przez link w wiadomości WhatsApp.
