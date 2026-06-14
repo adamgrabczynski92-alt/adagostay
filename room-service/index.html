@@ -169,9 +169,9 @@
     .apartment-card p{margin:0;color:var(--muted);position:relative;z-index:1}
     .apartment-card .tag{position:relative;z-index:1}
     .empty{padding:22px;border:1px dashed var(--line);border-radius:20px;color:var(--muted);background:rgba(255,253,248,.55);text-align:center}
-    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:13px 16px;border-radius:999px;box-shadow:0 18px 50px rgba(0,0,0,.25);z-index:90;font-weight:800;transition:.25s ease;max-width:calc(100vw - 34px);text-align:center}.toast.show{transform:translateX(-50%) translateY(0)}
-    .install-banner{display:none;position:fixed;left:16px;right:16px;bottom:16px;background:#fffdf8;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:15px;z-index:80;gap:12px;align-items:center;justify-content:space-between}.install-banner.show{display:flex}
-    .modal{position:fixed;inset:0;background:rgba(31,28,24,.42);display:none;place-items:center;padding:16px;z-index:70}.modal.show{display:grid}.modal-card{width:min(720px,100%);max-height:90vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);padding:20px}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:13px 16px;border-radius:999px;box-shadow:0 18px 50px rgba(0,0,0,.25);z-index:300;font-weight:800;transition:.25s ease;max-width:calc(100vw - 34px);text-align:center}.toast.show{transform:translateX(-50%) translateY(0)}
+    .install-banner{display:none;position:fixed;left:16px;right:16px;bottom:16px;background:#fffdf8;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:15px;z-index:80;gap:12px;align-items:center;justify-content:space-between}.install-banner.show{display:flex}.install-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}@media(max-width:560px){.install-banner{align-items:flex-start;flex-direction:column}.install-actions{width:100%}.install-actions .btn{flex:1;justify-content:center}}
+    .modal{position:fixed;inset:0;background:rgba(31,28,24,.42);display:none;place-items:center;padding:16px;z-index:260}.modal.show{display:grid}.modal-card{width:min(720px,100%);max-height:90vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);padding:20px}
     .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(760px,calc(100vw - 20px));background:rgba(31,28,24,.93);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px;display:none;gap:6px;z-index:60;box-shadow:0 22px 60px rgba(31,28,24,.32)}
     .bottom-nav button{flex:1;border:0;border-radius:999px;background:transparent;color:rgba(255,255,255,.76);padding:10px 7px;font-size:12px;font-weight:850}.bottom-nav button.active{background:#fff;color:var(--ink)}
     .note{font-size:13px;color:var(--muted);line-height:1.55;margin:10px 0 0}.desktop-only{display:block}.mobile-only{display:none}
@@ -386,7 +386,7 @@
       <div class="hero-card">
         <p class="eyebrow">Premium operations panel</p>
         <h1>AdagoStay Room Service</h1>
-        <p class="lead">Plan dnia, wiadomości WhatsApp do Beaty, checklista jakości, automatyczne rozpoczęcie i zakończenie sprzątania, statusy, braki do uzupełnienia, zdjęcia przed i po Room Service oraz szybkie zgłoszenia problemów — wszystko dla Oazy, Antracytu i Gold w jednym eleganckim panelu.</p>
+        <p class="lead">Plan dnia, wiadomości WhatsApp do Beaty, checklista jakości, rozpoczęcie i zakończenie sprzątania, statusy, braki do uzupełnienia, zdjęcia przed i po Room Service oraz szybkie zgłoszenia problemów — wszystko dla Oazy, Antracytu i Gold w jednym eleganckim panelu.</p>
         <div class="hero-actions">
           <button class="btn gold" data-open="admin">+ Dodaj Room Service</button>
           <button class="btn secondary" id="enableNotifications">Włącz powiadomienia</button>
@@ -482,7 +482,7 @@
     </div>
   </div>
 
-  <div class="install-banner" id="installBanner"><div><strong>Dodaj jako aplikację</strong><br><span class="note">Zapisz AdagoStay Room Service na ekranie telefonu.</span></div><button class="btn small gold" id="installApp">Dodaj</button></div>
+  <div class="install-banner" id="installBanner" aria-live="polite"><div><strong>Zainstaluj aplikację na telefonie</strong><br><span class="note" id="installHint">Dodaj AdagoStay Room Service do ekranu telefonu.</span></div><div class="install-actions"><button class="btn small gold" id="installApp" type="button">Zainstaluj</button><button class="btn small secondary" id="installLater" type="button">Później</button></div></div>
   <div class="toast" id="toast">Gotowe</div>
 
   <script>
@@ -552,6 +552,8 @@
       document.getElementById('loginPassword').value = '';
       document.getElementById('rememberLogin').checked = false;
       document.getElementById('loginError').style.display = 'none';
+      const banner = document.getElementById('installBanner');
+      if(banner) banner.classList.remove('show');
     }
     function setupLogin(){
       currentUser = getSavedUser();
@@ -569,6 +571,7 @@
           document.getElementById('loginError').style.display = 'none';
           applyAuthUI();
           render();
+          setTimeout(()=>showInstallBanner(), 250);
           setView(allowedView(state.activeView || (isAdmin() ? 'dashboard' : 'roomservice')));
           if(pendingIncomingTaskId){
             setView('roomservice');
@@ -736,6 +739,61 @@
     let state = load();
     let deferredPrompt;
     let pendingIncomingTaskId = null;
+    const installPromptSessionKey = 'adagoRoomService.installPrompt.dismissed.session.v1';
+
+    function isStandaloneMode(){
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+    function isIOSDevice(){ return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
+    function isAndroidDevice(){ return /Android/i.test(navigator.userAgent); }
+    function updateInstallHint(){
+      const hint = document.getElementById('installHint');
+      if(!hint) return;
+      if(isIOSDevice()){
+        hint.textContent = 'iPhone: w Safari kliknij Udostępnij, potem „Do ekranu początkowego”.';
+      }else if(isAndroidDevice()){
+        hint.textContent = deferredPrompt ? 'Kliknij „Zainstaluj”, aby dodać ikonę aplikacji.' : 'Kliknij „Zainstaluj”. Jeśli okno się nie pojawi, użyj menu Chrome ⋮ → „Dodaj do ekranu głównego”.';
+      }else{
+        hint.textContent = 'Na telefonie otwórz tę stronę i dodaj ją do ekranu głównego.';
+      }
+    }
+    function shouldShowInstallBanner(){
+      return !isStandaloneMode() && !document.body.classList.contains('auth-locked') && !sessionStorage.getItem(installPromptSessionKey);
+    }
+    function showInstallBanner(force=false){
+      const banner = document.getElementById('installBanner');
+      if(!banner) return;
+      updateInstallHint();
+      if(force || shouldShowInstallBanner()) banner.classList.add('show');
+      else banner.classList.remove('show');
+    }
+    function showInstallHelp(){
+      modalTitle.textContent = 'Zainstaluj aplikację na telefonie';
+      modalSub.textContent = 'Dodaj ikonę AdagoStay Room Service do ekranu telefonu.';
+      const steps = isIOSDevice()
+        ? ['Otwórz aplikację w Safari.', 'Kliknij ikonę udostępniania.', 'Wybierz „Do ekranu początkowego”.', 'Kliknij „Dodaj”.']
+        : isAndroidDevice()
+          ? ['Otwórz aplikację w Chrome.', 'Kliknij menu ⋮ w prawym górnym rogu.', 'Wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”.', 'Potwierdź dodanie ikony.']
+          : ['Otwórz ten adres na telefonie.', 'W przeglądarce wybierz opcję dodania strony do ekranu głównego.', 'Po dodaniu uruchamiaj Room Service z ikony.'];
+      modalBody.innerHTML = `<div class="task-card"><strong>Instrukcja instalacji</strong><ol class="note" style="margin-left:18px">${steps.map(step=>`<li>${escapeHTML(step)}</li>`).join('')}</ol><p class="note">Po instalacji aplikacja będzie otwierać się jak zwykła aplikacja z ekranu telefonu.</p></div>`;
+      taskModal.classList.add('show');
+    }
+    async function installAppOnPhone(){
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        if(choice?.outcome === 'accepted'){
+          const banner = document.getElementById('installBanner');
+          if(banner) banner.classList.remove('show');
+          toast('Aplikacja zainstalowana');
+        }else{
+          showInstallBanner();
+        }
+      }else{
+        showInstallHelp();
+      }
+    }
 
     function load(){
       try{
@@ -824,12 +882,21 @@
       document.getElementById('statProblems').textContent = state.tasks.filter(t=>t.status==='problem').length;
     }
     function timeAuditHTML(t){
-      return `<div class="time-audit"><div class="stamp"><span>Rozpoczęcie sprzątania</span><strong>${fmtDateTime(t.startedAt)}</strong></div><div class="stamp"><span>Zakończenie sprzątania</span><strong>${fmtDateTime(t.endedAt)}</strong></div></div><p class="inline-room-note">Godziny są zapisywane automatycznie przez aplikację po kliknięciu przycisków Rozpoczęcie/Zakończenie. W aplikacji nie ma pola do ręcznej edycji czasu.</p>`;
+      if(!t.startedAt && !t.endedAt) return '';
+      return `<div class="time-audit"><div class="stamp"><span>Rozpoczęcie sprzątania</span><strong>${fmtDateTime(t.startedAt)}</strong></div><div class="stamp"><span>Zakończenie sprzątania</span><strong>${fmtDateTime(t.endedAt)}</strong></div></div>`;
     }
     function technicalIssuesHTML(t){
       const issues = Array.isArray(t.technicalIssues) ? t.technicalIssues : [];
       if(!issues.length) return '';
       return `<div class="task-card"><strong>Zgłoszone problemy techniczne</strong><div class="problem-list">${issues.map(issue=>`<div class="problem-chip">${escapeHTML(fmtDateTime(issue.time))}: ${escapeHTML(issue.text)}</div>`).join('')}</div></div>`;
+    }
+    function beforePhotosReady(t){ return photoBeforeCount(t) > 0; }
+    function afterPhotosReady(t){ return photoAfterCount(t) > 0; }
+    function beforePhotoGateHTML(t){
+      return `<div class="start-gate photo-gate"><strong>Udostępnij zdjęcia obiektu przed sprzątaniem</strong><p class="note">Otwórz WhatsApp do Administratora ${whatsappDisplay}, dodaj zdjęcia obiektu przed sprzątaniem i wyślij. Dopiero po tym kroku pojawi się checklista zadań.</p><div class="hero-actions"><button class="btn blue" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed sprzątaniem</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button></div><div class="meta" style="margin-top:10px"><span class="tag">Zdjęcia przed: ${photoBeforeCount(t)}</span></div></div>`;
+    }
+    function afterPhotoGateHTML(t){
+      return `<div class="task-card photo-gate"><strong>Przed raportem udostępnij zdjęcia po sprzątaniu</strong><p class="note">Po zakończeniu zadań otwórz WhatsApp do Administratora ${whatsappDisplay}, dodaj zdjęcia po sprzątaniu i wyślij. Po tym kroku możesz kliknąć „Zakończenie sprzątania / Gotowe”, a aplikacja wygeneruje i wyśle raport.</p><div class="hero-actions"><button class="btn blue" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po sprzątaniu</button></div><div class="meta" style="margin-top:10px"><span class="tag">Zdjęcia po: ${photoAfterCount(t)}</span></div></div>`;
     }
     function roomInlinePanel(t, context='room'){
       const a = getApartment(t.apartmentId);
@@ -839,9 +906,16 @@
       const summary = qualitySummary(t);
       if(!t.startedAt){
         return `<div class="inline-room-panel">
-          <div class="start-gate"><strong>Najpierw rozpocznij sprzątanie</strong><p class="inline-room-note">Po kliknięciu aplikacja sama zapisze aktualną godzinę rozpoczęcia i pokaże pełną checklistę podzieloną na strefy. Godzina rozpoczęcia nie jest edytowalna w aplikacji.</p><div class="hero-actions"><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn small secondary" onclick="openTask('${t.id}')">Szczegóły</button></div></div>
+          <div class="start-gate"><strong>Najpierw rozpocznij sprzątanie</strong><p class="inline-room-note">Po kliknięciu pojawi się krok: „Udostępnij zdjęcia obiektu przed sprzątaniem”. Checklista pokaże się dopiero po udostępnieniu zdjęć przed.</p><div class="hero-actions"><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn small secondary" onclick="openTask('${t.id}')">Szczegóły</button></div></div>
           ${timeAuditHTML(t)}
           ${technicalIssuesHTML(t)}
+        </div>`;
+      }
+      if(!beforePhotosReady(t)){
+        return `<div class="inline-room-panel">
+          ${timeAuditHTML(t)}
+          ${technicalIssuesHTML(t)}
+          ${beforePhotoGateHTML(t)}
         </div>`;
       }
       return `<div class="inline-room-panel">
@@ -854,8 +928,9 @@
         <div class="inline-room-checklist"><div class="checklist">${renderChecklist(t, 'inline')}</div></div>
         <div><label>Uwagi Room Service</label><textarea onchange="updateServiceNotes('${t.id}', this.value)" placeholder="Np. uwagi po serwisie, informacja dla Administratora...">${escapeHTML(t.serviceNotes||'')}</textarea></div>
         <div class="missing-field"><label>Braki / do uzupełnienia</label><textarea onchange="updateMissingItems('${t.id}', this.value)" placeholder="Np. papier, kapsułki, mydło, ręczniki, worki, żarówka, usterka młynka WC...">${escapeHTML(t.missingItems||'')}</textarea><p class="note">Jeśli to pole jest uzupełnione, raport oznaczy apartament jako wymagający sprawdzenia.</p></div>
-        <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Przyciski otwierają WhatsApp bezpośrednio do Administratora ${whatsappDisplay}. Zdjęcia Beata wybiera i dodaje już w rozmowie WhatsApp.</p><div class="share-photo-grid"><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed: WhatsApp otwarty ${photoBeforeCount(t)}×</span><span class="tag">Po: WhatsApp otwarty ${photoAfterCount(t)}×</span></div></div>
-        <div class="hero-actions"><button class="btn ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania / Gotowe</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button></div>
+        <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Zdjęcia przed odblokowują checklistę, a zdjęcia po odblokowują wysłanie raportu. Przyciski otwierają WhatsApp bezpośrednio do Administratora ${whatsappDisplay}; zdjęcia trzeba dodać w rozmowie WhatsApp.</p><div class="share-photo-grid"><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed: ${photoBeforeCount(t)}</span><span class="tag">Po: ${photoAfterCount(t)}</span></div></div>
+        ${!afterPhotosReady(t) ? afterPhotoGateHTML(t) : ''}
+        <div class="hero-actions"><button class="btn ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania / Gotowe</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button>${afterPhotosReady(t) ? `<button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button>` : ''}</div>
       </div>`;
     }
 
@@ -865,8 +940,15 @@
       syncPhotoChecklist(t);
       const progressData = checklistProgress(t);
       const progress = progressData.percent;
+      const roomButtons = !t.startedAt
+        ? `<button class="btn small blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button><button class="btn small danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem</button>`
+        : (!beforePhotosReady(t)
+          ? `<button class="btn small blue" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Zdjęcia przed</button><button class="btn small danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem</button>`
+          : (!afterPhotosReady(t)
+            ? `<button class="btn small blue" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Zdjęcia po</button><button class="btn small ok" onclick="finishCleaning('${t.id}')">Zakończenie</button><button class="btn small danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem</button>`
+            : `<button class="btn small ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania</button><button class="btn small gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button><button class="btn small danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem</button>`));
       const buttons = mode === 'room'
-        ? (!t.startedAt ? `<button class="btn small blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button><button class="btn small danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem</button>` : `<button class="btn small ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania</button><button class="btn small gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button><button class="btn small danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem</button>`)
+        ? roomButtons
         : `<button class="btn small secondary" onclick="openTask('${t.id}')">Podgląd</button><button class="btn small gold" onclick="sendWhatsAppAssignment('${t.id}')">WhatsApp do Beaty</button><button class="btn small ok" onclick="setStatus('${t.id}','done')">Gotowe</button><button class="btn small ghost" onclick="downloadICS('${t.id}')">Kalendarz</button><button class="btn small danger" onclick="deleteTask('${t.id}')">Usuń</button>`;
       return `<article class="task-card ${cardClass(t.status)}">
         <div class="task-head">
@@ -1010,8 +1092,9 @@
       syncPhotoChecklist(t);
       const progress = checklistProgress(t);
       if(!t.startedAt) return {ok:false, block:true, message:'Najpierw kliknij „Rozpoczęcie sprzątania”'};
+      if(!beforePhotosReady(t)) return {ok:false, block:true, message:'Najpierw udostępnij zdjęcia obiektu przed sprzątaniem'};
+      if(!afterPhotosReady(t)) return {ok:false, block:true, message:'Najpierw udostępnij zdjęcia po sprzątaniu'};
       const issues = [];
-      if(!requiredPhotoCount(t)) issues.push('zdjęcia przed/po nie są potwierdzone');
       if(!progress.complete) issues.push(`checklista ${progress.doneCount}/${progress.total}`);
       if(hasMissingItems(t)) issues.push('wpisane braki do uzupełnienia');
       if(Array.isArray(t.technicalIssues) && t.technicalIssues.length) issues.push('zgłoszony problem techniczny');
@@ -1024,19 +1107,21 @@
       if(t.status === 'todo') t.status = 'progress';
       t.endedAt = '';
       save(); render();
-      toast(`Rozpoczęcie sprzątania zapisane automatycznie: ${fmtTimeOnly(t.startedAt)}`);
+      if(taskModal.classList.contains('show')) openTask(id);
+      toast('Rozpoczęto sprzątanie — udostępnij zdjęcia obiektu przed sprzątaniem.');
     }
     window.finishCleaning = function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
       const validation = completeCleaningValidation(t);
       if(validation.block){
         toast(validation.message);
+        if(taskModal.classList.contains('show')) openTask(id);
         return;
       }
       if(!t.endedAt) t.endedAt = autoStamp();
       t.status = validation.ok ? 'done' : 'problem';
       save(); render();
-      toast(`Zakończenie sprzątania zapisane automatycznie: ${fmtTimeOnly(t.endedAt)}. Generuję Raport i otwieram WhatsApp.`);
+      toast('Zakończenie sprzątania. Generuję Raport i otwieram WhatsApp.');
       autoGenerateReportAndWhatsApp(id);
     }
     window.reportTechnicalIssue = function(id){
@@ -1127,19 +1212,21 @@ ${idx+1}. ${label}`).join(''), '');
         <div class="task-card ${cardClass(t.status)}"><div class="meta"><span class="tag">Check-out ${t.checkout || '—'}</span><span class="tag">Check-in ${t.checkin || '—'}</span><span class="tag">${escapeHTML(t.assigned || 'Beata')}</span><span class="tag">Goście ${t.guests || a.defaultGuests}/${a.max}</span><span class="tag status ${statusClass(t.status)}">${statusText(t.status)}</span></div>${t.notes ? `<p class="note">${escapeHTML(t.notes)}</p>`:''}</div>
         ${timeAuditHTML(t)}
         ${technicalIssuesHTML(t)}
-        ${!t.startedAt ? `<div class="start-gate"><strong>Najpierw rozpocznij sprzątanie</strong><p class="note">Po kliknięciu aplikacja automatycznie zapisze godzinę rozpoczęcia i pokaże checklistę w strefach.</p><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button></div>` : ''}
-        ${t.startedAt ? `<div class="task-card"><strong>Postęp checklisty: ${progress.doneCount}/${progress.total} — ${progress.percent}%</strong><div class="progress-bar" aria-label="Postęp checklisty"><div class="progress-fill" style="width:${progress.percent}%"></div></div><p class="note">Odhacz każdy punkt po wykonaniu. Raport pokaże pełną checklistę: wykonane i niewykonane punkty.</p></div>` : ''}
+        ${!t.startedAt ? `<div class="start-gate"><strong>Najpierw rozpocznij sprzątanie</strong><p class="note">Po kliknięciu pojawi się krok: „Udostępnij zdjęcia obiektu przed sprzątaniem”. Checklista pokaże się dopiero po udostępnieniu zdjęć przed.</p><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button></div>` : ''}
+        ${t.startedAt && !beforePhotosReady(t) ? beforePhotoGateHTML(t) : ''}
+        ${t.startedAt && beforePhotosReady(t) ? `<div class="task-card"><strong>Postęp checklisty: ${progress.doneCount}/${progress.total} — ${progress.percent}%</strong><div class="progress-bar" aria-label="Postęp checklisty"><div class="progress-fill" style="width:${progress.percent}%"></div></div><p class="note">Odhacz każdy punkt po wykonaniu. Raport pokaże pełną checklistę: wykonane i niewykonane punkty.</p></div>` : ''}
         <div class="task-card"><strong>Standard przygotowania</strong><div class="meta"><span class="tag">Pościel: ${escapeHTML(t.bedding || a.bedding || '—')}</span><span class="tag">Ręczniki: ${escapeHTML(t.towels || a.towels || '—')}</span></div><p class="note">${escapeHTML(a.individual || '')}</p></div>
-        ${t.startedAt ? `<h3>Checklista jakości</h3>
+        ${t.startedAt && beforePhotosReady(t) ? `<h3>Checklista jakości</h3>
         <div class="checklist-toolbar"><button class="btn small secondary" onclick="markAllChecks('${t.id}', true)">Zaznacz wszystko</button><button class="btn small secondary" onclick="markAllChecks('${t.id}', false)">Odznacz wszystko</button></div>
         <div class="checklist">${renderChecklist(t)}</div>
         <div style="margin-top:16px"><label>Uwagi Room Service</label><textarea onchange="updateServiceNotes('${t.id}', this.value)" placeholder="Np. uwagi po serwisie, informacja dla Administratora...">${escapeHTML(t.serviceNotes||'')}</textarea></div>
         <div class="missing-field" style="margin-top:12px"><label>Braki / do uzupełnienia</label><textarea onchange="updateMissingItems('${t.id}', this.value)" placeholder="Np. papier, kapsułki, mydło, ręczniki, worki, żarówka, usterka młynka WC...">${escapeHTML(t.missingItems||'')}</textarea><p class="note">Jeśli to pole jest uzupełnione, raport oznaczy apartament jako wymagający sprawdzenia.</p></div>
-        <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Przyciski otwierają WhatsApp bezpośrednio do Administratora ${whatsappDisplay}. Zdjęcia Beata wybiera i dodaje już w rozmowie WhatsApp.</p><div class="share-photo-grid"><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed: WhatsApp otwarty ${photoBeforeCount(t)}×</span><span class="tag">Po: WhatsApp otwarty ${photoAfterCount(t)}×</span></div></div>
-        <p class="note">Po kliknięciu „Zakończenie sprzątania / Gotowe” aplikacja automatycznie zapisze godzinę zakończenia, wygeneruje Raport i otworzy WhatsApp do Administratora. Jeśli zdjęcia albo punkty checklisty nie są kompletne, raport oznaczy Alert jakości.</p>` : `<div class="task-card"><strong>Checklista ukryta do rozpoczęcia</strong><p class="note">Pełna checklista w strefach pojawi się dopiero po kliknięciu „Rozpoczęcie sprzątania”.</p></div>`}
+        <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Zdjęcia przed odblokowują checklistę, a zdjęcia po odblokowują wygenerowanie i wysłanie raportu. Przyciski otwierają WhatsApp bezpośrednio do Administratora ${whatsappDisplay}; zdjęcia trzeba dodać w rozmowie WhatsApp.</p><div class="share-photo-grid"><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed: ${photoBeforeCount(t)}</span><span class="tag">Po: ${photoAfterCount(t)}</span></div></div>
+        ${!afterPhotosReady(t) ? afterPhotoGateHTML(t) : ''}
+        <p class="note">Po kliknięciu „Zakończenie sprzątania / Gotowe” aplikacja wygeneruje raport i otworzy WhatsApp do Administratora. Nieodhaczone punkty checklisty nie blokują raportu — zostaną pokazane jako ✗ / do sprawdzenia.</p>` : `<div class="task-card"><strong>Checklista ukryta</strong><p class="note">Pełna checklista w strefach pojawi się po kliknięciu „Rozpoczęcie sprzątania” i udostępnieniu zdjęć obiektu przed sprzątaniem.</p></div>`}
         ${isAdmin() ? `<div class="task-card"><strong>Wiadomość dla Beaty</strong><p class="note">Wyślij Beacie gotowe zlecenie WhatsApp z linkiem do aplikacji, datą, godziną, apartamentem i pełną checklistą.</p><button class="btn gold" onclick="sendWhatsAppAssignment('${t.id}')">Wyślij WhatsApp do Beaty</button></div>` : ''}
-        <div class="task-card"><strong>Raport dla Administratora</strong><p class="note">Wygeneruj Raport w osobnym widoku. Możesz go wydrukować, zapisać jako PDF albo udostępnić jako plik.</p><div class="hero-actions"><button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button>${isAdmin() ? `<button class="btn secondary" onclick="sendWhatsAppReport('${t.id}')">Wyślij raport WhatsApp</button>` : ''}</div></div>
-        <div class="hero-actions"><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button><button class="btn ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania / Gotowe</button><button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn secondary" onclick="downloadICS('${t.id}')">Dodaj do kalendarza</button></div>`;
+        <div class="task-card"><strong>Raport dla Administratora</strong><p class="note">Raport można wysłać po udostępnieniu zdjęć przed i po. Nieodhaczone punkty checklisty nie blokują wysyłki — raport pokaże je jako do sprawdzenia.</p><div class="hero-actions">${afterPhotosReady(t) ? `<button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button>${isAdmin() ? `<button class="btn secondary" onclick="sendWhatsAppReport('${t.id}')">Wyślij raport WhatsApp</button>` : ''}` : `<button class="btn blue" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Najpierw udostępnij zdjęcia po</button>`}</div></div>
+        <div class="hero-actions"><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button><button class="btn ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania / Gotowe</button>${afterPhotosReady(t) ? `<button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button>` : ''}<button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn secondary" onclick="downloadICS('${t.id}')">Dodaj do kalendarza</button></div>`;
       save();
       taskModal.classList.add('show');
     }
@@ -1277,7 +1364,7 @@ ${idx+1}. ${label}`).join(''), '');
         a.hasGrinder ? 'Młynek WC: TAK — koniecznie sprawdzić działanie i brak cofki/zapachu.' : 'Młynek WC: NIE DOTYCZY.',
         '',
         'STATUS W APLIKACJI',
-        'Kliknij „Rozpoczęcie sprzątania” — aplikacja automatycznie zapisze godzinę rozpoczęcia i pokaże checklistę w strefach. Po wszystkim kliknij „Zakończenie sprzątania / Gotowe” — aplikacja automatycznie zapisze godzinę zakończenia. Jeśli są braki, usterka albo punkt ✗ — użyj „Zgłoś problem techniczny” albo ustaw Alert jakości.',
+        'Kliknij „Rozpoczęcie sprzątania”, następnie udostępnij zdjęcia obiektu przed sprzątaniem do Administratora. Dopiero wtedy pokaże się checklista. Po wykonaniu zadań udostępnij zdjęcia po sprzątaniu, a potem kliknij „Zakończenie sprzątania / Gotowe”. Jeśli część checklisty zostanie ✗, raport i tak zostanie wysłany jako Alert jakości.',
         '',
         'UWAGI OD ADMINISTRATORA',
         t.notes || '-',
@@ -1285,12 +1372,12 @@ ${idx+1}. ${label}`).join(''), '');
         'LINK DO APLIKACJI DLA BEATY',
         roomServiceTaskLink(t),
         '',
-        'Instrukcja: kliknij link, zaloguj się jako Beata, odhacz checklistę w aplikacji i po sprzątaniu kliknij „Generuj Raport”. Raport można zapisać jako PDF albo udostępnić jako plik.',
+        'Instrukcja: kliknij link, zaloguj się jako Beata, kliknij „Rozpoczęcie sprzątania”, wyślij zdjęcia przed sprzątaniem do Administratora, odhacz checklistę, wyślij zdjęcia po sprzątaniu, a potem kliknij „Zakończenie sprzątania / Gotowe”. Aplikacja otworzy WhatsApp z raportem bezpośrednio do Administratora +48 786 207 695.',
         '',
         'PEŁNA CHECKLISTA SPRZĄTANIA',
         checklistText,
         '',
-        'Po wykonaniu proszę zaznaczyć checklistę w aplikacji Room Service, wpisać ewentualne braki do uzupełnienia, udostępnić zdjęcia przed i po oraz wygenerować Raport.'
+        'Po wykonaniu proszę zaznaczyć checklistę w aplikacji Room Service, wpisać ewentualne braki do uzupełnienia, udostępnić zdjęcia przed i po oraz wysłać Raport przez WhatsApp do Administratora. Jeśli czegoś nie da się wykonać, raport i tak można wysłać — niewykonane punkty pojawią się jako do sprawdzenia.'
       ].join('\n');
     }
     function openWhatsAppAssignment(t){
@@ -1335,7 +1422,7 @@ ${idx+1}. ${label}`).join(''), '');
       render();
       if(taskModal.classList.contains('show')) openTask(id);
       openWhatsAppToAdmin(photoShareMessage(t, type));
-      toast(`Otwieram WhatsApp do Administratora: ${whatsappDisplay}`);
+      toast(type === 'before' ? `Otwieram WhatsApp do Administratora: ${whatsappDisplay}. Po wysłaniu zdjęć wróć do checklisty.` : `Otwieram WhatsApp do Administratora: ${whatsappDisplay}. Po wysłaniu zdjęć wróć i kliknij zakończenie.`);
     }
     window.shareSelectedPhotos = async function(id,type,files,context='modal'){
       window.openWhatsAppPhotoShare(id,type);
@@ -1390,8 +1477,8 @@ ${idx+1}. ${label}`).join(''), '');
         `Check-out: ${t.checkout || '-'}`,
         `Check-in: ${t.checkin || '-'}`,
         `Status: ${statusText(t.status)}`,
-        `Rozpoczęcie sprzątania: ${fmtDateTime(t.startedAt)} (zapis automatyczny aplikacji)`,
-        `Zakończenie sprzątania: ${fmtDateTime(t.endedAt)} (zapis automatyczny aplikacji)`,
+        `Rozpoczęcie sprzątania: ${fmtDateTime(t.startedAt)}`,
+        `Zakończenie sprzątania: ${fmtDateTime(t.endedAt)}`,
         `Checklist: ${progress.doneCount}/${progress.total} — ${progress.percent}%`,
         `Goście: ${t.guests || a.defaultGuests}/${a.max}`,
         `Pościel: ${t.bedding || a.bedding || '-'}`,
@@ -1489,7 +1576,7 @@ ${idx+1}. ${label}`).join(''), '');
 </style>
 </head>
 <body>
-  <div class="toolbar"><button class="gold" onclick="window.print()">Drukuj / zapisz jako PDF</button><button onclick="shareHTML()">Udostępnij Raport</button><button onclick="downloadHTML()">Pobierz raport HTML</button><button onclick="window.close()">Zamknij</button></div>
+  <div class="toolbar"><button class="gold" onclick="window.print()">Drukuj / zapisz jako PDF</button><button onclick="shareHTML()">Udostępnij raport WhatsApp</button><button onclick="downloadHTML()">Pobierz raport HTML</button><button onclick="window.close()">Zamknij</button></div>
   <main class="page" id="premiumReport">
     <header class="header"><div><p class="brand">AdagoStay Room Service</p><h1>Raport sprzątania<br>${escapeHTML(a.name)}</h1><p class="subtitle">Raport wygenerowany przez aplikację. Układ, czcionka i tabela są niezależne od wyglądu WhatsAppa.</p></div><div class="seal"><strong>${status}</strong><span>${progress.doneCount}/${progress.total} punktów • ${progress.percent}%</span></div></header>
     <div class="notice"><strong>${escapeHTML(summary.title)}</strong>${escapeHTML(summary.text)}</div>
@@ -1503,7 +1590,7 @@ ${idx+1}. ${label}`).join(''), '');
     <section class="report-section"><h2>Braki i problemy techniczne</h2><div class="two-col"><div class="text-card"><strong>Braki / do uzupełnienia</strong><br>${reportTextBlock(t.missingItems || '-')}</div><div class="text-card"><strong>Problemy techniczne</strong><br>${issues.length ? issues.map(issue => `${escapeHTML(fmtDateTime(issue.time))} — ${escapeHTML(issue.text)}`).join('<br>') : '-'}</div></div></section>
     ${premiumChecklistHTML(t)}
     <section class="report-section"><h2>Niewykonane / do sprawdzenia</h2><div class="text-card">${missing.length ? missing.map(x => `• ${escapeHTML(x)}`).join('<br>') : 'Brak — wszystko odhaczone.'}</div></section>
-    <footer class="footer"><span>Wygenerowano: ${escapeHTML(fmtDateTime(createdAt.toISOString()))}</span><span>Godziny rozpoczęcia i zakończenia są zapisem automatycznym aplikacji.</span></footer>
+    <footer class="footer"><span>Wygenerowano: ${escapeHTML(fmtDateTime(createdAt.toISOString()))}</span><span>Raport Room Service AdagoStay.</span></footer>
   </main>
 <script>
 const ADMIN_WHATSAPP = '48786207695';
@@ -1520,7 +1607,8 @@ function downloadHTML(){
   setTimeout(()=>URL.revokeObjectURL(url), 1000);
 }
 function shareHTML(){
-  window.location.href = 'https://wa.me/' + ADMIN_WHATSAPP + '?text=' + encodeURIComponent(REPORT_MESSAGE);
+  const url = 'https://wa.me/' + ADMIN_WHATSAPP + '?text=' + encodeURIComponent(REPORT_MESSAGE);
+  window.location.href = url;
 }
 <\/script>
 </body>
@@ -1542,6 +1630,12 @@ function shareHTML(){
     }
     window.openPremiumReport = function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      const gate = completeCleaningValidation(t);
+      if(gate.block){
+        toast(gate.message);
+        if(taskModal.classList.contains('show')) openTask(id);
+        return;
+      }
       syncPhotoChecklist(t);
       save();
       const html = buildPremiumReportHTML(t);
@@ -1581,6 +1675,12 @@ function shareHTML(){
     }
     window.sendWhatsAppReport = async function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      const gate = completeCleaningValidation(t);
+      if(gate.block){
+        toast(gate.message);
+        if(taskModal.classList.contains('show')) openTask(id);
+        return;
+      }
       syncPhotoChecklist(t);
       save();
       const report = buildReport(t);
@@ -1632,14 +1732,22 @@ function shareHTML(){
     function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
     function escapeICS(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
 
-    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; installBanner.classList.add('show'); });
-    installApp.addEventListener('click', async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBanner.classList.remove('show'); } });
+    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; showInstallBanner(); });
+    const installBtn = document.getElementById('installApp');
+    if(installBtn) installBtn.addEventListener('click', installAppOnPhone);
+    const installLoginBtn = document.getElementById('installAppLogin');
+    if(installLoginBtn) installLoginBtn.addEventListener('click', installAppOnPhone);
+    const installLaterBtn = document.getElementById('installLater');
+    if(installLaterBtn){ installLaterBtn.addEventListener('click',()=>{ sessionStorage.setItem(installPromptSessionKey,'1'); const banner = document.getElementById('installBanner'); if(banner) banner.classList.remove('show'); }); }
+    window.addEventListener('appinstalled',()=>{ deferredPrompt=null; const banner = document.getElementById('installBanner'); if(banner) banner.classList.remove('show'); toast('Aplikacja zainstalowana'); });
+    window.addEventListener('load',()=>setTimeout(()=>showInstallBanner(), 650));
     if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{})); }
     handleIncomingTaskLink();
     setupLogin();
     if(currentUser){
       applyAuthUI();
       render();
+      setTimeout(()=>showInstallBanner(), 250);
       setView(pendingIncomingTaskId ? 'roomservice' : allowedView(state.activeView || (isAdmin() ? 'dashboard' : 'roomservice')));
       if(pendingIncomingTaskId){
         const taskIdToOpen = pendingIncomingTaskId;
