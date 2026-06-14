@@ -209,9 +209,27 @@
     const storeKey = 'adagoRoomService.v2';
     const whatsappPhone = '48786207695';
     const whatsappDisplay = '+48 786 207 695';
+    function whatsappAdminURL(message=''){
+      const text = String(message || '').trim();
+      return `https://api.whatsapp.com/send?phone=${whatsappPhone}${text ? '&text=' + encodeURIComponent(text) : ''}`;
+    }
+    function openExternalLink(url){
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(()=>link.remove(), 600);
+    }
     function openWhatsAppToAdmin(message=''){
       const text = String(message || '').trim();
-      window.location.href = `https://wa.me/${whatsappPhone}${text ? '?text=' + encodeURIComponent(text) : ''}`;
+      if(text && navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(text).catch(()=>{});
+      }
+      const url = whatsappAdminURL(text);
+      const opened = window.open(url, '_blank', 'noopener,noreferrer');
+      if(!opened) openExternalLink(url);
     }
     function photoShareMessage(t, type){
       const a = getApartment(t.apartmentId);
@@ -1024,6 +1042,47 @@ ${idx+1}. ${label}`).join(''), '');
         summary.ok ? 'Apartament gotowy na przyjazd gościa.' : 'Apartament wymaga sprawdzenia przed przyjazdem gościa.'
       ].join('\n');
     }
+    function buildWhatsAppReport(t){
+      const a = getApartment(t.apartmentId);
+      const progress = checklistProgress(t);
+      const missing = taskChecklistIndexes(t).filter(i => !(t.done || []).includes(i)).map(i => checklist[i]);
+      const summary = qualitySummary(t);
+      const issues = Array.isArray(t.technicalIssues) ? t.technicalIssues : [];
+      return [
+        summary.ok ? `${a.name} gotowy na przyjazd gościa ✅` : `${a.name} wymaga sprawdzenia ⚠️`,
+        '',
+        `RAPORT SPRZĄTANIA — ${a.name}`,
+        `Wynik: ${summary.title}`,
+        `Data: ${fmtDate(t.date)}`,
+        `Godzina Room Service: ${t.time || '-'}`,
+        `Check-out: ${t.checkout || '-'}`,
+        `Check-in: ${t.checkin || '-'}`,
+        `Rozpoczęcie: ${fmtDateTime(t.startedAt)}`,
+        `Zakończenie: ${fmtDateTime(t.endedAt)}`,
+        `Checklista: ${progress.doneCount}/${progress.total} — ${progress.percent}%`,
+        `Status: ${statusText(t.status)}`,
+        '',
+        `Goście: ${t.guests || a.defaultGuests}/${a.max}`,
+        `Pościel: ${t.bedding || a.bedding || '-'}`,
+        `Ręczniki: ${t.towels || a.towels || '-'}`,
+        '',
+        'Braki / do uzupełnienia:',
+        t.missingItems || '-',
+        '',
+        'Problemy techniczne:',
+        issues.length ? issues.map(issue => `• ${fmtDateTime(issue.time)} — ${issue.text}`).join('\n') : '-',
+        '',
+        `Zdjęcia przed udostępnione: ${photoBeforeCount(t)}`,
+        `Zdjęcia po udostępnione: ${photoAfterCount(t)}`,
+        '',
+        'Niewykonane / do sprawdzenia:',
+        missing.length ? missing.map(x => `• ${x}`).join('\n') : 'Brak — wszystko odhaczone.',
+        '',
+        summary.ok ? 'Komunikat: Apartament gotowy na przyjazd gościa.' : 'Komunikat: Apartament wymaga sprawdzenia przed przyjazdem gościa.',
+        'Raport wygenerowany w aplikacji AdagoStay Room Service.'
+      ].join('\n');
+    }
+
     function reportTextBlock(value){
       return escapeHTML(String(value || '-')).replace(/\n/g,'<br>');
     }
@@ -1059,8 +1118,9 @@ ${idx+1}. ${label}`).join(''), '');
   *{box-sizing:border-box}
   body{margin:0;background:#efe3d1;color:var(--ink);font-family:Georgia,'Times New Roman',serif;line-height:1.45}
   .toolbar{position:sticky;top:0;z-index:10;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:14px;background:rgba(29,22,13,.94);box-shadow:0 10px 30px rgba(0,0,0,.18)}
-  .toolbar button{border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:11px 16px;background:#fffdfa;color:#1d160d;font-weight:800;cursor:pointer}
+  .toolbar button,.toolbar a{border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:11px 16px;background:#fffdfa;color:#1d160d;font-weight:800;cursor:pointer;text-decoration:none;font-family:Inter,Arial,sans-serif;font-size:14px;display:inline-flex;align-items:center;justify-content:center}
   .toolbar .gold{background:linear-gradient(135deg,#f1d391,#b88946);color:#1d160d}
+  .toolbar .wa{background:#e8fff0;color:#145c32}
   .page{max-width:980px;margin:28px auto;padding:42px;background:var(--card);border:1px solid var(--line);box-shadow:0 30px 100px rgba(29,22,13,.18)}
   .header{border-bottom:3px double var(--gold);padding-bottom:24px;margin-bottom:24px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start}
   .brand{font-family:Inter,Arial,sans-serif;text-transform:uppercase;letter-spacing:.16em;color:var(--gold);font-weight:900;font-size:12px;margin:0 0 10px}
@@ -1089,7 +1149,7 @@ ${idx+1}. ${label}`).join(''), '');
 </style>
 </head>
 <body>
-  <div class="toolbar"><button class="gold" onclick="window.print()">Drukuj / zapisz jako PDF</button><button onclick="shareHTML()">Udostępnij raport WhatsApp</button><button onclick="downloadHTML()">Pobierz raport HTML</button><button onclick="window.close()">Zamknij</button></div>
+  <div class="toolbar"><button class="gold" onclick="window.print()">Drukuj / zapisz jako PDF</button><a class="wa" href="${escapeHTML(whatsappReportURL)}" target="_blank" rel="noopener noreferrer" onclick="shareHTML(event)">Udostępnij raport WhatsApp</a><button onclick="downloadHTML()">Pobierz raport HTML</button><button onclick="window.close()">Zamknij</button></div>
   <main class="page" id="premiumReport">
     <header class="header"><div><p class="brand">AdagoStay Room Service</p><h1>Raport sprzątania<br>${escapeHTML(a.name)}</h1><p class="subtitle">Raport wygenerowany przez aplikację. Układ, czcionka i tabela są niezależne od wyglądu WhatsAppa.</p></div><div class="seal"><strong>${status}</strong><span>${progress.doneCount}/${progress.total} punktów • ${progress.percent}%</span></div></header>
     <div class="notice"><strong>${escapeHTML(summary.title)}</strong>${escapeHTML(summary.text)}</div>
@@ -1108,6 +1168,7 @@ ${idx+1}. ${label}`).join(''), '');
 <script>
 const ADMIN_WHATSAPP = '48786207695';
 const REPORT_MESSAGE = ${whatsappReportJSON};
+const REPORT_URL = 'https://api.whatsapp.com/send?phone=' + ADMIN_WHATSAPP + '&text=' + encodeURIComponent(REPORT_MESSAGE);
 function reportFile(){
   const html = '<!doctype html>\n' + document.documentElement.outerHTML;
   return new File([html], 'raport-adagostay-room-service.html', {type:'text/html'});
@@ -1119,9 +1180,13 @@ function downloadHTML(){
   a.href = url; a.download = file.name; a.click();
   setTimeout(()=>URL.revokeObjectURL(url), 1000);
 }
-function shareHTML(){
-  const url = 'https://wa.me/' + ADMIN_WHATSAPP + '?text=' + encodeURIComponent(REPORT_MESSAGE);
-  window.location.href = url;
+function shareHTML(event){
+  if(event) event.preventDefault();
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(REPORT_MESSAGE).catch(()=>{});
+  }
+  const opened = window.open(REPORT_URL, '_blank', 'noopener,noreferrer');
+  if(!opened){ window.location.href = REPORT_URL; }
 }
 <\/script>
 </body>
@@ -1167,24 +1232,15 @@ function shareHTML(){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
       syncPhotoChecklist(t);
       save();
-      const html = buildPremiumReportHTML(t);
-      const reportWindow = window.open('', '_blank');
-      if(reportWindow){
-        reportWindow.document.open();
-        reportWindow.document.write(html);
-        reportWindow.document.close();
-      }else{
-        downloadPremiumReportHTML(t);
-      }
-      const report = buildReport(t) + '\n\nRaport został automatycznie wygenerowany po kliknięciu „Zakończenie sprzątania / Gotowe”. Zdjęcia są wysyłane osobno przyciskami „Udostępnij zdjęcia przed/po”.';
+      const report = buildWhatsAppReport(t);
+      copyText(report);
       openWhatsAppToAdmin(report);
     }
     async function copyText(text){
       try{ await navigator.clipboard.writeText(text); return true; }catch(e){ return false; }
     }
     function openWhatsAppReport(report){
-      const message = report + '\n\nZdjęcia: Beata wysyła je osobno przez przyciski „Udostępnij zdjęcia przed” i „Udostępnij zdjęcia po”, które otwierają WhatsApp do Administratora.';
-      openWhatsAppToAdmin(message);
+      openWhatsAppToAdmin(report);
     }
     window.sendWhatsAppReport = async function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
@@ -1196,7 +1252,7 @@ function shareHTML(){
       }
       syncPhotoChecklist(t);
       save();
-      const report = buildReport(t);
+      const report = buildWhatsAppReport(t);
       await copyText(report);
       openWhatsAppReport(report);
       toast(`Otwieram WhatsApp: ${whatsappDisplay}`);
