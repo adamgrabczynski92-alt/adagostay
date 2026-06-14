@@ -951,7 +951,7 @@
       return `<div class="start-gate photo-gate"><strong>Udostępnij zdjęcia obiektu przed sprzątaniem</strong><p class="note">Otwórz WhatsApp do Administratora ${whatsappDisplay}, dodaj zdjęcia obiektu przed sprzątaniem i wyślij. Dopiero po tym kroku pojawi się checklista zadań.</p><div class="hero-actions"><button class="btn blue" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed sprzątaniem</button><button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button></div><div class="meta" style="margin-top:10px"><span class="tag">Zdjęcia przed: ${photoBeforeCount(t)}</span></div></div>`;
     }
     function afterPhotoGateHTML(t){
-      return `<div class="task-card photo-gate"><strong>Przed raportem udostępnij zdjęcia po sprzątaniu</strong><p class="note">Po zakończeniu zadań otwórz WhatsApp do Administratora ${whatsappDisplay}, dodaj zdjęcia po sprzątaniu i wyślij. Po tym kroku możesz kliknąć „Zakończenie sprzątania / Gotowe”, a aplikacja wygeneruje i wyśle raport.</p><div class="hero-actions"><button class="btn blue" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po sprzątaniu</button></div><div class="meta" style="margin-top:10px"><span class="tag">Zdjęcia po: ${photoAfterCount(t)}</span></div></div>`;
+      return `<div class="task-card photo-gate"><strong>Przed raportem udostępnij zdjęcia po sprzątaniu</strong><p class="note">Po zakończeniu zadań otwórz WhatsApp do Administratora ${whatsappDisplay}, dodaj zdjęcia po sprzątaniu i wyślij. Po tym kroku możesz kliknąć „Zakończenie sprzątania / Gotowe”, a aplikacja wygeneruje raport PNG do udostępnienia przez WhatsApp.</p><div class="hero-actions"><button class="btn blue" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po sprzątaniu</button></div><div class="meta" style="margin-top:10px"><span class="tag">Zdjęcia po: ${photoAfterCount(t)}</span></div></div>`;
     }
     function roomInlinePanel(t, context='room'){
       const a = getApartment(t.apartmentId);
@@ -1176,8 +1176,8 @@
       if(!t.endedAt) t.endedAt = autoStamp();
       t.status = validation.ok ? 'done' : 'problem';
       save(); render();
-      toast('Zakończenie sprzątania. Generuję Raport i otwieram WhatsApp.');
-      autoGenerateReportAndWhatsApp(id);
+      toast('Zakończenie sprzątania. Generuję raport PNG do udostępnienia na WhatsApp.');
+      shareReportPNG(id);
     }
     window.reportTechnicalIssue = function(id){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
@@ -1278,9 +1278,9 @@ ${idx+1}. ${label}`).join(''), '');
         <div class="missing-field" style="margin-top:12px"><label>Braki / do uzupełnienia</label><textarea onchange="updateMissingItems('${t.id}', this.value)" placeholder="Np. papier, kapsułki, mydło, ręczniki, worki, żarówka, usterka młynka WC...">${escapeHTML(t.missingItems||'')}</textarea><p class="note">Jeśli to pole jest uzupełnione, raport oznaczy apartament jako wymagający sprawdzenia.</p></div>
         <div class="task-card"><strong>Zdjęcia dla Administratora</strong><p class="note">Zdjęcia przed odblokowują checklistę, a zdjęcia po odblokowują wygenerowanie i wysłanie raportu. Przyciski otwierają WhatsApp bezpośrednio do Administratora ${whatsappDisplay}; zdjęcia trzeba dodać w rozmowie WhatsApp.</p><div class="share-photo-grid"><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'before')">Udostępnij zdjęcia przed</button><button class="btn secondary" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Udostępnij zdjęcia po</button></div><div class="meta" style="margin-top:10px"><span class="tag">Przed: ${photoBeforeCount(t)}</span><span class="tag">Po: ${photoAfterCount(t)}</span></div></div>
         ${!afterPhotosReady(t) ? afterPhotoGateHTML(t) : ''}
-        <p class="note">Po kliknięciu „Zakończenie sprzątania / Gotowe” aplikacja wygeneruje raport i otworzy WhatsApp do Administratora. Nieodhaczone punkty checklisty nie blokują raportu — zostaną pokazane jako ✗ / do sprawdzenia.</p>` : `<div class="task-card"><strong>Checklista ukryta</strong><p class="note">Pełna checklista w strefach pojawi się po kliknięciu „Rozpoczęcie sprzątania” i udostępnieniu zdjęć obiektu przed sprzątaniem.</p></div>`}
+        <p class="note">Po kliknięciu „Zakończenie sprzątania / Gotowe” aplikacja wygeneruje raport jako PNG i otworzy udostępnianie na Androidzie. Wybierz WhatsApp i kontakt Administratora. Nieodhaczone punkty checklisty nie blokują raportu — zostaną pokazane jako ✗ / do sprawdzenia.</p>` : `<div class="task-card"><strong>Checklista ukryta</strong><p class="note">Pełna checklista w strefach pojawi się po kliknięciu „Rozpoczęcie sprzątania” i udostępnieniu zdjęć obiektu przed sprzątaniem.</p></div>`}
         ${isAdmin() ? `<div class="task-card"><strong>Wiadomość dla Beaty</strong><p class="note">Wyślij Beacie gotowe zlecenie WhatsApp z linkiem do aplikacji, datą, godziną, apartamentem i pełną checklistą.</p><button class="btn gold" onclick="sendWhatsAppAssignment('${t.id}')">Wyślij WhatsApp do Beaty</button></div>` : ''}
-        <div class="task-card"><strong>Raport dla Administratora</strong><p class="note">Raport można wysłać po udostępnieniu zdjęć przed i po. Nieodhaczone punkty checklisty nie blokują wysyłki — raport pokaże je jako do sprawdzenia.</p><div class="hero-actions">${afterPhotosReady(t) ? `<button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button>${isAdmin() ? `<button class="btn secondary" onclick="sendWhatsAppReport('${t.id}')">Wyślij raport WhatsApp</button>` : ''}` : `<button class="btn blue" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Najpierw udostępnij zdjęcia po</button>`}</div></div>
+        <div class="task-card"><strong>Raport dla Administratora</strong><p class="note">Raport można wysłać jako obraz PNG po udostępnieniu zdjęć przed i po. Nieodhaczone punkty checklisty nie blokują wysyłki — raport pokaże je jako do sprawdzenia.</p><div class="hero-actions">${afterPhotosReady(t) ? `<button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button><button class="btn secondary" onclick="shareReportPNG('${t.id}')">Udostępnij raport WhatsApp (PNG)</button><button class="btn secondary" onclick="downloadReportPNG('${t.id}')">Pobierz raport PNG</button>` : `<button class="btn blue" onclick="openWhatsAppPhotoShare('${t.id}', 'after')">Najpierw udostępnij zdjęcia po</button>`}</div></div>
         <div class="hero-actions"><button class="btn blue" onclick="startCleaning('${t.id}')">Rozpoczęcie sprzątania</button><button class="btn ok" onclick="finishCleaning('${t.id}')">Zakończenie sprzątania / Gotowe</button>${afterPhotosReady(t) ? `<button class="btn gold" onclick="openPremiumReport('${t.id}')">Generuj Raport</button>` : ''}<button class="btn danger" onclick="reportTechnicalIssue('${t.id}')">Zgłoś problem techniczny</button><button class="btn secondary" onclick="downloadICS('${t.id}')">Dodaj do kalendarza</button></div>`;
       save();
       taskModal.classList.add('show');
@@ -1427,7 +1427,7 @@ ${idx+1}. ${label}`).join(''), '');
         'LINK DO APLIKACJI DLA BEATY',
         roomServiceTaskLink(t),
         '',
-        'Instrukcja: kliknij link, zaloguj się jako Beata, kliknij „Rozpoczęcie sprzątania”, wyślij zdjęcia przed sprzątaniem do Administratora, odhacz checklistę, wyślij zdjęcia po sprzątaniu, a potem kliknij „Zakończenie sprzątania / Gotowe”. Aplikacja otworzy WhatsApp z raportem bezpośrednio do Administratora +48 786 207 695.',
+        'Instrukcja: kliknij link, zaloguj się jako Beata, kliknij „Rozpoczęcie sprzątania”, wyślij zdjęcia przed sprzątaniem do Administratora, odhacz checklistę, wyślij zdjęcia po sprzątaniu, a potem kliknij „Zakończenie sprzątania / Gotowe”. Aplikacja wygeneruje raport PNG. Na Androidzie wybierz WhatsApp i wyślij obraz do Administratora +48 786 207 695.',
         '',
         'PEŁNA CHECKLISTA SPRZĄTANIA',
         checklistText,
@@ -1607,6 +1607,263 @@ ${idx+1}. ${label}`).join(''), '');
       ].join('\n');
     }
 
+
+    function safeReportFileName(t){
+      const a = getApartment(t.apartmentId);
+      return `raport-${a.name}-${t.date || 'room-service'}`.toLowerCase().replace(/[^a-z0-9ąćęłńóśżź-]+/gi,'-').replace(/-+/g,'-').replace(/^-|-$/g,'') + '.png';
+    }
+    function canvasWrapLines(ctx, text, maxWidth){
+      const raw = String(text ?? '').replace(/\r/g, '').split('\n');
+      const lines = [];
+      raw.forEach(part => {
+        const words = part.split(/\s+/).filter(Boolean);
+        if(!words.length){ lines.push(''); return; }
+        let line = '';
+        words.forEach(word => {
+          const test = line ? line + ' ' + word : word;
+          if(ctx.measureText(test).width > maxWidth && line){
+            lines.push(line);
+            line = word;
+          }else{
+            line = test;
+          }
+        });
+        lines.push(line);
+      });
+      return lines;
+    }
+    function canvasRoundRect(ctx, x, y, w, h, r){
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+    function drawReportPNG(ctx, t, dryRun=false){
+      syncPhotoChecklist(t);
+      const a = getApartment(t.apartmentId);
+      const progress = checklistProgress(t);
+      const summary = qualitySummary(t);
+      const issues = Array.isArray(t.technicalIssues) ? t.technicalIssues : [];
+      const missing = taskChecklistIndexes(t).filter(i => !(t.done || []).includes(i)).map(i => checklist[i]);
+      const width = 1200;
+      const padX = 64;
+      const maxW = width - padX * 2;
+      let y = 54;
+      const ink = '#1d160d';
+      const muted = '#6d6255';
+      const line = '#dfd1bd';
+      const paper = '#fffdfa';
+      const cream = '#fbf7ef';
+      const gold = '#b88946';
+      const green = '#1f7d54';
+      const red = '#a5372f';
+      const blue = '#365f83';
+      function fillBackground(){
+        if(dryRun) return;
+        ctx.fillStyle = '#efe3d1';
+        ctx.fillRect(0,0,width,ctx.canvas.height);
+        ctx.fillStyle = paper;
+        canvasRoundRect(ctx, 32, 28, width - 64, ctx.canvas.height - 56, 24);
+        ctx.fill();
+        ctx.strokeStyle = line;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      function text(value, x, font, color, maxWidth=maxW, lineHeight=34, marginBottom=0){
+        ctx.font = font;
+        const lines = canvasWrapLines(ctx, value, maxWidth);
+        if(!dryRun){
+          ctx.fillStyle = color;
+          ctx.textBaseline = 'top';
+          lines.forEach((ln, idx) => ctx.fillText(ln, x, y + idx * lineHeight));
+        }
+        y += Math.max(1, lines.length) * lineHeight + marginBottom;
+      }
+      function divider(marginTop=12, marginBottom=16){
+        y += marginTop;
+        if(!dryRun){
+          ctx.strokeStyle = line;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(padX, y);
+          ctx.lineTo(width - padX, y);
+          ctx.stroke();
+        }
+        y += marginBottom;
+      }
+      function card(title, lines, accentColor=gold){
+        ctx.font = '700 24px Arial, sans-serif';
+        let height = 30;
+        const titleLines = canvasWrapLines(ctx, title, maxW - 44);
+        height += titleLines.length * 30;
+        ctx.font = '22px Arial, sans-serif';
+        const bodyLines = [];
+        lines.forEach(lineText => canvasWrapLines(ctx, lineText, maxW - 44).forEach(l => bodyLines.push(l)));
+        height += Math.max(1, bodyLines.length) * 30 + 24;
+        if(!dryRun){
+          ctx.fillStyle = cream;
+          canvasRoundRect(ctx, padX, y, maxW, height, 18);
+          ctx.fill();
+          ctx.strokeStyle = line;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.fillStyle = accentColor;
+          canvasRoundRect(ctx, padX, y, 8, height, 4);
+          ctx.fill();
+          ctx.fillStyle = ink;
+          ctx.textBaseline = 'top';
+          ctx.font = '700 24px Arial, sans-serif';
+          titleLines.forEach((ln, idx) => ctx.fillText(ln, padX + 24, y + 18 + idx * 30));
+          ctx.fillStyle = muted;
+          ctx.font = '22px Arial, sans-serif';
+          const startBodyY = y + 18 + titleLines.length * 30 + 8;
+          bodyLines.forEach((ln, idx) => ctx.fillText(ln, padX + 24, startBodyY + idx * 30));
+        }
+        y += height + 18;
+      }
+      function section(title){
+        y += 14;
+        text(title, padX, '700 34px Arial, sans-serif', ink, maxW, 42, 6);
+        divider(2, 12);
+      }
+      function row(mark, value, markColor){
+        ctx.font = '22px Arial, sans-serif';
+        const bodyLines = canvasWrapLines(ctx, value, maxW - 58);
+        const rowH = Math.max(36, bodyLines.length * 29 + 10);
+        if(!dryRun){
+          ctx.fillStyle = markColor;
+          ctx.textBaseline = 'top';
+          ctx.font = '700 26px Arial, sans-serif';
+          ctx.fillText(mark, padX, y + 2);
+          ctx.fillStyle = ink;
+          ctx.font = '22px Arial, sans-serif';
+          bodyLines.forEach((ln, idx) => ctx.fillText(ln, padX + 48, y + idx * 29));
+        }
+        y += rowH;
+      }
+      fillBackground();
+      text('ADAGOSTAY ROOM SERVICE', padX, '800 20px Arial, sans-serif', gold, maxW, 26, 8);
+      text(`Raport sprzątania — ${a.name}`, padX, '800 54px Arial, sans-serif', ink, maxW, 60, 10);
+      text(summary.ok ? 'GOTOWE NA PRZYJAZD GOŚCIA ✅' : 'WYMAGA SPRAWDZENIA ⚠️', padX, '800 30px Arial, sans-serif', summary.ok ? green : red, maxW, 38, 4);
+      text(summary.text, padX, '24px Arial, sans-serif', muted, maxW, 32, 10);
+      divider(12, 16);
+      const topLines = [
+        `Data: ${fmtDate(t.date)} • Godzina Room Service: ${t.time || '-'}`,
+        `Check-out: ${t.checkout || '-'} • Check-in: ${t.checkin || '-'}`,
+        `Rozpoczęcie: ${fmtDateTime(t.startedAt)} • Zakończenie: ${fmtDateTime(t.endedAt)}`,
+        `Checklista: ${progress.doneCount}/${progress.total} — ${progress.percent}% • Status: ${statusText(t.status)}`,
+        `Zdjęcia przed: ${photoBeforeCount(t)} • Zdjęcia po: ${photoAfterCount(t)}`
+      ];
+      card('Podsumowanie', topLines, summary.ok ? green : red);
+      card('Standard przygotowania', [
+        `Goście: ${t.guests || a.defaultGuests}/${a.max}`,
+        `Pościel: ${t.bedding || a.bedding || '-'}`,
+        `Ręczniki: ${t.towels || a.towels || '-'}`,
+        `Młynek WC: ${a.hasGrinder ? 'do sprawdzenia w tym apartamencie' : 'nie dotyczy'}`
+      ], gold);
+      card('Instrukcje i uwagi', [
+        `Instrukcje Administratora: ${t.notes || '-'}`,
+        `Uwagi Room Service: ${t.serviceNotes || '-'}`,
+        `Braki / do uzupełnienia: ${t.missingItems || '-'}`,
+        `Problemy techniczne: ${issues.length ? issues.map(issue => `${fmtDateTime(issue.time)} — ${issue.text}`).join(' | ') : '-'}`
+      ], blue);
+      section('Niewykonane / do sprawdzenia');
+      if(missing.length){
+        missing.forEach(item => row('✗', item, red));
+      }else{
+        row('✓', 'Brak — wszystko odhaczone.', green);
+      }
+      section('Pełna checklista');
+      taskChecklistGroups(t).forEach(group => {
+        text(group.section, padX, '700 26px Arial, sans-serif', gold, maxW, 34, 4);
+        group.items.forEach(entry => {
+          const checked = (t.done || []).includes(entry.index);
+          row(checked ? '✓' : '✗', `${entry.text} — ${checked ? 'Wykonane' : 'Do sprawdzenia'}`, checked ? green : red);
+        });
+        y += 8;
+      });
+      divider(10, 12);
+      text(`Wygenerowano: ${fmtDateTime(new Date().toISOString())} • Raport PNG AdagoStay Room Service`, padX, '20px Arial, sans-serif', muted, maxW, 28, 0);
+      return y + 60;
+    }
+    function buildReportPNGDataURL(t){
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200;
+      canvas.height = 200;
+      const ctx = canvas.getContext('2d');
+      const neededHeight = Math.min(Math.max(Math.ceil(drawReportPNG(ctx, t, true)), 900), 14000);
+      canvas.height = neededHeight;
+      const drawCtx = canvas.getContext('2d');
+      drawReportPNG(drawCtx, t, false);
+      return canvas.toDataURL('image/png');
+    }
+    function dataURLToFile(dataURL, filename){
+      const parts = dataURL.split(',');
+      const mime = (parts[0].match(/:(.*?);/) || [,'image/png'])[1];
+      const binary = atob(parts[1]);
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for(let i=0; i<len; i++) bytes[i] = binary.charCodeAt(i);
+      return new File([bytes], filename, {type:mime});
+    }
+    function downloadBlobFile(file){
+      const url = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1500);
+    }
+    async function shareReportPNGFile(t, options={}){
+      syncPhotoChecklist(t);
+      const a = getApartment(t.apartmentId);
+      const dataURL = buildReportPNGDataURL(t);
+      const file = dataURLToFile(dataURL, safeReportFileName(t));
+      const shareText = `Raport sprzątania ${a.name} — ${fmtDate(t.date)}. Wyślij do Administratora ${whatsappDisplay}.`;
+      await copyText(buildWhatsAppReport(t));
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+        try{
+          toast('Wybierz WhatsApp i wyślij raport PNG do Administratora.');
+          await navigator.share({title:`Raport sprzątania — ${a.name}`, text:shareText, files:[file]});
+          return true;
+        }catch(err){
+          if(err && err.name === 'AbortError'){
+            toast('Udostępnianie anulowane — raport PNG można pobrać i wysłać ręcznie.');
+            return false;
+          }
+        }
+      }
+      downloadBlobFile(file);
+      openWhatsAppToAdmin(`${shareText}\n\nRaport PNG został pobrany na telefon. Dodaj pobrany obraz jako załącznik w tej rozmowie WhatsApp.`);
+      toast('Pobrałem raport PNG i otwieram WhatsApp do Administratora. Dodaj pobrany obraz jako załącznik.');
+      return false;
+    }
+    window.shareReportPNG = async function(id){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      const gate = completeCleaningValidation(t);
+      if(gate.block){
+        toast(gate.message);
+        if(taskModal.classList.contains('show')) openTask(id);
+        return;
+      }
+      syncPhotoChecklist(t);
+      save();
+      await shareReportPNGFile(t);
+    }
+    window.downloadReportPNG = function(id){
+      const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      syncPhotoChecklist(t);
+      const file = dataURLToFile(buildReportPNGDataURL(t), safeReportFileName(t));
+      downloadBlobFile(file);
+      toast('Pobrano raport PNG');
+    }
+
     function reportTextBlock(value){
       return escapeHTML(String(value || '-')).replace(/\n/g,'<br>');
     }
@@ -1673,7 +1930,7 @@ ${idx+1}. ${label}`).join(''), '');
 </style>
 </head>
 <body>
-  <div class="toolbar"><button class="gold" onclick="window.print()">Drukuj / zapisz jako PDF</button><a class="wa" href="${escapeHTML(whatsappReportURL)}" target="_blank" rel="noopener noreferrer" onclick="shareHTML(event)">Udostępnij raport WhatsApp</a><button onclick="downloadHTML()">Pobierz raport HTML</button><button onclick="window.close()">Zamknij</button></div>
+  <div class="toolbar"><button class="gold" onclick="sharePNG()">Udostępnij raport WhatsApp (PNG)</button><button onclick="downloadPNG()">Pobierz raport PNG</button><button onclick="window.print()">Drukuj / zapisz jako PDF</button><a class="wa" href="${escapeHTML(whatsappTextURL)}" target="_blank" rel="noopener noreferrer">WhatsApp tekst awaryjnie</a><button onclick="downloadHTML()">Pobierz raport HTML</button><button onclick="window.close()">Zamknij</button></div>
   <main class="page" id="premiumReport">
     <header class="header"><div><p class="brand">AdagoStay Room Service</p><h1>Raport sprzątania<br>${escapeHTML(a.name)}</h1><p class="subtitle">Raport wygenerowany przez aplikację. Układ, czcionka i tabela są niezależne od wyglądu WhatsAppa.</p></div><div class="seal"><strong>${status}</strong><span>${progress.doneCount}/${progress.total} punktów • ${progress.percent}%</span></div></header>
     <div class="notice"><strong>${escapeHTML(summary.title)}</strong>${escapeHTML(summary.text)}</div>
@@ -1692,25 +1949,42 @@ ${idx+1}. ${label}`).join(''), '');
 <script>
 const ADMIN_WHATSAPP = '48786207695';
 const REPORT_MESSAGE = ${whatsappReportJSON};
+const REPORT_PNG_DATA_URL = ${reportPNGDataURLJSON};
+const REPORT_PNG_FILE_NAME = ${reportPNGFileNameJSON};
 const REPORT_URL = 'https://api.whatsapp.com/send?phone=' + ADMIN_WHATSAPP + '&text=' + encodeURIComponent(REPORT_MESSAGE);
+function dataURLToFile(dataURL, filename){
+  const parts = dataURL.split(',');
+  const mime = (parts[0].match(/:(.*?);/) || [,'image/png'])[1];
+  const binary = atob(parts[1]);
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for(let i=0; i<len; i++) bytes[i] = binary.charCodeAt(i);
+  return new File([bytes], filename, {type:mime});
+}
 function reportFile(){
   const html = '<!doctype html>\n' + document.documentElement.outerHTML;
   return new File([html], 'raport-adagostay-room-service.html', {type:'text/html'});
 }
-function downloadHTML(){
-  const file = reportFile();
+function reportPNGFile(){ return dataURLToFile(REPORT_PNG_DATA_URL, REPORT_PNG_FILE_NAME); }
+function downloadFile(file){
   const url = URL.createObjectURL(file);
   const a = document.createElement('a');
   a.href = url; a.download = file.name; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
 }
-function shareHTML(event){
-  if(event) event.preventDefault();
-  if(navigator.clipboard && window.isSecureContext){
-    navigator.clipboard.writeText(REPORT_MESSAGE).catch(()=>{});
+function downloadHTML(){ downloadFile(reportFile()); }
+function downloadPNG(){ downloadFile(reportPNGFile()); }
+async function sharePNG(){
+  const file = reportPNGFile();
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(REPORT_MESSAGE).catch(()=>{}); }
+  if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({title:'Raport sprzątania AdagoStay', text:'Raport PNG. Wyślij do Administratora +48 786 207 695.', files:[file]});
+      return;
+    }catch(err){ if(err && err.name === 'AbortError') return; }
   }
-  const opened = window.open(REPORT_URL, '_blank', 'noopener,noreferrer');
-  if(!opened){ window.location.href = REPORT_URL; }
+  downloadPNG();
+  window.location.href = REPORT_URL;
 }
 <\/script>
 </body>
@@ -1756,9 +2030,7 @@ function shareHTML(event){
       const t = state.tasks.find(x=>x.id===id); if(!t) return;
       syncPhotoChecklist(t);
       save();
-      const report = buildWhatsAppReport(t);
-      copyText(report);
-      openWhatsAppToAdmin(report);
+      shareReportPNG(id);
     }
     async function copyText(text){
       try{ await navigator.clipboard.writeText(text); return true; }catch(e){ return false; }
@@ -1776,10 +2048,8 @@ function shareHTML(event){
       }
       syncPhotoChecklist(t);
       save();
-      const report = buildWhatsAppReport(t);
-      await copyText(report);
-      openWhatsAppReport(report);
-      toast(`Otwieram WhatsApp: ${whatsappDisplay}`);
+      await shareReportPNGFile(t);
+      toast('Raport PNG gotowy do wysłania przez WhatsApp.');
     }
 
     closeModal.addEventListener('click',()=>taskModal.classList.remove('show'));
