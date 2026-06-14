@@ -367,6 +367,8 @@
         <label class="remember-row" for="rememberLogin"><input id="rememberLogin" type="checkbox" /> <span>Zapamiętaj logowanie na tym urządzeniu</span></label>
       </div>
       <button class="btn gold" type="submit">Zaloguj</button>
+      <button class="btn secondary" id="installAppLogin" type="button">Zainstaluj aplikację na Androidzie</button>
+      <p class="note" id="installLoginHint">Android: po kliknięciu powinno pojawić się okno instalacji aplikacji. iPhone: Safari → Udostępnij → Do ekranu początkowego.</p>
       <p class="note" id="loginError" style="display:none;color:var(--red);font-weight:850">Nieprawidłowy użytkownik lub hasło.</p>
     </form>
   </div>
@@ -756,6 +758,7 @@
     const defaultTasks = () => [];
     let state = load();
     let deferredPrompt;
+    let installPromptRequested = false;
     let pendingIncomingTaskId = null;
     const installPromptSessionKey = 'adagoRoomService.installPrompt.dismissed.session.v1';
 
@@ -766,13 +769,21 @@
     function isAndroidDevice(){ return /Android/i.test(navigator.userAgent); }
     function updateInstallHint(){
       const hint = document.getElementById('installHint');
-      if(!hint) return;
-      if(isIOSDevice()){
-        hint.textContent = 'iPhone: w Safari kliknij Udostępnij, potem „Do ekranu początkowego”.';
-      }else if(isAndroidDevice()){
-        hint.textContent = deferredPrompt ? 'Kliknij „Zainstaluj”, aby dodać ikonę aplikacji.' : 'Kliknij „Zainstaluj”. Jeśli okno się nie pojawi, użyj menu Chrome ⋮ → „Dodaj do ekranu głównego”.';
-      }else{
-        hint.textContent = 'Na telefonie otwórz tę stronę i dodaj ją do ekranu głównego.';
+      const loginHint = document.getElementById('installLoginHint');
+      const androidReady = isAndroidDevice() && !!deferredPrompt;
+      if(hint){
+        if(isIOSDevice()){
+          hint.textContent = 'iPhone: w Safari kliknij Udostępnij, potem „Do ekranu początkowego”.';
+        }else if(isAndroidDevice()){
+          hint.textContent = androidReady ? 'Kliknij „Zainstaluj” — otworzy się okno instalacji aplikacji.' : 'Kliknij „Zainstaluj”. Gdy Android przygotuje instalację, okno instalacji otworzy się automatycznie.';
+        }else{
+          hint.textContent = 'Na telefonie otwórz tę stronę i dodaj ją do ekranu głównego.';
+        }
+      }
+      if(loginHint){
+        loginHint.textContent = isAndroidDevice()
+          ? (androidReady ? 'Android: kliknij „Zainstaluj aplikację na Androidzie”, a potem potwierdź instalację.' : 'Android: kliknij przycisk instalacji. Jeżeli okno nie pojawi się od razu, otwórz stronę przez Chrome z adresu HTTPS i kliknij ponownie.')
+          : 'iPhone: Safari → Udostępnij → Do ekranu początkowego.';
       }
     }
     function shouldShowInstallBanner(){
@@ -791,23 +802,49 @@
       const steps = isIOSDevice()
         ? ['Otwórz aplikację w Safari.', 'Kliknij ikonę udostępniania.', 'Wybierz „Do ekranu początkowego”.', 'Kliknij „Dodaj”.']
         : isAndroidDevice()
-          ? ['Otwórz aplikację w Chrome.', 'Kliknij menu ⋮ w prawym górnym rogu.', 'Wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”.', 'Potwierdź dodanie ikony.']
+          ? ['Otwórz aplikację w Chrome z normalnego adresu HTTPS.', 'Kliknij przycisk „Zainstaluj aplikację na Androidzie”.', 'Gdy pojawi się okno Android/Chrome, kliknij „Zainstaluj”.', 'Jeżeli okno nie pojawi się, kliknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”.']
           : ['Otwórz ten adres na telefonie.', 'W przeglądarce wybierz opcję dodania strony do ekranu głównego.', 'Po dodaniu uruchamiaj Room Service z ikony.'];
-      modalBody.innerHTML = `<div class="task-card"><strong>Instrukcja instalacji</strong><ol class="note" style="margin-left:18px">${steps.map(step=>`<li>${escapeHTML(step)}</li>`).join('')}</ol><p class="note">Po instalacji aplikacja będzie otwierać się jak zwykła aplikacja z ekranu telefonu.</p></div>`;
+      const androidNote = isAndroidDevice() ? '<p class="note"><strong>Ważne:</strong> Android nie pozwala stronie zainstalować aplikacji całkowicie bez potwierdzenia użytkownika. Przycisk otwiera natywne okno instalacji, a użytkownik zatwierdza instalację jednym kliknięciem.</p>' : '';
+      modalBody.innerHTML = `<div class="task-card"><strong>Instrukcja instalacji</strong><ol class="note" style="margin-left:18px">${steps.map(step=>`<li>${escapeHTML(step)}</li>`).join('')}</ol>${androidNote}<p class="note">Po instalacji aplikacja będzie otwierać się jak zwykła aplikacja z ekranu telefonu.</p></div>`;
       taskModal.classList.add('show');
     }
-    async function installAppOnPhone(){
-      if(deferredPrompt){
-        deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
-        deferredPrompt = null;
+    async function openNativeInstallPrompt(){
+      if(!deferredPrompt) return false;
+      const promptEvent = deferredPrompt;
+      deferredPrompt = null;
+      installPromptRequested = false;
+      try{
+        promptEvent.prompt();
+        const choice = await promptEvent.userChoice;
         if(choice?.outcome === 'accepted'){
           const banner = document.getElementById('installBanner');
           if(banner) banner.classList.remove('show');
           toast('Aplikacja zainstalowana');
         }else{
-          showInstallBanner();
+          showInstallBanner(true);
         }
+      }catch(e){
+        showInstallHelp();
+      }
+      return true;
+    }
+    async function installAppOnPhone(){
+      sessionStorage.removeItem(installPromptSessionKey);
+      if(isStandaloneMode()){
+        toast('Aplikacja jest już zainstalowana');
+        return;
+      }
+      if(await openNativeInstallPrompt()) return;
+      installPromptRequested = true;
+      showInstallBanner(true);
+      updateInstallHint();
+      if(isAndroidDevice()){
+        toast('Przygotowuję instalację aplikacji');
+        setTimeout(()=>{
+          if(installPromptRequested && !deferredPrompt){
+            showInstallHelp();
+          }
+        }, 1200);
       }else{
         showInstallHelp();
       }
@@ -1788,16 +1825,24 @@ function shareHTML(event){
     function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
     function escapeICS(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
 
-    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; showInstallBanner(); });
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      updateInstallHint();
+      showInstallBanner(true);
+      if(installPromptRequested){
+        setTimeout(()=>openNativeInstallPrompt(), 50);
+      }
+    });
     const installBtn = document.getElementById('installApp');
     if(installBtn) installBtn.addEventListener('click', installAppOnPhone);
     const installLoginBtn = document.getElementById('installAppLogin');
     if(installLoginBtn) installLoginBtn.addEventListener('click', installAppOnPhone);
     const installLaterBtn = document.getElementById('installLater');
-    if(installLaterBtn){ installLaterBtn.addEventListener('click',()=>{ sessionStorage.setItem(installPromptSessionKey,'1'); const banner = document.getElementById('installBanner'); if(banner) banner.classList.remove('show'); }); }
-    window.addEventListener('appinstalled',()=>{ deferredPrompt=null; const banner = document.getElementById('installBanner'); if(banner) banner.classList.remove('show'); toast('Aplikacja zainstalowana'); });
-    window.addEventListener('load',()=>setTimeout(()=>showInstallBanner(), 650));
-    if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{})); }
+    if(installLaterBtn){ installLaterBtn.addEventListener('click',()=>{ sessionStorage.setItem(installPromptSessionKey,'1'); installPromptRequested=false; const banner = document.getElementById('installBanner'); if(banner) banner.classList.remove('show'); }); }
+    window.addEventListener('appinstalled',()=>{ installPromptRequested=false; deferredPrompt=null; const banner = document.getElementById('installBanner'); if(banner) banner.classList.remove('show'); toast('Aplikacja zainstalowana'); });
+    window.addEventListener('load',()=>setTimeout(()=>{ updateInstallHint(); showInstallBanner(); }, 650));
+    if('serviceWorker' in navigator){ navigator.serviceWorker.register('service-worker.js').catch(()=>{}); }
     handleIncomingTaskLink();
     setupLogin();
     if(currentUser){
