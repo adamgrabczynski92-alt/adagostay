@@ -3,6 +3,8 @@
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
+# Public Room Service removed from this deploy package; block stale copies if they remain on server.
+RewriteRule ^room-service/ - [F,L]
 RewriteRule ^pl/?$ https://adagostay.pl/ [R=301,L,NE]
 RewriteRule ^pl/index\.html$ https://adagostay.pl/ [R=301,L,NE]
 RewriteRule ^antracyt/?$ https://adagostay.pl/pl/apartament/antracyt/ [R=301,L,NE]

@@ -1,0 +1,56 @@
+ADAGO STAY – wdrożone zmiany ULTRA WOW
+
+Wprowadzone:
+1. Nowa strona główna w stylu premium/boutique:
+   - mocne hasło: „Nie tylko nocleg. Pobyt z klimatem.”
+   - duże oryginalne zdjęcie Oazy na pierwszym ekranie
+   - dodatkowe zdjęcia Antracytu i Golda jako kolaż
+   - mniej tekstu, więcej emocji i prostsze prowadzenie do zapytania
+
+2. Szybkie zapytanie już na pierwszym ekranie:
+   - apartament
+   - termin
+   - liczba gości
+   - telefon lub e-mail
+   - przycisk „Wyślij”
+
+3. Ceny usunięte z pierwszego wrażenia:
+   - na stronie głównej i nowych podstronach apartamentów nie ma już komunikatów „od 240 zł / od 250 zł”
+   - zamiast tego jest „Sprawdź dostępność”, „Zapytaj o termin” i „Sprawdź dostępność i cenę”
+
+4. Opinie i zaufanie wyżej:
+   - Google, Booking, czystość, kontakt i self check-in są widoczne wysoko na stronie
+
+5. Podstrony Oaza / Antracyt / Gold przebudowane:
+   - duże zdjęcie hero
+   - krótki opis emocjonalny
+   - udogodnienia w pigułkach
+   - formularz zapytania
+   - opinie i lokalizacja
+   - regulamin przeniesiony niżej do rozwijanej sekcji
+
+6. Poprawiona niespójność Antracytu:
+   - na stronie noclegi Szczawno-Zdrój Antracyt ustawiony jako max 2 osoby
+
+7. Poprawione podglądy w social media:
+   - dodane osobne grafiki OG:
+     /assets/img/social/adago-home-og.jpg
+     /assets/img/social/oaza-og.jpg
+     /assets/img/social/antracyt-og.jpg
+     /assets/img/social/gold-og.jpg
+   - metatagi og:image i twitter:image poprawione dla stron apartamentów
+
+8. Mobile:
+   - zachowany dolny pasek CTA
+   - WhatsApp i Sprawdź termin są stale pod ręką na telefonie
+
+9. Bezpieczeństwo:
+   - folder /room-service/ został usunięty z publicznej paczki
+   - usunięto pliki JS z hasłami po stronie przeglądarki
+   - dodano blokadę /room-service/ w robots.txt, .htaccess, _redirects i nginx-redirects.conf
+
+Ważne:
+- Przed wgraniem zrób kopię obecnej strony na hostingu.
+- Wgraj zawartość tej paczki do katalogu publicznego strony.
+- Po wgraniu wyczyść cache hostingu/przeglądarki.
+- Jeśli na serwerze wcześniej istniał katalog /room-service/, usuń go ręcznie również z hostingu.
