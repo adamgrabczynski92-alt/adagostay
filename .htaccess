@@ -3,6 +3,12 @@
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
+# Canonical domain: force HTTPS and non-www before all other redirects.
+RewriteCond %{HTTP_HOST} ^www\.adagostay\.pl$ [NC]
+RewriteRule ^ https://adagostay.pl%{REQUEST_URI} [R=301,L,NE]
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+RewriteRule ^ https://adagostay.pl%{REQUEST_URI} [R=301,L,NE]
 # Public Room Service removed from this deploy package; block stale copies if they remain on server.
 RewriteRule ^room-service/ - [F,L]
 RewriteRule ^pl/?$ https://adagostay.pl/ [R=301,L,NE]

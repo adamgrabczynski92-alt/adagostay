@@ -112,6 +112,30 @@
     }
 
     galleries.forEach(gallery => {
+      gallery.setAttribute('tabindex', '0');
+      gallery.setAttribute('aria-label', gallery.getAttribute('aria-label') || 'Przewijana galeria zdjęć apartamentu');
+
+      if (!gallery.previousElementSibling || !gallery.previousElementSibling.classList.contains('ultra-gallery-scroll-controls')) {
+        const controls = document.createElement('div');
+        controls.className = 'ultra-gallery-scroll-controls';
+        controls.innerHTML = '<button type="button" aria-label="Przewiń galerię w lewo">‹</button><button type="button" aria-label="Przewiń galerię w prawo">›</button>';
+        gallery.parentNode.insertBefore(controls, gallery);
+        const [prev, next] = controls.querySelectorAll('button');
+        prev.addEventListener('click', () => gallery.scrollBy({ left: -Math.max(280, gallery.clientWidth * 0.72), behavior: 'smooth' }));
+        next.addEventListener('click', () => gallery.scrollBy({ left: Math.max(280, gallery.clientWidth * 0.72), behavior: 'smooth' }));
+      }
+
+      gallery.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          gallery.scrollBy({ left: -Math.max(240, gallery.clientWidth * 0.62), behavior: 'smooth' });
+        }
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          gallery.scrollBy({ left: Math.max(240, gallery.clientWidth * 0.62), behavior: 'smooth' });
+        }
+      });
+
       Array.from(gallery.querySelectorAll('[data-gallery-src]')).forEach((btn, i) => {
         btn.addEventListener('click', () => open(gallery, i));
       });

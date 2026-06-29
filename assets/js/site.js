@@ -6,6 +6,16 @@ function adagoTrack(eventName, payload = {}) {
   } catch (e) {}
 }
 
+function adagoValidationMessage() {
+  const lang = (document.documentElement.lang || 'pl').toLowerCase();
+  if (lang.startsWith('en')) return 'Please complete the required fields.';
+  if (lang.startsWith('de')) return 'Bitte füllen Sie die Pflichtfelder aus.';
+  if (lang.startsWith('cs') || lang.startsWith('cz')) return 'Vyplňte prosím povinná pole.';
+  if (lang.startsWith('uk') || lang.startsWith('ua')) return 'Будь ласка, заповніть обов’язкові поля.';
+  return 'Uzupełnij wymagane pola.';
+}
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.mobile-toggle');
@@ -31,6 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const submit = form.querySelector('button[type="submit"]');
+      const invalidCustomSelect = Array.from(form.querySelectorAll('.custom-select select[required]')).find(select => !select.value);
+      if (invalidCustomSelect) {
+        const trigger = invalidCustomSelect.closest('.custom-select')?.querySelector('.custom-select-trigger');
+        alert(form.dataset.validationMessage || adagoValidationMessage());
+        trigger?.focus();
+        return;
+      }
       const formData = new FormData(form);
       const loadedAt = Number(form.dataset.loadedAt || Date.now());
       const filledHoney = String(formData.get('_honey') || '').trim();
@@ -40,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!formData.has('_subject')) formData.append('_subject', form.dataset.subject || 'New enquiry from adagostay.pl');
       if (!formData.has('_captcha')) formData.append('_captcha', 'false');
       if (submit) {
+        if (!submit.dataset.default) submit.dataset.default = submit.textContent;
         submit.disabled = true;
         submit.textContent = submit.dataset.loading || 'Sending...';
       }
@@ -208,12 +226,31 @@ function initLightboxGallery(root) {
   let startX = null;
 
   const images = thumbs.map(btn => ({ src: btn.dataset.src, alt: btn.dataset.alt || '' }));
+  const frame = main.closest('.gallery-main-frame') || main.parentElement;
+  let pageStartX = null;
+
+  function makeGalleryNav(direction, label, symbol) {
+    if (!frame) return null;
+    let btn = frame.querySelector('.gallery-nav.' + direction);
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'gallery-nav ' + direction;
+      btn.setAttribute('aria-label', label);
+      btn.textContent = symbol;
+      frame.appendChild(btn);
+    }
+    return btn;
+  }
+  const prevPageBtn = makeGalleryNav('prev', 'Poprzednie zdjęcie', '‹');
+  const nextPageBtn = makeGalleryNav('next', 'Następne zdjęcie', '›');
 
   function render(index, updateLightbox = true) {
     current = (index + images.length) % images.length;
     main.src = images[current].src;
     main.alt = images[current].alt;
     thumbs.forEach((btn, i) => btn.classList.toggle('active', i === current));
+    thumbs[current]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     if (count) count.textContent = `${current + 1} / ${images.length}`;
     if (updateLightbox) {
       lightboxImg.src = images[current].src;
@@ -234,6 +271,19 @@ function initLightboxGallery(root) {
     document.body.style.overflow = '';
   }
 
+  prevPageBtn?.addEventListener('click', (e) => { e.stopPropagation(); render(current - 1); });
+  nextPageBtn?.addEventListener('click', (e) => { e.stopPropagation(); render(current + 1); });
+  frame?.addEventListener('touchstart', (e) => { pageStartX = e.changedTouches[0].clientX; }, {passive:true});
+  frame?.addEventListener('touchend', (e) => {
+    if (pageStartX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    const delta = endX - pageStartX;
+    if (Math.abs(delta) > 42) {
+      if (delta > 0) render(current - 1);
+      else render(current + 1);
+    }
+    pageStartX = null;
+  }, {passive:true});
   root.querySelectorAll('[data-open-lightbox]').forEach(el => el.addEventListener('click', openLightbox));
   root.querySelector('[data-lightbox-close]')?.addEventListener('click', closeLightbox);
   root.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => render(current - 1));

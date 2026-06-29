@@ -1,0 +1,11 @@
+Poprawki wprowadzone 2026-06-29
+
+1. Dodano przekierowanie 301 z www.adagostay.pl na adagostay.pl oraz wymuszenie HTTPS w .htaccess.
+2. Dodano analogiczne reguły dla Netlify (_redirects) i instrukcyjny blok dla Nginx.
+3. Poprawiono przycisk szybkiego formularza na stronie głównej i /pl/: dodano data-default="Wyślij".
+4. Usprawniono obsługę formularzy w assets/js/site.js: przyciski zawsze wracają do pierwotnego tekstu po wysyłce.
+5. Poprawiono walidację niestandardowych pól select, aby wymagane pola nie mogły zostać wysłane puste.
+
+Po wgraniu paczki na hosting trzeba wyczyścić cache i sprawdzić:
+- https://www.adagostay.pl/ powinno przejść na https://adagostay.pl/
+- formularz szybkiego zapytania powinien wysłać wiadomość i przywrócić napis na przycisku.
