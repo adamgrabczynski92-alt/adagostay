@@ -264,3 +264,5 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-gallery]').forEach(initLightboxGallery);
 });
 
+
+try { window.adagoTrack = adagoTrack; } catch(e) {}

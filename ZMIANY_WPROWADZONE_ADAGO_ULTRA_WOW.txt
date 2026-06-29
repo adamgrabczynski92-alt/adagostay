@@ -54,3 +54,12 @@ Ważne:
 - Wgraj zawartość tej paczki do katalogu publicznego strony.
 - Po wgraniu wyczyść cache hostingu/przeglądarki.
 - Jeśli na serwerze wcześniej istniał katalog /room-service/, usuń go ręcznie również z hostingu.
+
+
+10. Galeria WOW na podstronach apartamentów:
+   - duże zdjęcie główne i elegancka siatka zdjęć
+   - kliknięcie otwiera zdjęcie na pełnym ekranie
+   - strzałki poprzednie/następne
+   - licznik zdjęć
+   - miniatury w lightboxie
+   - obsługa klawiatury i przesuwania palcem na telefonie
