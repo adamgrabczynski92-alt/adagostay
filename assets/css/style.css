@@ -1929,3 +1929,23 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
   .reviews-premium-actions .ultra-btn{width:100%;min-width:0;text-align:center}
   .reviews-disclosure{margin-top:23px}
 }
+
+
+/* ADAGO LANGUAGE CONSISTENCY 2026-07-19 */
+.brand-consistent .header { background: rgba(7,7,8,.94); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(199,160,86,.22); }
+.brand-consistent .nav a { letter-spacing: .01em; }
+.brand-consistent .nav .cta,
+.brand-consistent .btn.primary,
+.brand-consistent .premium-button:not(.ghost) { border-radius: 999px; box-shadow: 0 14px 30px rgba(0,0,0,.18); }
+.brand-consistent .hero-copy h1 { max-width: 900px; text-wrap: balance; }
+.brand-consistent .hero-metric,
+.brand-consistent .card,
+.brand-consistent .info-card,
+.brand-consistent .form-panel { border-color: rgba(199,160,86,.24); box-shadow: 0 18px 50px rgba(18,18,20,.08); }
+.brand-consistent .price { color: var(--gold, #b8944c); font-size: .96rem; letter-spacing: .02em; }
+.brand-consistent .section-head p,
+.brand-consistent .hero-copy p { max-width: 760px; }
+@media (max-width: 760px) {
+  .brand-consistent .hero-metrics { grid-template-columns: 1fr; }
+  .brand-consistent .hero-metric { padding: 13px 15px; }
+}
