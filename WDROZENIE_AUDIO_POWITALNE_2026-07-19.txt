@@ -2,10 +2,10 @@ WDROŻENIE AUDIO POWITALNEGO — 2026-07-19
 
 Zakres:
 - dodano nagranie: /assets/audio/adago-welcome.mp3,
-- dodano automatyczną próbę odtworzenia na stronach głównych PL, EN, DE, CZ i UA,
+- dodano automatyczną próbę odtworzenia na stronach głównych oraz stronach apartamentów Oaza, Antracyt i Gold w wersjach PL, EN, DE, CZ i UA,
 - dodano wielojęzyczny przycisk odtwórz / pauza / odtwórz ponownie,
 - dodano awaryjne uruchomienie po pierwszej świadomej interakcji, gdy przeglądarka blokuje autoplay z dźwiękiem,
-- nagranie nie uruchamia się ponownie na zwykłych podstronach.
+- nagranie nie uruchamia się na blogu, stronach kontaktowych i prawnych.
 
 Pliki integracji:
 - /assets/js/welcome-audio.js

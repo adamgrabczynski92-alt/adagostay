@@ -44,7 +44,7 @@
   }
 
   function initWelcomeAudio() {
-    if (!document.body.classList.contains('page-home')) return;
+    if (!document.body.matches('.page-home, .page-apartment')) return;
 
     const copy = messages[pageLanguage()] || messages.pl;
     const audio = document.createElement('audio');
