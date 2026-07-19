@@ -1,0 +1,100 @@
+.adago-audio-control {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 96;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 11px 16px 11px 12px;
+  border: 1px solid rgba(229, 194, 126, .34);
+  border-radius: 999px;
+  background: rgba(14, 11, 8, .92);
+  color: #fff8ec;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .28);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+  font: 750 13px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: .01em;
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.adago-audio-control:hover {
+  transform: translateY(-2px);
+  border-color: rgba(239, 208, 131, .68);
+  background: rgba(26, 19, 12, .96);
+}
+
+.adago-audio-control:focus-visible {
+  outline: 3px solid #efd083;
+  outline-offset: 3px;
+}
+
+.adago-audio-control:disabled {
+  cursor: not-allowed;
+  opacity: .58;
+}
+
+.adago-audio-control__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #efd083, #b88736);
+  color: #0e0b08;
+}
+
+.adago-audio-control__icon::before {
+  content: "";
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid currentColor;
+}
+
+.adago-audio-control[data-state="playing"] .adago-audio-control__icon::before {
+  width: 8px;
+  height: 10px;
+  margin-left: 0;
+  border: 0;
+  border-left: 3px solid currentColor;
+  border-right: 3px solid currentColor;
+}
+
+.adago-audio-control[data-state="playing"] .adago-audio-control__icon::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 1px solid rgba(239, 208, 131, .58);
+  border-radius: 50%;
+  animation: adagoAudioPulse 1.8s ease-out infinite;
+}
+
+@keyframes adagoAudioPulse {
+  0% { transform: scale(.82); opacity: .8; }
+  75%, 100% { transform: scale(1.28); opacity: 0; }
+}
+
+@media (max-width: 768px) {
+  .adago-audio-control {
+    left: 12px;
+    bottom: 110px;
+    max-width: calc(100vw - 24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adago-audio-control,
+  .adago-audio-control__icon::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

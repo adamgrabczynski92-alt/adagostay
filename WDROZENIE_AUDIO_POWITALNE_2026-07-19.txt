@@ -1,0 +1,17 @@
+WDROŻENIE AUDIO POWITALNEGO — 2026-07-19
+
+Zakres:
+- dodano nagranie: /assets/audio/adago-welcome.mp3,
+- dodano automatyczną próbę odtworzenia na stronach głównych PL, EN, DE, CZ i UA,
+- dodano wielojęzyczny przycisk odtwórz / pauza / odtwórz ponownie,
+- dodano awaryjne uruchomienie po pierwszej świadomej interakcji, gdy przeglądarka blokuje autoplay z dźwiękiem,
+- nagranie nie uruchamia się ponownie na zwykłych podstronach.
+
+Pliki integracji:
+- /assets/js/welcome-audio.js
+- /assets/css/welcome-audio.css
+
+Ważne:
+Nowoczesne przeglądarki mogą blokować autoplay z dźwiękiem. Jest to reguła przeglądarki,
+której strona nie może wyłączyć. W takim przypadku nagranie uruchomi się po pierwszym
+kliknięciu / dotknięciu strony, a użytkownik ma również widoczny przycisk sterowania.
