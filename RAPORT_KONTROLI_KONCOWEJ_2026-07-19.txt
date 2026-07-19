@@ -1,0 +1,47 @@
+RAPORT KONTROLI KOŃCOWEJ — ADAGO STAY
+Data: 2026-07-19
+
+ZAKRES
+- Pliki HTML: 133
+- Wszystkie pliki w paczce: 214
+- Formularze kontaktowe: 11
+- Strony awaryjnych przekierowań HTML: 35
+- Adresy w sitemap.xml: 55
+
+WYNIKI
+- Brakujące lokalne pliki lub linki: 0
+- Błędy JSON-LD: 0
+- Obrazy bez width/height: 0
+- Formularze bez linku do polityki prywatności: 0
+- Niewzajemne lub błędne hreflang: 0
+- Adresy sitemap bez prawidłowej strony kanonicznej: 0
+- Uszkodzone pliki WebP: 0
+- Składnia JavaScript: poprawna (site.js i adago-gallery.js)
+
+TESTY FUNKCJONALNE DOM
+- Minimalna data przyjazdu ustawiana na bieżący dzień: OK
+- Minimalna data wyjazdu ustawiana na dzień po przyjeździe: OK
+- Antracyt: opcje 3 i 4 gości wyłączane: OK
+- Galeria: otwieranie lightboxa i lokalizowane etykiety dostępności: OK
+- /pl/ i stare aliasy: natychmiastowe przekierowanie HTML: OK
+- 404: brak automatycznego przekierowania: OK
+
+OPTYMALIZACJA ZDJĘĆ
+- Oryginalne JPG apartamentów: 4.32 MB
+- Wersje WebP używane na stronie: 2.26 MB
+- Przybliżona oszczędność transferu zdjęć: 2.06 MB
+
+UWAGI WDROŻENIOWE
+Prawdziwy kod HTTP 301 wymaga obsługi konfiguracji przez hosting. Paczka zawiera reguły dla Apache/LiteSpeed (.htaccess), Netlify i zgodnych platform (_redirects) oraz Nginx (nginx-redirects.conf). Na hostingu ignorującym te pliki zadziała natychmiastowe przekierowanie HTML, ale nie zastępuje ono serwerowego kodu 301.
+
+Treść polityki prywatności została rozszerzona, ale przed publikacją powinna zostać zatwierdzona przez administratora danych lub prawnika pod kątem faktycznie używanych usług i procesów.
+
+DODATKOWA KONTROLA — LOKALIZACJA I OPINIE GOOGLE
+- Przycisk lokalizacji i dojazdu na stronach głównych PL/EN/DE/CZ/UA: OK
+- Odnośniki do opinii Google na stronach głównych PL/EN/DE/CZ/UA: OK
+- Klikalna ocena Google i przycisk opinii na polskich stronach Antracyt/Gold/Oaza: OK
+- Atrybuty bezpieczeństwa rel="noopener noreferrer" dla nowych kart: OK
+- Brakujące zasoby po zmianach: 0
+- Błędy JSON-LD po zmianach: 0
+- Zduplikowane identyfikatory HTML: 0
+- Składnia JavaScript po zmianach: poprawna

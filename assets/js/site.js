@@ -5,17 +5,103 @@ function adagoTrack(eventName, payload = {}) {
     document.dispatchEvent(new CustomEvent('adago:' + eventName, { detail: payload }));
   } catch (e) {}
 }
+window.adagoTrack = adagoTrack;
 
-function adagoValidationMessage() {
+function adagoLanguage() {
   const lang = (document.documentElement.lang || 'pl').toLowerCase();
-  if (lang.startsWith('en')) return 'Please complete the required fields.';
-  if (lang.startsWith('de')) return 'Bitte füllen Sie die Pflichtfelder aus.';
-  if (lang.startsWith('cs') || lang.startsWith('cz')) return 'Vyplňte prosím povinná pole.';
-  if (lang.startsWith('uk') || lang.startsWith('ua')) return 'Будь ласка, заповніть обов’язкові поля.';
-  return 'Uzupełnij wymagane pola.';
+  if (lang.startsWith('en')) return 'en';
+  if (lang.startsWith('de')) return 'de';
+  if (lang.startsWith('cs') || lang.startsWith('cz')) return 'cs';
+  if (lang.startsWith('uk') || lang.startsWith('ua')) return 'uk';
+  return 'pl';
 }
 
+const adagoMessages = {
+  pl: { required: 'Uzupełnij wymagane pola.', dates: 'Data wyjazdu musi być późniejsza niż data przyjazdu.', guests: 'Apartament Antracyt jest przeznaczony dla maksymalnie 2 osób.' },
+  en: { required: 'Please complete the required fields.', dates: 'The check-out date must be later than the check-in date.', guests: 'Antracyt Apartment accommodates a maximum of 2 guests.' },
+  de: { required: 'Bitte füllen Sie die Pflichtfelder aus.', dates: 'Das Abreisedatum muss nach dem Anreisedatum liegen.', guests: 'Das Apartment Antracyt ist für maximal 2 Gäste geeignet.' },
+  cs: { required: 'Vyplňte prosím povinná pole.', dates: 'Datum odjezdu musí být pozdější než datum příjezdu.', guests: 'Apartmán Antracyt je určen maximálně pro 2 hosty.' },
+  uk: { required: 'Будь ласка, заповніть обов’язкові поля.', dates: 'Дата виїзду має бути пізнішою за дату заїзду.', guests: 'Апартаменти Antracyt розраховані максимум на 2 гостей.' }
+};
 
+function localISODate(date) {
+  const d = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return d.toISOString().slice(0, 10);
+}
+
+function numericGuestValue(option) {
+  const raw = option?.value || option?.textContent || '';
+  const match = String(raw).match(/\d+/);
+  return match ? Number(match[0]) : 0;
+}
+
+function apartmentGuestLimit(form) {
+  const explicit = Number(form.dataset.maxGuests || 0);
+  if (explicit) return explicit;
+  const apartment = form.querySelector('select[name="apartment"], select[data-original-name="apartment"]');
+  const hiddenApartment = form.querySelector('input[type="hidden"][name="apartment"]');
+  const value = String(hiddenApartment?.value || apartment?.value || apartment?.selectedOptions?.[0]?.textContent || '').toLowerCase();
+  return value.includes('antracyt') ? 2 : 4;
+}
+
+function refreshCustomSelect(select) {
+  const wrapper = select.closest('.custom-select');
+  if (wrapper && typeof wrapper.adagoRefresh === 'function') wrapper.adagoRefresh();
+}
+
+function applyGuestLimit(form) {
+  const guests = form.querySelector('select[name="guests"], select[data-original-name="guests"]');
+  if (!guests) return;
+  const limit = apartmentGuestLimit(form);
+  let selectedValue = numericGuestValue(guests.selectedOptions?.[0]);
+  Array.from(guests.options).forEach(option => {
+    const number = numericGuestValue(option);
+    option.disabled = number > limit;
+  });
+  if (selectedValue > limit) {
+    const fallback = Array.from(guests.options).find(option => numericGuestValue(option) === limit && !option.disabled)
+      || Array.from(guests.options).find(option => !option.disabled && option.value);
+    if (fallback) {
+      guests.value = fallback.value;
+      guests.selectedIndex = Array.from(guests.options).indexOf(fallback);
+    }
+  }
+  refreshCustomSelect(guests);
+}
+
+function initDateRules(form) {
+  const dateInputs = Array.from(form.querySelectorAll('input[type="date"]'));
+  if (!dateInputs.length) return;
+  const today = localISODate(new Date());
+  dateInputs.forEach(input => { if (!input.min || input.min < today) input.min = today; });
+  const checkIn = form.querySelector('input[name="check_in"]');
+  const checkOut = form.querySelector('input[name="check_out"]');
+  if (!checkIn || !checkOut) return;
+
+  const sync = () => {
+    const base = checkIn.value ? new Date(checkIn.value + 'T12:00:00') : new Date();
+    base.setDate(base.getDate() + 1);
+    const minCheckout = localISODate(base);
+    checkOut.min = minCheckout;
+    if (checkOut.value && checkOut.value < minCheckout) checkOut.value = '';
+  };
+  checkIn.addEventListener('change', sync);
+  sync();
+}
+
+function validateDates(form) {
+  const checkIn = form.querySelector('input[name="check_in"]');
+  const checkOut = form.querySelector('input[name="check_out"]');
+  if (!checkIn || !checkOut || !checkIn.value || !checkOut.value) return true;
+  return checkOut.value > checkIn.value;
+}
+
+function validateGuestLimit(form) {
+  const hidden = form.querySelector('input[type="hidden"][name="guests"]');
+  const guests = form.querySelector('select[name="guests"], select[data-original-name="guests"]');
+  const value = Number(String(hidden?.value || guests?.value || '').match(/\d+/)?.[0] || 0);
+  return !value || value <= apartmentGuestLimit(form);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.mobile-toggle');
@@ -27,33 +113,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const contactForms = Array.from(document.querySelectorAll('form[data-form-type="contact"]'));
+  contactForms.forEach(form => {
+    initDateRules(form);
+    applyGuestLimit(form);
+    const apartment = form.querySelector('select[name="apartment"]');
+    apartment?.addEventListener('change', () => applyGuestLimit(form));
+  });
+
   initCustomSelects(document);
+  contactForms.forEach(form => applyGuestLimit(form));
 
   document.querySelectorAll('a[href^="https://wa.me"], a[href*="whatsapp"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_whatsapp', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="tel:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_phone', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="mailto:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_email', { href: link.getAttribute('href') || '' })));
-  if (location.pathname.indexOf('/apartament/') !== -1) { adagoTrack('view_apartment', { path: location.pathname }); }
+  if (location.pathname.includes('/apartament/')) adagoTrack('view_apartment', { path: location.pathname });
 
-  const forms = document.querySelectorAll('form[data-form-type="contact"]');
-  forms.forEach(form => {
-    const successBox = form.parentElement.querySelector('.success-box') || form.querySelector('.success-box');
+  contactForms.forEach(form => {
+    const successBox = form.parentElement?.querySelector('.success-box') || form.querySelector('.success-box');
     form.dataset.loadedAt = String(Date.now());
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const lang = adagoLanguage();
+      const msg = adagoMessages[lang] || adagoMessages.pl;
       const submit = form.querySelector('button[type="submit"]');
-      const invalidCustomSelect = Array.from(form.querySelectorAll('.custom-select select[required]')).find(select => !select.value);
+      const invalidCustomSelect = Array.from(form.querySelectorAll('.custom-select select[required]')).find(select => {
+        const hidden = select.closest('.custom-select')?.querySelector('input[type="hidden"]');
+        return !hidden?.value;
+      });
       if (invalidCustomSelect) {
-        const trigger = invalidCustomSelect.closest('.custom-select')?.querySelector('.custom-select-trigger');
-        alert(form.dataset.validationMessage || adagoValidationMessage());
-        trigger?.focus();
+        alert(form.dataset.validationMessage || msg.required);
+        invalidCustomSelect.closest('.custom-select')?.querySelector('.custom-select-trigger')?.focus();
+        return;
+      }
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      if (!validateDates(form)) {
+        alert(msg.dates);
+        form.querySelector('input[name="check_out"]')?.focus();
+        return;
+      }
+      if (!validateGuestLimit(form)) {
+        alert(msg.guests);
+        applyGuestLimit(form);
         return;
       }
       const formData = new FormData(form);
       const loadedAt = Number(form.dataset.loadedAt || Date.now());
       const filledHoney = String(formData.get('_honey') || '').trim();
-      if (filledHoney || (Date.now() - loadedAt) < 2500) {
-        return;
-      }
+      if (filledHoney || (Date.now() - loadedAt) < 2500) return;
       if (!formData.has('_subject')) formData.append('_subject', form.dataset.subject || 'New enquiry from adagostay.pl');
       if (!formData.has('_captcha')) formData.append('_captcha', 'false');
       if (submit) {
@@ -63,16 +173,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       try {
         const res = await fetch('https://formsubmit.co/ajax/adagostay@gmail.com', {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: formData
+          method: 'POST', headers: { Accept: 'application/json' }, body: formData
         });
         let data = {};
-        try { data = await res.json(); } catch (e) { data = {}; }
+        try { data = await res.json(); } catch (e) {}
         if (!res.ok) throw new Error(data.message || 'Form error');
         adagoTrack('form_submit', { form_type: form.dataset.formType || 'contact' });
         form.reset();
         form.querySelectorAll('select').forEach(sel => sel.dispatchEvent(new Event('change', { bubbles: true })));
+        applyGuestLimit(form);
+        initDateRules(form);
         if (successBox) {
           successBox.style.display = 'block';
           successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -93,13 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-
-
 function initCustomSelects(scope = document) {
   const nativeSelects = scope.querySelectorAll('select:not([data-customized])');
-  nativeSelects.forEach((select) => {
+  nativeSelects.forEach(select => {
     select.dataset.customized = 'true';
+    select.dataset.originalName = select.name;
 
     const wrapper = document.createElement('div');
     wrapper.className = 'custom-select';
@@ -108,7 +216,6 @@ function initCustomSelects(scope = document) {
     hiddenInput.type = 'hidden';
     hiddenInput.name = select.name;
     hiddenInput.value = select.value;
-    if (select.required) hiddenInput.dataset.required = 'true';
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
@@ -129,14 +236,19 @@ function initCustomSelects(scope = document) {
     menu.className = 'custom-select-menu';
     menu.setAttribute('role', 'listbox');
 
+    function closeSelect() {
+      wrapper.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
     const updateFromSelect = () => {
       hiddenInput.value = select.value;
       triggerText.textContent = select.options[select.selectedIndex]?.textContent || select.options[0]?.textContent || '';
-      menu.querySelectorAll('.custom-select-option').forEach((el, index) => {
-        const active = index === select.selectedIndex;
+      Array.from(menu.querySelectorAll('.custom-select-option')).forEach(el => {
+        const optionIndex = Number(el.dataset.index);
+        const active = optionIndex === select.selectedIndex;
         el.classList.toggle('active', active);
-        if (active) el.setAttribute('aria-selected', 'true');
-        else el.removeAttribute('aria-selected');
+        el.setAttribute('aria-selected', String(active));
       });
     };
 
@@ -148,8 +260,12 @@ function initCustomSelects(scope = document) {
         item.className = 'custom-select-option';
         item.setAttribute('role', 'option');
         item.dataset.value = option.value;
+        item.dataset.index = String(index);
         item.textContent = option.textContent;
+        item.disabled = option.disabled;
+        item.setAttribute('aria-disabled', String(option.disabled));
         item.addEventListener('click', () => {
+          if (option.disabled) return;
           select.selectedIndex = index;
           select.value = option.value;
           updateFromSelect();
@@ -160,13 +276,9 @@ function initCustomSelects(scope = document) {
       });
       updateFromSelect();
     };
+    wrapper.adagoRefresh = renderOptions;
 
-    function closeSelect() {
-      wrapper.classList.remove('open');
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-
-    trigger.addEventListener('click', (e) => {
+    trigger.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
       const isOpen = wrapper.classList.contains('open');
@@ -181,11 +293,7 @@ function initCustomSelects(scope = document) {
     });
 
     select.addEventListener('change', updateFromSelect);
-    select.form?.addEventListener('reset', () => {
-      setTimeout(() => {
-        updateFromSelect();
-      }, 0);
-    });
+    select.form?.addEventListener('reset', () => setTimeout(() => { renderOptions(); }, 0));
 
     select.classList.add('is-hidden-native-select');
     select.removeAttribute('name');
@@ -203,7 +311,7 @@ function initCustomSelects(scope = document) {
 
   if (!document.body.dataset.customSelectGlobalBound) {
     document.body.dataset.customSelectGlobalBound = 'true';
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       if (!e.target.closest('.custom-select')) {
         document.querySelectorAll('.custom-select.open').forEach(el => {
           el.classList.remove('open');
@@ -213,106 +321,3 @@ function initCustomSelects(scope = document) {
     });
   }
 }
-
-function initLightboxGallery(root) {
-  const main = root.querySelector('[data-gallery-main]');
-  const count = root.querySelector('[data-gallery-count]');
-  const lightbox = root.querySelector('[data-lightbox]');
-  const lightboxImg = root.querySelector('[data-lightbox-image]');
-  const lightboxCount = root.querySelector('[data-lightbox-count]');
-  const thumbs = Array.from(root.querySelectorAll('[data-gallery-thumb]'));
-  if (!main || !thumbs.length || !lightbox || !lightboxImg) return;
-  let current = Math.max(0, thumbs.findIndex(btn => btn.classList.contains('active')));
-  let startX = null;
-
-  const images = thumbs.map(btn => ({ src: btn.dataset.src, alt: btn.dataset.alt || '' }));
-  const frame = main.closest('.gallery-main-frame') || main.parentElement;
-  let pageStartX = null;
-
-  function makeGalleryNav(direction, label, symbol) {
-    if (!frame) return null;
-    let btn = frame.querySelector('.gallery-nav.' + direction);
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'gallery-nav ' + direction;
-      btn.setAttribute('aria-label', label);
-      btn.textContent = symbol;
-      frame.appendChild(btn);
-    }
-    return btn;
-  }
-  const prevPageBtn = makeGalleryNav('prev', 'Poprzednie zdjęcie', '‹');
-  const nextPageBtn = makeGalleryNav('next', 'Następne zdjęcie', '›');
-
-  function render(index, updateLightbox = true) {
-    current = (index + images.length) % images.length;
-    main.src = images[current].src;
-    main.alt = images[current].alt;
-    thumbs.forEach((btn, i) => btn.classList.toggle('active', i === current));
-    thumbs[current]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    if (count) count.textContent = `${current + 1} / ${images.length}`;
-    if (updateLightbox) {
-      lightboxImg.src = images[current].src;
-      lightboxImg.alt = images[current].alt;
-      if (lightboxCount) lightboxCount.textContent = `${current + 1} / ${images.length}`;
-    }
-  }
-
-  thumbs.forEach((btn, i) => btn.addEventListener('click', () => render(i)));
-
-  function openLightbox() {
-    render(current);
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeLightbox() {
-    lightbox.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  prevPageBtn?.addEventListener('click', (e) => { e.stopPropagation(); render(current - 1); });
-  nextPageBtn?.addEventListener('click', (e) => { e.stopPropagation(); render(current + 1); });
-  frame?.addEventListener('touchstart', (e) => { pageStartX = e.changedTouches[0].clientX; }, {passive:true});
-  frame?.addEventListener('touchend', (e) => {
-    if (pageStartX === null) return;
-    const endX = e.changedTouches[0].clientX;
-    const delta = endX - pageStartX;
-    if (Math.abs(delta) > 42) {
-      if (delta > 0) render(current - 1);
-      else render(current + 1);
-    }
-    pageStartX = null;
-  }, {passive:true});
-  root.querySelectorAll('[data-open-lightbox]').forEach(el => el.addEventListener('click', openLightbox));
-  root.querySelector('[data-lightbox-close]')?.addEventListener('click', closeLightbox);
-  root.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => render(current - 1));
-  root.querySelector('[data-lightbox-next]')?.addEventListener('click', () => render(current + 1));
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', (e) => {
-    if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') render(current - 1);
-    if (e.key === 'ArrowRight') render(current + 1);
-  });
-  lightbox.addEventListener('touchstart', (e) => { startX = e.changedTouches[0].clientX; }, {passive:true});
-  lightbox.addEventListener('touchend', (e) => {
-    if (startX === null) return;
-    const endX = e.changedTouches[0].clientX;
-    const delta = endX - startX;
-    if (Math.abs(delta) > 45) {
-      if (delta > 0) render(current - 1);
-      else render(current + 1);
-    }
-    startX = null;
-  }, {passive:true});
-
-  render(current);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-gallery]').forEach(initLightboxGallery);
-});
-
-
-try { window.adagoTrack = adagoTrack; } catch(e) {}

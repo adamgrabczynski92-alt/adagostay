@@ -1501,7 +1501,7 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
   gap:18px;
 }
 .ultra-gallery-intro::after{
-  content:"Przewiń galerię  →";
+  content:attr(data-gallery-hint);
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -1654,3 +1654,26 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
   .adago-lightbox__image{max-height:calc(100vh - 166px)}
   .adago-lightbox__thumb{flex-basis:60px;width:60px;height:46px}
 }
+
+
+/* Accessibility and form refinements */
+.skip-link{position:fixed;left:16px;top:12px;z-index:99999;padding:12px 16px;border-radius:10px;background:#fff;color:#111;text-decoration:none;font-weight:800;transform:translateY(-160%);transition:transform .18s ease;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.skip-link:focus{transform:translateY(0);outline:3px solid #d3a64e;outline-offset:3px}
+.custom-select-option:disabled,.custom-select-option[aria-disabled="true"]{opacity:.42;cursor:not-allowed}
+.form-consent{font-size:.82rem;line-height:1.55;color:inherit;opacity:.82;margin-top:10px}
+.form-consent a{text-decoration:underline;text-underline-offset:2px}
+/* Google Maps CTA on home-page location sections */
+.location-map-cta{display:flex;justify-content:flex-start;margin-top:26px}
+.location-map-cta.centered{justify-content:center;margin-top:30px}
+.location-map-cta .premium-button,.location-map-cta .ultra-btn{gap:10px}
+@media (max-width:768px){.location-map-cta,.location-map-cta.centered{justify-content:stretch}.location-map-cta .premium-button,.location-map-cta .ultra-btn{width:100%;text-align:center}}
+
+/* Google reviews links */
+.review-google-link{display:block;color:inherit;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.review-google-link:hover,.review-google-link:focus-visible{transform:translateY(-2px);border-color:rgba(211,166,78,.72);box-shadow:0 14px 32px rgba(70,45,12,.12);outline:none}
+.review-inline-link{margin-top:14px}
+.review-google-cta{display:flex;justify-content:flex-start;margin-top:20px}
+.review-google-cta.centered{justify-content:center;margin-top:28px}
+.review-google-cta .premium-button,.review-google-cta .ultra-btn{gap:10px}
+.ultra-section.light .review-google-cta .ultra-btn.ghost{background:#17110c;color:#fff7ea;border-color:#17110c}
+@media (max-width:768px){.review-google-cta,.review-google-cta.centered{justify-content:stretch}.review-google-cta .premium-button,.review-google-cta .ultra-btn{width:100%;text-align:center}}

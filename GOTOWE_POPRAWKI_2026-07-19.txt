@@ -1,0 +1,21 @@
+ADAGO STAY — POPRAWKI WPROWADZONE 2026-07-19
+
+1. Usunięto teksty będące notatkami projektowymi i zastąpiono je treścią dla gości.
+2. Ujednolicono prezentację ocen: Google 4,8/5; Booking na stronach apartamentów: Antracyt 8,5/10, Gold 9,2/10, Oaza 9,3/10.
+3. Formularze ograniczają Antracyt do maksymalnie 2 osób.
+4. Pola dat blokują terminy z przeszłości i wymagają, aby wyjazd był później niż przyjazd.
+5. Do wszystkich formularzy dodano link do polityki prywatności.
+6. Rozbudowano politykę prywatności we wszystkich wersjach językowych.
+7. Poprawiono hreflang apartamentów i usunięto nieprawidłowe odnośniki z podstron noindex.
+8. /pl/ i stare aliasy mają natychmiastowe przekierowanie awaryjne; prawdziwe 301 są zapisane w .htaccess, _redirects i nginx-redirects.conf.
+9. Strona 404 nie przekierowuje automatycznie.
+10. Galeria ma etykiety dostępności w języku aktualnej strony.
+11. Dodano link „Przejdź do treści” i wymiary obrazów.
+12. Zdjęcia apartamentów mają zoptymalizowane wersje WebP używane na stronie.
+
+WAŻNE WDROŻENIOWO:
+- Apache/LiteSpeed: wgraj plik .htaccess.
+- Netlify/Cloudflare Pages (zgodnie z obsługą platformy): użyj pliku _redirects.
+- Nginx: dołącz reguły z nginx-redirects.conf do konfiguracji serwera.
+- GitHub Pages nie wykonuje serwerowych 301; w takim przypadku działają natychmiastowe przekierowania HTML, ale warto przenieść hosting lub ustawić przekierowania na warstwie CDN/DNS.
+- Przed publikacją administrator powinien zatwierdzić treść polityki prywatności i aktualność ocen.

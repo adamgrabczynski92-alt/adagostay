@@ -1,0 +1,3 @@
+Dodano lekki przycisk otwierający lokalizację Adago Stay w Google Maps na stronach głównych PL, EN, DE, CZ i UA.
+Mapa osadzona pozostaje wyłącznie na stronach kontaktowych, aby nie obciążać stron głównych.
+Adres Google Maps: https://www.google.com/maps?cid=9439642969662825551
