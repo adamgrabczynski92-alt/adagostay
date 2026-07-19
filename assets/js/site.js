@@ -56,7 +56,9 @@ function applyGuestLimit(form) {
   let selectedValue = numericGuestValue(guests.selectedOptions?.[0]);
   Array.from(guests.options).forEach(option => {
     const number = numericGuestValue(option);
-    option.disabled = number > limit;
+    const overLimit = number > limit;
+    option.disabled = overLimit;
+    option.hidden = overLimit;
   });
   if (selectedValue > limit) {
     const fallback = Array.from(guests.options).find(option => numericGuestValue(option) === limit && !option.disabled)
@@ -255,6 +257,7 @@ function initCustomSelects(scope = document) {
     const renderOptions = () => {
       menu.innerHTML = '';
       Array.from(select.options).forEach((option, index) => {
+        if (option.hidden) return;
         const item = document.createElement('button');
         item.type = 'button';
         item.className = 'custom-select-option';
