@@ -1843,3 +1843,89 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
   .reviews-transparency-note,
   .reviews-legal-note { padding: 16px; border-radius: 15px; }
 }
+
+
+/* ADAGO 2026 — premium redesign sekcji opinii */
+.reviews-premium-section{
+  position:relative;
+  overflow:hidden;
+  padding:94px 0 82px;
+  background:
+    radial-gradient(circle at 82% 12%,rgba(196,151,73,.12),transparent 28%),
+    radial-gradient(circle at 12% 90%,rgba(126,82,37,.10),transparent 32%),
+    #0e0b08;
+  border-top:1px solid rgba(229,194,126,.10);
+  border-bottom:1px solid rgba(229,194,126,.10);
+}
+.reviews-premium-section:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(120deg,transparent 0 42%,rgba(255,255,255,.018) 42% 43%,transparent 43% 100%);
+}
+.reviews-premium-header{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:42px;align-items:end;margin-bottom:34px}
+.reviews-premium-copy{max-width:760px}
+.reviews-premium-copy .ultra-section-title{margin:8px 0 14px;color:#fff8ec;font-size:58px;font-size:clamp(42px,4.5vw,64px);line-height:1.02}
+.reviews-premium-copy>p{margin:0;color:#cfc2b1;font-size:17px;line-height:1.7;max-width:660px}
+.reviews-score-pills{display:flex;gap:12px;align-items:stretch}
+.review-score-pill{min-width:142px;padding:18px 20px;border-radius:20px;border:1px solid rgba(227,187,111,.25);background:rgba(255,255,255,.045);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);text-align:left}
+.review-score-pill strong{display:block;font-family:Georgia,serif;color:#efd083;font-size:39px;line-height:.95}
+.review-score-pill span{display:block;color:#fff8ec;font-weight:800;font-size:12px;letter-spacing:.10em;text-transform:uppercase;margin-top:9px}
+.review-score-pill small{display:block;color:#9f9385;font-size:12px;margin-top:4px}
+.reviews-premium-section .guest-reviews-grid{gap:20px}
+.reviews-premium-section .premium-review-card{
+  position:relative;min-height:310px;padding:27px 27px 24px;border-radius:26px;
+  border:1px solid rgba(226,182,96,.24);
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.026));
+  box-shadow:0 28px 70px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.035);
+}
+.reviews-premium-section .premium-review-card:before{
+  content:"";position:absolute;left:26px;right:26px;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,#d5aa55,transparent);opacity:.55
+}
+.reviews-premium-section .guest-review-top{margin-bottom:22px}
+.reviews-premium-section .guest-review-mark{font-size:52px;color:#eacb7f;opacity:.95}
+.reviews-premium-section .guest-source{display:inline-flex;color:#e9d9bb;border-color:rgba(233,202,139,.30);background:rgba(255,255,255,.025);padding:7px 11px}
+.reviews-premium-section .guest-review-card p{font-family:Georgia,serif;color:#f4eadb;font-size:18px;line-height:1.65;margin-bottom:25px}
+.reviews-premium-section .guest-review-author{border-top-color:rgba(255,255,255,.09);padding-top:17px}
+.reviews-premium-section .guest-review-author strong{color:#fff;font-size:16px}
+.reviews-premium-section .guest-review-author span{display:block;color:#a99d8e;font-size:12.5px;margin-top:5px}
+.reviews-premium-section .guest-carousel-controls{margin:25px 0 4px}
+.reviews-premium-section .guest-carousel-status{color:#a99d8e}
+.reviews-premium-actions{margin:30px 0 0}
+.reviews-premium-actions .ultra-btn{min-width:210px}
+.reviews-disclosure{max-width:820px;margin:30px auto 0;border-top:1px solid rgba(255,255,255,.09);color:#b9ad9f}
+.reviews-disclosure summary{list-style:none;cursor:pointer;text-align:center;padding:18px 0 4px;color:#cdbfae;font-size:13px;font-weight:750;letter-spacing:.03em}
+.reviews-disclosure summary::-webkit-details-marker{display:none}
+.reviews-disclosure summary:after{content:" +";color:#d9b96d;font-size:16px}
+.reviews-disclosure[open] summary:after{content:" −"}
+.reviews-disclosure>div{padding:10px 16px 4px;text-align:center;font-size:13.5px;line-height:1.65}
+.reviews-disclosure p{margin:0 0 8px}
+.reviews-disclosure a{color:#dfbd71;font-weight:750}
+
+/* Strona opinii — najpierw recenzje, zasady dopiero niżej */
+.page-reviews .reviews-page-hero{padding-bottom:54px}
+.page-reviews .reviews-library-section{padding-top:78px}
+.page-reviews .reviews-library-section .guest-review-card{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.03));border-radius:24px}
+.page-reviews .reviews-policy-bottom{padding:82px 0;background:#f7f1e8;border-top:1px solid rgba(137,99,51,.12)}
+.page-reviews .reviews-policy-bottom .ultra-section-title{max-width:650px}
+.page-reviews .reviews-policy-bottom .reviews-policy-grid{margin-top:34px}
+.page-reviews .reviews-policy-bottom .ultra-info-panel{background:#fffdf9;border:1px solid rgba(137,99,51,.14);box-shadow:0 18px 44px rgba(68,45,20,.07);border-radius:22px}
+.page-reviews .reviews-policy-bottom .ultra-info-panel h3{font-family:Georgia,serif;font-size:24px}
+.page-reviews .reviews-policy-bottom .reviews-legal-note{margin-top:22px}
+
+@media(max-width:900px){
+  .reviews-premium-header{grid-template-columns:1fr;gap:25px}
+  .reviews-score-pills{justify-content:flex-start}
+}
+@media(max-width:640px){
+  .reviews-premium-section{padding:64px 0 58px}
+  .reviews-premium-copy .ultra-section-title{font-size:42px}
+  .reviews-premium-copy>p{font-size:15.5px}
+  .reviews-score-pills{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .review-score-pill{min-width:0;padding:15px 16px}
+  .review-score-pill strong{font-size:34px}
+  .reviews-premium-section .premium-review-card{min-height:322px;padding:24px 22px}
+  .reviews-premium-section .guest-review-card p{font-size:17px}
+  .reviews-premium-actions{display:grid;grid-template-columns:1fr;margin-top:24px}
+  .reviews-premium-actions .ultra-btn{width:100%;min-width:0;text-align:center}
+  .reviews-disclosure{margin-top:23px}
+}
