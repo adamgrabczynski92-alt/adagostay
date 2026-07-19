@@ -163,6 +163,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const formData = new FormData(form);
+      const guestField = form.querySelector('input[type="hidden"][name="guests"], select[name="guests"], select[data-original-name="guests"]');
+      const guestValue = String(guestField?.value || '');
+      const guestCount = Number(guestValue.match(/\d+/)?.[0] || 0);
+      const guestLimit = apartmentGuestLimit(form);
+      if (guestCount > guestLimit) {
+        alert(msg.guests);
+        applyGuestLimit(form);
+        return;
+      }
+      if (guestValue) formData.set('guests', guestValue);
+      formData.set('guest_limit', String(guestLimit));
       const loadedAt = Number(form.dataset.loadedAt || Date.now());
       const filledHoney = String(formData.get('_honey') || '').trim();
       if (filledHoney || (Date.now() - loadedAt) < 2500) return;
@@ -207,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initCustomSelects(scope = document) {
   const nativeSelects = scope.querySelectorAll('select:not([data-customized])');
-  nativeSelects.forEach(select => {
+  nativeSelects.forEach((select, selectIndex) => {
     select.dataset.customized = 'true';
     select.dataset.originalName = select.name;
 
@@ -224,23 +235,61 @@ function initCustomSelects(scope = document) {
     trigger.className = 'custom-select-trigger';
     trigger.setAttribute('aria-haspopup', 'listbox');
     trigger.setAttribute('aria-expanded', 'false');
+    const uniqueId = 'adago-select-' + selectIndex + '-' + Math.random().toString(36).slice(2, 8);
+    trigger.id = uniqueId + '-trigger';
     const fieldLabel = select.getAttribute('aria-label') || select.closest('div')?.querySelector('label')?.textContent?.trim() || select.name || 'Select';
     trigger.setAttribute('aria-label', fieldLabel);
+    if (select.required) trigger.setAttribute('aria-required', 'true');
 
     const triggerText = document.createElement('span');
     triggerText.className = 'custom-select-text';
     const triggerIcon = document.createElement('span');
     triggerIcon.className = 'custom-select-icon';
+    triggerIcon.setAttribute('aria-hidden', 'true');
     triggerIcon.innerHTML = '&#9662;';
     trigger.append(triggerText, triggerIcon);
 
     const menu = document.createElement('div');
     menu.className = 'custom-select-menu';
+    menu.id = uniqueId + '-listbox';
     menu.setAttribute('role', 'listbox');
+    menu.setAttribute('aria-labelledby', trigger.id);
+    menu.tabIndex = -1;
+    trigger.setAttribute('aria-controls', menu.id);
 
-    function closeSelect() {
+    const optionButtons = () => Array.from(menu.querySelectorAll('.custom-select-option:not(:disabled)'));
+
+    function closeSelect(returnFocus = false) {
       wrapper.classList.remove('open');
       trigger.setAttribute('aria-expanded', 'false');
+      menu.removeAttribute('aria-activedescendant');
+      if (returnFocus) trigger.focus();
+    }
+
+    function closeOtherSelects() {
+      document.querySelectorAll('.custom-select.open').forEach(el => {
+        if (el === wrapper) return;
+        el.classList.remove('open');
+        el.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
+        el.querySelector('.custom-select-menu')?.removeAttribute('aria-activedescendant');
+      });
+    }
+
+    function focusOption(preference = 'selected') {
+      const enabled = optionButtons();
+      if (!enabled.length) return;
+      let target = enabled[0];
+      if (preference === 'last') target = enabled[enabled.length - 1];
+      if (preference === 'selected') target = enabled.find(item => item.classList.contains('active')) || target;
+      target.focus();
+      menu.setAttribute('aria-activedescendant', target.id);
+    }
+
+    function openSelect(preference = 'selected') {
+      closeOtherSelects();
+      wrapper.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+      requestAnimationFrame(() => focusOption(preference));
     }
 
     const updateFromSelect = () => {
@@ -254,12 +303,26 @@ function initCustomSelects(scope = document) {
       });
     };
 
+    const chooseOption = item => {
+      if (!item || item.disabled) return;
+      const index = Number(item.dataset.index);
+      const option = select.options[index];
+      if (!option || option.disabled || option.hidden) return;
+      select.selectedIndex = index;
+      select.value = option.value;
+      updateFromSelect();
+      closeSelect(true);
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+
     const renderOptions = () => {
+      const wasOpen = wrapper.classList.contains('open');
       menu.innerHTML = '';
       Array.from(select.options).forEach((option, index) => {
         if (option.hidden) return;
         const item = document.createElement('button');
         item.type = 'button';
+        item.id = uniqueId + '-option-' + index;
         item.className = 'custom-select-option';
         item.setAttribute('role', 'option');
         item.dataset.value = option.value;
@@ -267,32 +330,67 @@ function initCustomSelects(scope = document) {
         item.textContent = option.textContent;
         item.disabled = option.disabled;
         item.setAttribute('aria-disabled', String(option.disabled));
-        item.addEventListener('click', () => {
-          if (option.disabled) return;
-          select.selectedIndex = index;
-          select.value = option.value;
-          updateFromSelect();
-          closeSelect();
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-        });
+        item.addEventListener('click', () => chooseOption(item));
+        item.addEventListener('focus', () => menu.setAttribute('aria-activedescendant', item.id));
         menu.appendChild(item);
       });
       updateFromSelect();
+      if (wasOpen) requestAnimationFrame(() => focusOption('selected'));
     };
     wrapper.adagoRefresh = renderOptions;
 
     trigger.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
-      const isOpen = wrapper.classList.contains('open');
-      document.querySelectorAll('.custom-select.open').forEach(el => {
-        if (el !== wrapper) {
-          el.classList.remove('open');
-          el.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
-        }
-      });
-      wrapper.classList.toggle('open', !isOpen);
-      trigger.setAttribute('aria-expanded', String(!isOpen));
+      if (wrapper.classList.contains('open')) closeSelect();
+      else openSelect('selected');
+    });
+
+    trigger.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        openSelect('selected');
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        openSelect('last');
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        openSelect('first');
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        openSelect('last');
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeSelect();
+      }
+    });
+
+    menu.addEventListener('keydown', e => {
+      const enabled = optionButtons();
+      if (!enabled.length) return;
+      const currentIndex = Math.max(0, enabled.indexOf(document.activeElement));
+      let nextIndex = currentIndex;
+      if (e.key === 'ArrowDown') nextIndex = (currentIndex + 1) % enabled.length;
+      else if (e.key === 'ArrowUp') nextIndex = (currentIndex - 1 + enabled.length) % enabled.length;
+      else if (e.key === 'Home') nextIndex = 0;
+      else if (e.key === 'End') nextIndex = enabled.length - 1;
+      else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeSelect(true);
+        return;
+      } else if (e.key === 'Tab') {
+        closeSelect();
+        return;
+      } else if ((e.key === 'Enter' || e.key === ' ') && document.activeElement?.classList.contains('custom-select-option')) {
+        e.preventDefault();
+        chooseOption(document.activeElement);
+        return;
+      } else {
+        return;
+      }
+      e.preventDefault();
+      enabled[nextIndex].focus();
+      menu.setAttribute('aria-activedescendant', enabled[nextIndex].id);
     });
 
     select.addEventListener('change', updateFromSelect);
@@ -319,6 +417,7 @@ function initCustomSelects(scope = document) {
         document.querySelectorAll('.custom-select.open').forEach(el => {
           el.classList.remove('open');
           el.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
+          el.querySelector('.custom-select-menu')?.removeAttribute('aria-activedescendant');
         });
       }
     });

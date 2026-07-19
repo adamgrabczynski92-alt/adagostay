@@ -284,6 +284,8 @@ select option{background:#171210;color:#f5ead7}
 .custom-select.open .custom-select-menu{display:grid;gap:6px}
 .custom-select-option{width:100%;text-align:left;padding:13px 14px;border:1px solid transparent;border-radius:14px;background:transparent;color:#f7ecd9;font:inherit;font-size:15px;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease}
 .custom-select-option:hover,.custom-select-option:focus-visible{outline:none;background:rgba(223,191,149,.10);border-color:rgba(223,191,149,.16)}
+.custom-select-option:disabled{cursor:not-allowed;opacity:.48}
+.custom-select-option:disabled:hover{background:transparent;border-color:transparent}
 .custom-select-option.active{background:linear-gradient(135deg,rgba(223,191,149,.22),rgba(179,139,89,.22));border-color:rgba(223,191,149,.24);color:#fff}
 .booking-grid .custom-select-trigger,.form-grid .custom-select-trigger{min-height:54px}
 @media (max-width:780px){.custom-select-trigger{padding:15px 16px}.custom-select-option{padding:14px 13px}}
@@ -1004,7 +1006,8 @@ body.ultra-wow .mobile-toggle{color:#fff;border-color:rgba(255,255,255,.25);back
 .ultra-apartment-hero .place{color:var(--uw-gold2);font-size:24px;font-weight:800;margin:12px 0 22px}
 .ultra-pills{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 0}
 .ultra-pills span{display:inline-flex;border:1px solid rgba(211,166,78,.38);border-radius:999px;padding:9px 12px;background:rgba(255,241,211,.12);font-weight:800;color:#ffe2a1;font-size:14px}
-.ultra-detail-layout{display:grid;grid-template-columns:1fr 360px;gap:28px}
+.ultra-detail-layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px}
+.ultra-detail-layout>*{min-width:0}
 .ultra-gallery-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .ultra-gallery-strip img{height:150px;width:100%;object-fit:cover;border-radius:20px;border:1px solid #ead5ab}
 .ultra-form{display:grid;gap:12px}

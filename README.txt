@@ -15,3 +15,13 @@ Pages:
 - Blog index
 - 4 blog posts
 - Contact page
+
+Nginx deployment:
+- Include nginx-redirects.conf inside the main adagostay.pl server block.
+- Use nginx-www-redirect.conf as a separate top-level HTTP server block.
+- For HTTPS www redirection, add the documented return rule to the existing TLS-enabled www server block.
+
+Important form rule:
+- The Antracyt interface and JavaScript restrict enquiries to 1–2 guests.
+- Final enforcement against manually forged HTTP requests requires server-side validation; FormSubmit.co does not expose custom server validation in this static package.
+

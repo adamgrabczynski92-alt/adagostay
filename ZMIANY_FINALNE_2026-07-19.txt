@@ -1,0 +1,20 @@
+ADAGO STAY — ZMIANY FINALNE
+Data: 2026-07-19
+
+WPROWADZONE POPRAWKI
+1. Naprawiono poziome przewijanie polskich stron apartamentów na desktopie:
+   - kolumna treści używa minmax(0, 1fr),
+   - elementy układu mogą się prawidłowo zwężać.
+2. Rozszerzono obsługę klawiatury w niestandardowych polach wyboru:
+   - strzałki, Home, End, Escape, Enter i Spacja,
+   - przenoszenie fokusu do aktywnej opcji,
+   - właściwe aria-controls, aria-labelledby i aria-activedescendant.
+3. Wzmocniono walidację liczby gości przed wysłaniem formularza i dodano do danych limit apartamentu.
+4. Antracyt nadal dopuszcza tylko 1–2 osoby w interfejsie. Pełna ochrona przed ręcznie spreparowanym żądaniem wymaga walidacji serwerowej.
+5. Rozdzielono konfigurację Nginx:
+   - nginx-redirects.conf zawiera wyłącznie reguły location do użycia wewnątrz głównego server,
+   - nginx-www-redirect.conf jest osobnym, poprawnym blokiem server dla HTTP.
+6. Uzupełniono noreferrer w pięciu linkach Google Maps otwieranych w nowej karcie.
+7. Skrócono tytuły i metaopisy przekraczające zalecane długości.
+8. Usunięto niejednoznaczną informację „Booking 9,6” ze strony głównej; pozostawiono neutralne „wysokie oceny Booking.com”.
+9. Zaktualizowano README i raport końcowy.

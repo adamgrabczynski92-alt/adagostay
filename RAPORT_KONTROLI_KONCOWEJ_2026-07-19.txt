@@ -1,47 +1,59 @@
 RAPORT KONTROLI KOŃCOWEJ — ADAGO STAY
 Data: 2026-07-19
+Wersja: FINAL po poprawkach
 
 ZAKRES
-- Pliki HTML: 133
-- Wszystkie pliki w paczce: 214
+- Pliki HTML: 134
+- Wszystkie pliki w paczce: 228
 - Formularze kontaktowe: 11
 - Strony awaryjnych przekierowań HTML: 35
-- Adresy w sitemap.xml: 55
+- Adresy w sitemap.xml: 56
 
-WYNIKI
+WPROWADZONE POPRAWKI
+- Naprawiono rozszerzanie stron apartamentów do 4047–4983 px na ekranie 1440 px.
+- Układ desktopowy Antracytu, Gold i Oazy mieści się w szerokości 1440 px.
+- Dodano pełniejszą obsługę klawiatury do własnych list wyboru: strzałki, Home, End, Escape, Enter i Spacja.
+- Dodano powiązania ARIA oraz prawidłowe zarządzanie fokusem.
+- Wzmocniono kontrolę liczby gości przed wysłaniem formularza.
+- Dedykowany formularz Antracytu zawiera wyłącznie opcje 1 i 2 osoby.
+- Rozdzielono konfigurację Nginx na reguły location oraz osobny blok przekierowania domeny www.
+- Uzupełniono rel="noopener noreferrer" we wszystkich odnośnikach otwieranych w nowej karcie.
+- Skrócono wszystkie tytuły powyżej 60 znaków i metaopisy powyżej 160 znaków.
+- Usunięto niejednoznaczne hasło „Booking 9,6” ze strony głównej.
+
+WYNIKI KONTROLI STATYCZNEJ
 - Brakujące lokalne pliki lub linki: 0
 - Błędy JSON-LD: 0
 - Obrazy bez width/height: 0
-- Formularze bez linku do polityki prywatności: 0
+- Zduplikowane identyfikatory HTML: 0
+- Linki target="_blank" bez noopener i noreferrer: 0
+- Tytuły powyżej 60 znaków: 0
+- Metaopisy powyżej 160 znaków: 0
 - Niewzajemne lub błędne hreflang: 0
 - Adresy sitemap bez prawidłowej strony kanonicznej: 0
 - Uszkodzone pliki WebP: 0
-- Składnia JavaScript: poprawna (site.js i adago-gallery.js)
+- Składnia wszystkich plików JavaScript: poprawna
 
-TESTY FUNKCJONALNE DOM
-- Minimalna data przyjazdu ustawiana na bieżący dzień: OK
-- Minimalna data wyjazdu ustawiana na dzień po przyjeździe: OK
-- Antracyt: opcje 3 i 4 gości wyłączane: OK
-- Galeria: otwieranie lightboxa i lokalizowane etykiety dostępności: OK
-- /pl/ i stare aliasy: natychmiastowe przekierowanie HTML: OK
-- 404: brak automatycznego przekierowania: OK
+TESTY W PRZEGLĄDARCE CHROMIUM
+- Antracyt, desktop 1440 px: dokument 1440 px — OK
+- Gold, desktop 1440 px: dokument 1440 px — OK
+- Oaza, desktop 1440 px: dokument 1440 px — OK
+- Otwarcie listy klawiszem strzałki i fokus aktywnej opcji: OK
+- Home / End: OK
+- Escape zamyka listę i zwraca fokus do przycisku: OK
+- Antracyt: opcje gości 1 i 2: OK
 
 OPTYMALIZACJA ZDJĘĆ
-- Oryginalne JPG apartamentów: 4.32 MB
-- Wersje WebP używane na stronie: 2.26 MB
-- Przybliżona oszczędność transferu zdjęć: 2.06 MB
+- Oryginalne JPG apartamentów: około 4,32 MB
+- Wersje WebP używane na stronie: około 2,26 MB
+- Przybliżona oszczędność transferu zdjęć: około 2,06 MB
 
 UWAGI WDROŻENIOWE
-Prawdziwy kod HTTP 301 wymaga obsługi konfiguracji przez hosting. Paczka zawiera reguły dla Apache/LiteSpeed (.htaccess), Netlify i zgodnych platform (_redirects) oraz Nginx (nginx-redirects.conf). Na hostingu ignorującym te pliki zadziała natychmiastowe przekierowanie HTML, ale nie zastępuje ono serwerowego kodu 301.
+Prawdziwy kod HTTP 301 wymaga obsługi konfiguracji przez hosting. Paczka zawiera reguły dla Apache/LiteSpeed (.htaccess), Netlify i zgodnych platform (_redirects) oraz Nginx:
+- nginx-redirects.conf należy dołączyć wewnątrz głównego bloku server dla adagostay.pl,
+- nginx-www-redirect.conf jest osobnym blokiem najwyższego poziomu dla HTTP,
+- przekierowanie HTTPS z www należy dodać do istniejącego bloku TLS, który ma już skonfigurowany certyfikat.
 
-Treść polityki prywatności została rozszerzona, ale przed publikacją powinna zostać zatwierdzona przez administratora danych lub prawnika pod kątem faktycznie używanych usług i procesów.
+Ograniczenie Antracytu do 1–2 osób jest egzekwowane w interfejsie i JavaScript. Ponieważ jest to strona statyczna korzystająca z FormSubmit.co, pełna ochrona przed ręcznie spreparowanym żądaniem HTTP wymaga własnej walidacji po stronie serwera lub funkcji bezserwerowej.
 
-DODATKOWA KONTROLA — LOKALIZACJA I OPINIE GOOGLE
-- Przycisk lokalizacji i dojazdu na stronach głównych PL/EN/DE/CZ/UA: OK
-- Odnośniki do opinii Google na stronach głównych PL/EN/DE/CZ/UA: OK
-- Klikalna ocena Google i przycisk opinii na polskich stronach Antracyt/Gold/Oaza: OK
-- Atrybuty bezpieczeństwa rel="noopener noreferrer" dla nowych kart: OK
-- Brakujące zasoby po zmianach: 0
-- Błędy JSON-LD po zmianach: 0
-- Zduplikowane identyfikatory HTML: 0
-- Składnia JavaScript po zmianach: poprawna
+Treść polityki prywatności przed publikacją powinna zostać zatwierdzona pod kątem faktycznie używanych usług i procesów.
