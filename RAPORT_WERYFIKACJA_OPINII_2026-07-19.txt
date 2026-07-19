@@ -1,0 +1,11 @@
+html_files: 134
+missing_local_resources: 0
+duplicate_ids: 0
+json_ld_errors: 0
+unsafe_target_blank: 0
+javascript_errors: 0
+css_brace_balance: 0
+verification_note_home: True
+verification_section_reviews: True
+stay_month_required: True
+booking_links: 0

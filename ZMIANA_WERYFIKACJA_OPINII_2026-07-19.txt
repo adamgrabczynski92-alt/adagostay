@@ -1,0 +1,10 @@
+ADAGO STAY — INFORMACJA O WERYFIKACJI OPINII
+
+Wprowadzono:
+- krótką informację o weryfikowaniu opinii przy karuzeli na stronie głównej,
+- pełną sekcję „Jak weryfikujemy opinie?” w zakładce /pl/opinie/,
+- informację, że publikowane mogą być zarówno opinie pozytywne, jak i krytyczne,
+- wyjaśnienie, że adres e-mail nie jest publikowany,
+- obowiązkowe pole „Miesiąc pobytu” w formularzu opinii, ułatwiające sprawdzenie rezerwacji.
+
+Nie użyto określenia „po moderacji”.

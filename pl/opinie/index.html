@@ -49,6 +49,12 @@
 <span class="ultra-eyebrow">Opinie gości</span>
 <h1 class="ultra-section-title">Opinie przesłane bezpośrednio do Adago Stay</h1>
 <p>Ta zakładka zawiera opinie przekazane bezpośrednio Adago Stay. Nie są one częścią profilu Google ani serwisu Booking. Publiczne opinie z tych platform pokazujemy oddzielnie na stronie głównej wraz z oznaczeniem źródła.</p>
+<div class="reviews-verification-panel" id="weryfikacja-opinii">
+<span class="ultra-eyebrow">Wiarygodność opinii</span>
+<h2>Jak weryfikujemy opinie?</h2>
+<p>Przed publikacją opinii przesłanej przez formularz sprawdzamy, czy adres e-mail, wybrany apartament i podany termin pobytu odpowiadają rzeczywistej rezerwacji. Adres e-mail służy wyłącznie do weryfikacji i nie jest publikowany.</p>
+<p>Publikujemy zarówno opinie pozytywne, jak i krytyczne, jeśli dotyczą pobytu i nie naruszają prawa, prywatności innych osób ani dobrych obyczajów. Nie zmieniamy znaczenia opinii ani wystawionej oceny.</p>
+</div>
 <div class="reviews-page-actions">
 <a class="ultra-btn" href="/#guest-reviews">Opinie z Google i Booking</a>
 <a class="ultra-btn ghost" href="/#booking-form">Sprawdź dostępność</a>
@@ -60,7 +66,7 @@
 <div class="guest-reviews-heading">
 <div><span class="ultra-eyebrow">26 wypowiedzi</span><h2 class="ultra-section-title">Opinie naszych gości</h2></div>
 </div>
-<p class="guest-reviews-lead">Opinie są prezentowane w brzmieniu przekazanym do Adago Stay. Nie oznaczamy ich jako opinii Google ani Booking.</p>
+<p class="guest-reviews-lead">Opinie są prezentowane w brzmieniu przekazanym do Adago Stay. Nie oznaczamy ich jako opinii Google ani Booking. Sposób sprawdzania nowych opinii opisujemy w sekcji <a href="#weryfikacja-opinii">„Jak weryfikujemy opinie?”</a>.</p>
 <div aria-label="Opinie przesłane bezpośrednio do Adago Stay" class="guest-reviews-grid reviews-library-grid">
 <article class="guest-review-card">
 <div class="guest-review-top"><span aria-label="Ocena 5 na 5" class="guest-stars">★★★★★</span><span class="guest-source">Opinia bezpośrednia</span></div>
@@ -210,7 +216,10 @@
 <div><label for="review-name">Imię lub inicjały</label><input id="review-name" name="name" placeholder="np. Anna K." required="" type="text"/></div>
 <div><label for="review-apartment">Apartament</label><select id="review-apartment" name="apartment" required=""><option value="">Wybierz</option><option>Oaza</option><option>Antracyt</option><option>Gold</option></select></div>
 </div>
+<div class="review-form-two">
 <div><label for="review-email">E-mail <small>(nie będzie publikowany)</small></label><input autocomplete="email" id="review-email" name="email" placeholder="twoj@email.pl" required="" type="email"/></div>
+<div><label for="review-stay-month">Miesiąc pobytu</label><input id="review-stay-month" name="stay_month" required="" type="month"/></div>
+</div>
 <fieldset class="rating-fieldset"><legend>Twoja ocena</legend><div class="star-picker">
 <input id="rating-5" name="rating" required="" type="radio" value="5"/><label for="rating-5" title="5 gwiazdek">★</label>
 <input id="rating-4" name="rating" type="radio" value="4"/><label for="rating-4" title="4 gwiazdki">★</label>
