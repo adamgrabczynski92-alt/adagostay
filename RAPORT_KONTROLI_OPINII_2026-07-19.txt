@@ -1,0 +1,18 @@
+{
+  "html_files": 134,
+  "missing_local_resources": 0,
+  "duplicate_ids": 0,
+  "json_ld_errors": 0,
+  "unsafe_target_blank": 0,
+  "booking_external_links": 0,
+  "javascript_errors": 0,
+  "css_brace_balance": 0,
+  "home_public_cards": 10,
+  "home_google_cards": 2,
+  "home_booking_cards": 8,
+  "direct_review_cards": 26,
+  "review_form_present": true,
+  "home_review_form_absent": true,
+  "home_reviews_link": true,
+  "sitemap_has_reviews": true
+}

@@ -1,0 +1,34 @@
+ADAGO STAY — RAPORT KOŃCOWY KARUZELI OPINII
+Data: 2026-07-19
+
+WPROWADZONE ZMIANY
+- Dodano 26 opinii przekazanych przez właściciela strony.
+- Na komputerze widoczne są 3 opinie jednocześnie.
+- Na tablecie widoczne są 2 opinie jednocześnie.
+- Na telefonie widoczna jest 1 opinia.
+- Kolejność jest losowana przy każdym wejściu na stronę.
+- Opinie są pobierane z całej puli i nie wracają przed jej wyczerpaniem.
+- Powtarzające się podpisy nie są wyświetlane w jednym zestawie.
+- Automatyczna zmiana następuje co 9 sekund.
+- Dodano strzałki poprzednia/następna oraz wskaźnik czasu.
+- Dodano przycisk „Zobacz wszystkie opinie”.
+- Po rozwinięciu widoczna jest pełna lista 26 opinii.
+- Rotacja zatrzymuje się podczas czytania, obsługi klawiaturą i w nieaktywnej karcie.
+- Osoby z ustawieniem ograniczonych animacji nie otrzymują automatycznej rotacji.
+- Usunięto widoczne oznaczenia źródła i powtarzający się podpis „Gość Adago Stay”.
+- W sekcji opinii nie ma linków do Booking.
+- Nie ma widocznego napisu o moderacji.
+- Ujednolicono ocenę Google do 4,9.
+- Poprawiono ukryte pola wyboru gwiazdek, aby nie powodowały poziomego przewijania strony.
+
+KONTROLA KOŃCOWA
+- Pliki HTML: 133
+- Opinie: 26
+- Brakujące zasoby lokalne: 0
+- Powielone identyfikatory HTML: 0
+- Błędy JSON-LD: 0
+- Błędy składni JavaScript: 0
+- Niezbilansowane nawiasy CSS: 0
+- Linki do Booking w sekcji opinii: 0
+- Widoczny napis o moderacji: nie
+- Test automatycznej rotacji: zaliczony; po 9 sekundach wyświetlił się inny zestaw opinii.

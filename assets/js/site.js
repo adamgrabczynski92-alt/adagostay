@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const contactForms = Array.from(document.querySelectorAll('form[data-form-type="contact"]'));
+  const contactForms = Array.from(document.querySelectorAll('form[data-form-type]'));
   contactForms.forEach(form => {
     initDateRules(form);
     applyGuestLimit(form);
