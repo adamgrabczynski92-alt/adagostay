@@ -33,19 +33,16 @@ RewriteRule ^pl/blog/nocleg\-dla\-par\-walbrzych/?$ https://adagostay.pl/pl/nocl
 RewriteRule ^pl/blog/nocleg\-dla\-pracownikow\-walbrzych/?$ https://adagostay.pl/pl/blog/apartament-dla-firm-w-walbrzychu/ [R=301,L,NE]
 RewriteRule ^pl/blog/gdzie\-zatrzymac\-sie\-w\-walbrzychu/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
 RewriteRule ^pl/blog/tani\-nocleg\-walbrzych\-centrum/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
-RewriteRule ^pl/blog/nocleg\-blisko\-zamku\-ksiaz/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
 RewriteRule ^pl/blog/noclegi\-szczawno\-zdroj\-centrum/?$ https://adagostay.pl/pl/noclegi-szczawno-zdroj/ [R=301,L,NE]
 RewriteRule ^pl/blog/apartamenty\-szczawno\-zdroj/?$ https://adagostay.pl/pl/noclegi-szczawno-zdroj/ [R=301,L,NE]
-RewriteRule ^pl/blog/gdzie\-spac\-blisko\-ksiaza/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
+RewriteRule ^pl/blog/gdzie\-spac\-blisko\-ksiaza/?$ https://adagostay.pl/pl/blog/nocleg-blisko-zamku-ksiaz/ [R=301,L,NE]
 RewriteRule ^pl/blog/noclegi\-okolice\-walbrzycha/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
 RewriteRule ^pl/blog/nocleg\-dolny\-slask\-walbrzych/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
-RewriteRule ^pl/blog/apartamenty\-blisko\-uzdrowiska/?$ https://adagostay.pl/pl/noclegi-szczawno-zdroj/ [R=301,L,NE]
 RewriteRule ^pl/blog/nocleg\-blisko\-atrakcji\-walbrzych/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
 RewriteRule ^pl/blog/nocleg\-na\-wyjazd\-sluzbowy\-walbrzych/?$ https://adagostay.pl/pl/blog/apartament-dla-firm-w-walbrzychu/ [R=301,L,NE]
 RewriteRule ^pl/blog/apartamenty\-dla\-turystow\-walbrzych/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
 RewriteRule ^pl/blog/nocleg\-na\-jedna\-noc\-walbrzych/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
 RewriteRule ^pl/blog/apartament\-z\-parkingiem\-walbrzych/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
-RewriteRule ^pl/blog/self\-check\-in\-walbrzych/?$ https://adagostay.pl/pl/blog/self-check-in-co-warto-wiedziec/ [R=301,L,NE]
 RewriteRule ^pl/blog/bezposrednia\-rezerwacja\-apartamentu\-walbrzych/?$ https://adagostay.pl/pl/blog/bezposrednia-rezerwacja-dlaczego-warto/ [R=301,L,NE]
 </IfModule>
 
@@ -53,4 +50,32 @@ RewriteRule ^pl/blog/bezposrednia\-rezerwacja\-apartamentu\-walbrzych/?$ https:/
 <IfModule mod_rewrite.c>
 RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[?\s] [NC]
 RewriteRule ^(.*/)?index\.html$ /$1 [R=301,L,NE]
+</IfModule>
+
+
+# Performance and basic security headers — 2026-07-27
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/avif "access plus 1 year"
+ExpiresByType image/webp "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType image/svg+xml "access plus 1 month"
+ExpiresByType text/css "access plus 7 days"
+ExpiresByType application/javascript "access plus 7 days"
+ExpiresByType application/manifest+json "access plus 1 day"
+</IfModule>
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json application/manifest+json image/svg+xml
+</IfModule>
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+<FilesMatch "\.(?:avif|webp|jpe?g|png)$">
+Header set Cache-Control "public, max-age=31536000"
+</FilesMatch>
+<FilesMatch "\.(?:css|js)$">
+Header set Cache-Control "public, max-age=604800"
+</FilesMatch>
 </IfModule>
