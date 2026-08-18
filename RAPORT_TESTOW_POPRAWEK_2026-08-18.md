@@ -11,7 +11,7 @@ Data kontroli: 18 sierpnia 2026 r.
 - niemiecki klaster: Bad Salzbrunn, Ferienwohnung Wałbrzych, Niederschlesien, Schloss Fürstenstein;
 - czeski klaster: ubytování Wałbrzych, Szczawno-Zdrój, Dolní Slezsko, zámek Książ;
 - opcjonalne odpłatne pranie i suszenie ubrań oraz dodatkowe ręczniki, z ceną i terminem potwierdzanymi przed realizacją;
-- 65 przekierowań starych ścieżek oraz przekierowanie `www` przygotowane dla Cloudflare.
+- 71 przekierowań starych ścieżek oraz przekierowanie `www` przygotowane dla Cloudflare (w tym 6 historycznych adresów wykrytych w Google Search Console).
 
 ## Wynik testów statycznych
 
@@ -52,7 +52,8 @@ Jedyny celowy wyjątek w raporcie canonical dotyczy strony `404.html`: ma `noind
 ## Przekierowania i konfiguracja platformy
 
 - `_redirects`: 65 reguł ścieżek ze statusem 301, bez błędnych statusów.
-- `CLOUDFLARE_REDIRECTS.csv`: 66 rekordów i po 7 wymaganych kolumn; pierwszy rekord obsługuje `www`, pozostałe stare adresy.
+- `CLOUDFLARE_REDIRECTS.csv`: 72 rekordy i po 7 wymaganych kolumn; pierwszy rekord obsługuje `www`, pozostałe stare adresy.
+- Dodatkowa korekta kontrastu tekstów zgód formularza, linków polityki prywatności, etykiet opinii i ocen po teście PageSpeed (wynik przed korektą: dostępność 97/100).
 - `_headers`: przygotowane CSP, HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy` i blokowanie osadzania.
 - GitHub Pages nie aktywuje `_redirects`, `_headers` ani `.htaccess`; przekierowania i nagłówki trzeba włączyć w Cloudflare według `WDROZENIE_GITHUB_DESKTOP.md`.
 

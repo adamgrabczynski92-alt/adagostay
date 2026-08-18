@@ -2048,3 +2048,40 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
 .business-page .contact-grid{align-items:start}
 .intent-cluster .info-card,.business-link-section .info-card{height:100%}
 @media (max-width:850px){.business-hero-grid{grid-template-columns:1fr}.business-hero h1{font-size:42px}}
+
+/* PageSpeed accessibility contrast correction — 2026-08-19 */
+.form-consent{
+  color:#374151 !important;
+  opacity:1;
+}
+.form-consent a{
+  color:#5a3d1b !important;
+}
+.ultra-section.light .ultra-eyebrow{
+  color:#76500f;
+}
+.ultra-section.light .ultra-score strong{
+  color:#6d4b0f;
+}
+.ultra-section.light .ultra-feature strong{
+  color:#6d4b0f;
+}
+.ultra-section.light .ultra-btn.ghost{
+  background:#17110c;
+  color:#fff7ea;
+  border-color:#17110c;
+}
+.ultra-section:not(.light) .ultra-form label{
+  color:#f3e4ce;
+}
+.ultra-section:not(.light) .form-consent{
+  color:#e9ddcf !important;
+}
+.ultra-section:not(.light) .form-consent a{
+  color:#f0d38b !important;
+}
+body.ultra-wow .footer small,
+body.ultra-wow .footer p,
+body.ultra-wow .footer li{
+  color:#cfc3b5;
+}

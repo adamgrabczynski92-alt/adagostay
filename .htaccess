@@ -44,6 +44,12 @@ RewriteRule ^pl/blog/apartamenty\-dla\-turystow\-walbrzych/?$ https://adagostay.
 RewriteRule ^pl/blog/nocleg\-na\-jedna\-noc\-walbrzych/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
 RewriteRule ^pl/blog/apartament\-z\-parkingiem\-walbrzych/?$ https://adagostay.pl/pl/noclegi-walbrzych/ [R=301,L,NE]
 RewriteRule ^pl/blog/bezposrednia\-rezerwacja\-apartamentu\-walbrzych/?$ https://adagostay.pl/pl/blog/bezposrednia-rezerwacja-dlaczego-warto/ [R=301,L,NE]
+RewriteRule ^pl/noclegi\-$ https://adagostay.pl/pl/noclegi-szczawno-zdroj/ [R=301,L,NE]
+RewriteRule ^pl/apartament\-gold/?$ https://adagostay.pl/pl/apartament/gold/ [R=301,L,NE]
+RewriteRule ^apartament\-szczawno\-zdroj/?$ https://adagostay.pl/pl/noclegi-szczawno-zdroj/ [R=301,L,NE]
+RewriteRule ^pl/apartamenty/?$ https://adagostay.pl/ [R=301,L,NE]
+RewriteRule ^blog/apartament\-czy\-hotel\-co\-wybrac/?$ https://adagostay.pl/pl/blog/apartament-czy-hotel-co-sprawdzi-sie-lepiej/ [R=301,L,NE]
+RewriteRule ^blog/?$ https://adagostay.pl/pl/blog/ [R=301,L,NE]
 </IfModule>
 
 # Force removal of /index.html variants
