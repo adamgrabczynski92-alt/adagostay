@@ -51,6 +51,7 @@
     lightbox.className = 'adago-lightbox';
     lightbox.setAttribute('role', 'dialog');
     lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-hidden', 'true');
     lightbox.setAttribute('aria-label', t.dialog);
     lightbox.innerHTML = `
       <div class="adago-lightbox__dialog">
@@ -61,7 +62,7 @@
           <button class="adago-lightbox__next" type="button" aria-label="${t.next}">›</button>
         </div>
         <div class="adago-lightbox__caption"><span class="adago-lightbox__title"></span><span class="adago-lightbox__counter"></span></div>
-        <div class="adago-lightbox__thumbs" aria-label="${t.thumbs}"></div>
+        <div class="adago-lightbox__thumbs" role="group" aria-label="${t.thumbs}"></div>
       </div>`;
     document.body.appendChild(lightbox);
 
@@ -77,6 +78,35 @@
     let index = 0;
     let lastFocus = null;
     let touchStartX = 0;
+    let backgroundState = [];
+
+    function setBackgroundInert(inert) {
+      if (inert) {
+        backgroundState = Array.from(document.body.children)
+          .filter(el => el !== lightbox)
+          .map(el => ({
+            el,
+            inert: el.inert,
+            ariaHidden: el.getAttribute('aria-hidden')
+          }));
+        backgroundState.forEach(({ el }) => {
+          el.inert = true;
+          el.setAttribute('aria-hidden', 'true');
+        });
+        return;
+      }
+      backgroundState.forEach(({ el, inert: wasInert, ariaHidden }) => {
+        el.inert = wasInert;
+        if (ariaHidden === null) el.removeAttribute('aria-hidden');
+        else el.setAttribute('aria-hidden', ariaHidden);
+      });
+      backgroundState = [];
+    }
+
+    function focusableElements() {
+      return Array.from(lightbox.querySelectorAll('button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'))
+        .filter(el => !el.hidden && el.offsetParent !== null);
+    }
 
     function renderThumbs() {
       thumbs.innerHTML = '';
@@ -126,14 +156,18 @@
       renderThumbs();
       setImage();
       lightbox.classList.add('open');
+      lightbox.setAttribute('aria-hidden', 'false');
       document.documentElement.style.overflow = 'hidden';
+      setBackgroundInert(true);
       closeBtn.focus();
       try { window.adagoTrack && window.adagoTrack('open_gallery', { count: items.length, index: index + 1 }); } catch (e) {}
     }
 
     function close() {
       lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
       document.documentElement.style.overflow = '';
+      setBackgroundInert(false);
       img.removeAttribute('src');
       if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
     }
@@ -172,6 +206,22 @@
       if (e.key === 'Escape') close();
       if (e.key === 'ArrowLeft') move(-1);
       if (e.key === 'ArrowRight') move(1);
+      if (e.key === 'Tab') {
+        const focusable = focusableElements();
+        if (!focusable.length) {
+          e.preventDefault();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     });
     lightbox.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0]?.clientX || 0; }, { passive: true });
     lightbox.addEventListener('touchend', e => {

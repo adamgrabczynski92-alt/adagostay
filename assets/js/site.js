@@ -72,6 +72,10 @@ function applyGuestLimit(form) {
 }
 
 function initDateRules(form) {
+  if (typeof form.adagoSyncDates === 'function') {
+    form.adagoSyncDates();
+    return;
+  }
   const dateInputs = Array.from(form.querySelectorAll('input[type="date"]'));
   if (!dateInputs.length) return;
   const today = localISODate(new Date());
@@ -87,6 +91,7 @@ function initDateRules(form) {
     checkOut.min = minCheckout;
     if (checkOut.value && checkOut.value < minCheckout) checkOut.value = '';
   };
+  form.adagoSyncDates = sync;
   checkIn.addEventListener('change', sync);
   sync();
 }
@@ -123,9 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
     apartment?.addEventListener('change', () => applyGuestLimit(form));
   });
 
-  initCustomSelects(document);
-  contactForms.forEach(form => applyGuestLimit(form));
-
   document.querySelectorAll('a[href^="https://wa.me"], a[href*="whatsapp"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_whatsapp', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="tel:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_phone', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="mailto:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_email', { href: link.getAttribute('href') || '' })));
@@ -139,15 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const lang = adagoLanguage();
       const msg = adagoMessages[lang] || adagoMessages.pl;
       const submit = form.querySelector('button[type="submit"]');
-      const invalidCustomSelect = Array.from(form.querySelectorAll('.custom-select select[required]')).find(select => {
-        const hidden = select.closest('.custom-select')?.querySelector('input[type="hidden"]');
-        return !hidden?.value;
-      });
-      if (invalidCustomSelect) {
-        alert(form.dataset.validationMessage || msg.required);
-        invalidCustomSelect.closest('.custom-select')?.querySelector('.custom-select-trigger')?.focus();
-        return;
-      }
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
@@ -184,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         form.querySelectorAll('select').forEach(sel => sel.dispatchEvent(new Event('change', { bubbles: true })));
         applyGuestLimit(form);
-        initDateRules(form);
+        form.adagoSyncDates?.();
         if (successBox) {
           successBox.style.display = 'block';
           successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -204,123 +197,3 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('change', () => { if (successBox) successBox.style.display = 'none'; });
   });
 });
-
-function initCustomSelects(scope = document) {
-  const nativeSelects = scope.querySelectorAll('select:not([data-customized])');
-  nativeSelects.forEach(select => {
-    select.dataset.customized = 'true';
-    select.dataset.originalName = select.name;
-
-    const wrapper = document.createElement('div');
-    wrapper.className = 'custom-select';
-
-    const hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = select.name;
-    hiddenInput.value = select.value;
-
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.className = 'custom-select-trigger';
-    trigger.setAttribute('aria-haspopup', 'listbox');
-    trigger.setAttribute('aria-expanded', 'false');
-    const fieldLabel = select.getAttribute('aria-label') || select.closest('div')?.querySelector('label')?.textContent?.trim() || select.name || 'Select';
-    trigger.setAttribute('aria-label', fieldLabel);
-
-    const triggerText = document.createElement('span');
-    triggerText.className = 'custom-select-text';
-    const triggerIcon = document.createElement('span');
-    triggerIcon.className = 'custom-select-icon';
-    triggerIcon.innerHTML = '&#9662;';
-    trigger.append(triggerText, triggerIcon);
-
-    const menu = document.createElement('div');
-    menu.className = 'custom-select-menu';
-    menu.setAttribute('role', 'listbox');
-
-    function closeSelect() {
-      wrapper.classList.remove('open');
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-
-    const updateFromSelect = () => {
-      hiddenInput.value = select.value;
-      triggerText.textContent = select.options[select.selectedIndex]?.textContent || select.options[0]?.textContent || '';
-      Array.from(menu.querySelectorAll('.custom-select-option')).forEach(el => {
-        const optionIndex = Number(el.dataset.index);
-        const active = optionIndex === select.selectedIndex;
-        el.classList.toggle('active', active);
-        el.setAttribute('aria-selected', String(active));
-      });
-    };
-
-    const renderOptions = () => {
-      menu.innerHTML = '';
-      Array.from(select.options).forEach((option, index) => {
-        if (option.hidden) return;
-        const item = document.createElement('button');
-        item.type = 'button';
-        item.className = 'custom-select-option';
-        item.setAttribute('role', 'option');
-        item.dataset.value = option.value;
-        item.dataset.index = String(index);
-        item.textContent = option.textContent;
-        item.disabled = option.disabled;
-        item.setAttribute('aria-disabled', String(option.disabled));
-        item.addEventListener('click', () => {
-          if (option.disabled) return;
-          select.selectedIndex = index;
-          select.value = option.value;
-          updateFromSelect();
-          closeSelect();
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-        });
-        menu.appendChild(item);
-      });
-      updateFromSelect();
-    };
-    wrapper.adagoRefresh = renderOptions;
-
-    trigger.addEventListener('click', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      const isOpen = wrapper.classList.contains('open');
-      document.querySelectorAll('.custom-select.open').forEach(el => {
-        if (el !== wrapper) {
-          el.classList.remove('open');
-          el.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
-        }
-      });
-      wrapper.classList.toggle('open', !isOpen);
-      trigger.setAttribute('aria-expanded', String(!isOpen));
-    });
-
-    select.addEventListener('change', updateFromSelect);
-    select.form?.addEventListener('reset', () => setTimeout(() => { renderOptions(); }, 0));
-
-    select.classList.add('is-hidden-native-select');
-    select.removeAttribute('name');
-    select.disabled = true;
-    select.setAttribute('aria-hidden', 'true');
-    select.tabIndex = -1;
-
-    select.parentNode.insertBefore(wrapper, select);
-    wrapper.appendChild(trigger);
-    wrapper.appendChild(menu);
-    wrapper.appendChild(hiddenInput);
-    wrapper.appendChild(select);
-    renderOptions();
-  });
-
-  if (!document.body.dataset.customSelectGlobalBound) {
-    document.body.dataset.customSelectGlobalBound = 'true';
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.custom-select')) {
-        document.querySelectorAll('.custom-select.open').forEach(el => {
-          el.classList.remove('open');
-          el.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
-        });
-      }
-    });
-  }
-}

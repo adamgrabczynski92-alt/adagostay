@@ -10,7 +10,7 @@ RewriteCond %{HTTPS} !=on
 RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
 RewriteRule ^ https://adagostay.pl%{REQUEST_URI} [R=301,L,NE]
 # Public Room Service removed from this deploy package; block stale copies if they remain on server.
-RewriteRule ^room-service/ - [F,L]
+RewriteRule ^room-service(?:/.*)?$ - [G,L]
 RewriteRule ^pl/?$ https://adagostay.pl/ [R=301,L,NE]
 RewriteRule ^pl/index\.html$ https://adagostay.pl/ [R=301,L,NE]
 RewriteRule ^antracyt/?$ https://adagostay.pl/pl/apartament/antracyt/ [R=301,L,NE]
