@@ -7,6 +7,8 @@
 - podanie danych gości oraz przejście przez kolejne etapy rezerwacji w osadzonym module,
 - osobny język modułu dla każdej wersji strony,
 - przejście poza stronę dopiero wtedy, gdy wymaga tego operator płatności,
+- poprawny parametr trybu osadzonego `?transparentbackground=1&from_own_button=1`, dzięki któremu IdoBooking rozpoznaje żądanie jako widget zewnętrznej strony,
+- awaryjny link do bezpiecznego Booking Engine w nowej karcie, gdy przeglądarka lub przyszła polityka bezpieczeństwa zablokuje ramkę,
 - awaryjny komunikat kontaktowy, gdy moduł IdoBooking nie zostanie załadowany,
 - wymagane wyjątki Content Security Policy dla domen IdoBooking.
 

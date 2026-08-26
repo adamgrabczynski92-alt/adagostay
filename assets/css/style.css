@@ -988,6 +988,8 @@ body.ultra-wow .mobile-toggle{color:#fff;border-color:rgba(255,255,255,.25);back
   border-radius:14px;
   background:#fff;
 }
+.idobooking-engine-fallback{margin:14px 0 0;text-align:center;color:#675a4b;font-size:14px;line-height:1.55}
+.idobooking-engine-fallback a{color:inherit;font-weight:800;text-decoration:underline;text-underline-offset:3px}
 .ultra-booking-strip .idobooking-engine-card{margin-top:18px}
 .ultra-mini-form{display:grid;grid-template-columns:1.2fr .9fr .9fr .8fr 1.1fr auto;gap:12px;align-items:end}
 .ultra-mini-form label{display:block;font-size:12px;font-weight:800;color:#77664e;margin-bottom:6px}
