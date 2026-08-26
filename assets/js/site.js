@@ -1,11 +1,102 @@
 function adagoTrack(eventName, payload = {}) {
   try {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(Object.assign({ event: eventName }, payload));
     document.dispatchEvent(new CustomEvent('adago:' + eventName, { detail: payload }));
+    if (window.__adagoAnalyticsConsent === 'granted' && typeof window.gtag === 'function') {
+      window.gtag('event', eventName, payload);
+    }
   } catch (e) {}
 }
 window.adagoTrack = adagoTrack;
+
+const ADAGO_GA_ID = 'G-CR12PM6B8M';
+const ADAGO_CONSENT_KEY = 'adago_analytics_consent_v1';
+
+function adagoLoadAnalytics() {
+  if (window.__adagoAnalyticsLoaded) return;
+  window.__adagoAnalyticsLoaded = true;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied'
+  });
+  window.gtag('consent', 'update', { analytics_storage: 'granted' });
+  window.gtag('js', new Date());
+  window.gtag('config', ADAGO_GA_ID, {
+    anonymize_ip: true,
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false
+  });
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ADAGO_GA_ID);
+  document.head.appendChild(script);
+}
+
+function adagoConsentCopy() {
+  const lang = adagoLanguage();
+  const copy = {
+    pl: { title: 'Analityka i prywatność', text: 'Za Twoją zgodą używamy Google Analytics, aby sprawdzać, jak działa strona i ulepszać rezerwację. Możesz odmówić bez wpływu na działanie strony.', accept: 'Akceptuję analitykę', reject: 'Odrzucam', settings: 'Ustawienia cookies', policy: '/pl/polityka-cookies/' },
+    en: { title: 'Analytics and privacy', text: 'With your consent, we use Google Analytics to understand how the website works and improve booking. You can refuse without affecting the website.', accept: 'Accept analytics', reject: 'Reject', settings: 'Cookie settings', policy: '/en/polityka-cookies/' },
+    de: { title: 'Analyse und Datenschutz', text: 'Mit Ihrer Einwilligung nutzen wir Google Analytics, um die Website und den Buchungsweg zu verbessern. Eine Ablehnung beeinträchtigt die Website nicht.', accept: 'Analyse akzeptieren', reject: 'Ablehnen', settings: 'Cookie-Einstellungen', policy: '/de/polityka-cookies/' },
+    cs: { title: 'Analytika a soukromí', text: 'S vaším souhlasem používáme Google Analytics ke zlepšení webu a rezervace. Odmítnutí nemá vliv na fungování webu.', accept: 'Přijmout analytiku', reject: 'Odmítnout', settings: 'Nastavení cookies', policy: '/cz/polityka-cookies/' },
+    uk: { title: 'Аналітика та конфіденційність', text: 'За вашою згодою ми використовуємо Google Analytics для покращення сайту та бронювання. Відмова не впливає на роботу сайту.', accept: 'Прийняти аналітику', reject: 'Відхилити', settings: 'Налаштування cookies', policy: '/ua/polityka-cookies/' }
+  };
+  return copy[lang] || copy.pl;
+}
+
+function adagoSaveConsent(value) {
+  try { localStorage.setItem(ADAGO_CONSENT_KEY, value); } catch (e) {}
+  window.__adagoAnalyticsConsent = value;
+  if (value === 'denied' && typeof window.gtag === 'function') {
+    window.gtag('consent', 'update', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+  }
+  document.querySelector('.adago-consent')?.remove();
+  if (value === 'granted') adagoLoadAnalytics();
+}
+
+function adagoShowConsent() {
+  document.querySelector('.adago-consent')?.remove();
+  const copy = adagoConsentCopy();
+  const banner = document.createElement('section');
+  banner.className = 'adago-consent';
+  banner.setAttribute('role', 'dialog');
+  banner.setAttribute('aria-label', copy.title);
+  banner.innerHTML = '<div class="adago-consent__copy"><strong>' + copy.title + '</strong><p>' + copy.text + ' <a href="' + copy.policy + '">' + copy.settings + '</a></p></div><div class="adago-consent__actions"><button type="button" data-consent="denied">' + copy.reject + '</button><button type="button" class="is-primary" data-consent="granted">' + copy.accept + '</button></div>';
+  banner.addEventListener('click', function (event) {
+    const button = event.target.closest('[data-consent]');
+    if (button) adagoSaveConsent(button.dataset.consent);
+  });
+  document.body.appendChild(banner);
+}
+
+function adagoInitConsent() {
+  let consent = '';
+  try { consent = localStorage.getItem(ADAGO_CONSENT_KEY) || ''; } catch (e) {}
+  window.__adagoAnalyticsConsent = consent;
+  if (consent === 'granted') adagoLoadAnalytics();
+  else if (consent !== 'denied') adagoShowConsent();
+
+  const footer = document.querySelector('.footer .container') || document.querySelector('footer');
+  if (footer && !document.querySelector('.adago-cookie-settings')) {
+    const copy = adagoConsentCopy();
+    const settings = document.createElement('button');
+    settings.type = 'button';
+    settings.className = 'adago-cookie-settings';
+    settings.textContent = copy.settings;
+    settings.addEventListener('click', adagoShowConsent);
+    footer.appendChild(settings);
+  }
+}
+
+window.adagoShowConsent = adagoShowConsent;
 
 function adagoLanguage() {
   const lang = (document.documentElement.lang || 'pl').toLowerCase();
@@ -111,6 +202,7 @@ function validateGuestLimit(form) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  adagoInitConsent();
   const toggle = document.querySelector('.mobile-toggle');
   const nav = document.querySelector('.nav');
   if (toggle && nav) {
@@ -131,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('a[href^="https://wa.me"], a[href*="whatsapp"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_whatsapp', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="tel:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_phone', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="mailto:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_email', { href: link.getAttribute('href') || '' })));
+  document.querySelectorAll('a[href*="#booking-widget"], a[href*="idobooking.com/book-now"]').forEach(link => link.addEventListener('click', () => adagoTrack('booking_start', { link_url: link.href, page_path: location.pathname })));
   if (location.pathname.includes('/apartament/')) adagoTrack('view_apartment', { path: location.pathname });
 
   contactForms.forEach(form => {
