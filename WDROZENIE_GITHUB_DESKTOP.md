@@ -59,7 +59,8 @@ Sprawdź minimum:
 - https://adagostay.pl/pl/ — ma zwrócić 301 do strony głównej;
 - /antracyt/, /gold/ i /oaza/ — mają zwrócić 301 do nowych stron apartamentów;
 - wszystkie galerie apartamentów w pięciu językach;
-- formularz na jednym prawdziwym urządzeniu;
+- polski widget IdoBooking: daty, liczba osób, lokalizacja, przejście do Booking Engine;
+- formularz kontaktowy na jednym prawdziwym urządzeniu;
 - mapę na stronie kontaktowej — przed kliknięciem nie powinien istnieć iframe Google;
 - sitemap.xml — zawiera 102 adresy;
 - losowy nieistniejący adres — powinien zwrócić 404.

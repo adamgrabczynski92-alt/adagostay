@@ -3,13 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1" name="viewport">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://formsubmit.co; frame-src https://www.google.com; form-action https://formsubmit.co; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><title>Adago Stay | Apartamenty boutique Szczawno-Zdrój i Wałbrzych</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://client60336.idobooking.com; style-src 'self' 'unsafe-inline' https://client60336.idobooking.com; img-src 'self' data: https://client60336.idobooking.com; connect-src 'self' https://formsubmit.co https://client60336.idobooking.com; font-src 'self' data: https://client60336.idobooking.com; frame-src https://www.google.com https://client60336.idobooking.com https://engine60336.idobooking.com; form-action https://formsubmit.co https://client60336.idobooking.com https://engine60336.idobooking.com; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin"><title>Adago Stay | Apartamenty boutique Szczawno-Zdrój i Wałbrzych</title>
 <meta content="Nie tylko nocleg. Pobyt z klimatem w apartamentach Oaza, Antracyt i Gold. Rezerwacja bezpośrednia, WhatsApp, self check-in i faktura VAT." name="description">
 <link href="/assets/img/logo.svg" rel="icon" type="image/svg+xml">
 <link href="/manifest.webmanifest" rel="manifest">
 <meta content="#080604" name="theme-color">
-<link href="/assets/css/style.css?v=20260819-4" rel="stylesheet">
+<link href="/assets/css/style.css?v=20260826-2" rel="stylesheet">
 <script defer src="/assets/js/site.js?v=20260818-1"></script>
+<link crossorigin="" href="https://client60336.idobooking.com" rel="preconnect">
+<script defer src="https://client60336.idobooking.com/widget/script/loadScriptsForOwnPage?1787760896"></script>
 <link href="https://adagostay.pl/" rel="canonical">
 <link href="https://adagostay.pl/" hreflang="pl" rel="alternate">
 <link href="https://adagostay.pl/en/" hreflang="en" rel="alternate">
@@ -37,7 +39,7 @@
 <button aria-controls="site-nav" aria-expanded="false" aria-label="Menu" class="mobile-toggle">☰</button>
 <nav class="nav" id="site-nav">
 <a href="/">Start</a><a href="/#apartments">Apartamenty</a><a href="/pl/opinie/">Opinie</a><a href="/#dla-firm">Dla firm</a><a href="/#faq">FAQ</a><a href="/pl/kontakt/">Kontakt</a>
-<a class="cta" href="#booking-form">Sprawdź cenę i dostępność</a>
+<a class="cta" href="#booking-widget">Sprawdź cenę i dostępność</a>
 <div class="lang-switch"><a class="active" href="/">PL</a><a href="/en/">EN</a><a href="/de/">DE</a><a href="/cz/">CZ</a><a href="/ua/">UA</a></div>
 </nav>
 </div>
@@ -52,7 +54,7 @@
 <h1>Nie tylko nocleg.<br><span class="gold">Pobyt z klimatem.</span></h1>
 <p class="ultra-lead">Oaza, Antracyt i Gold — trzy wyjątkowe apartamenty dla osób, które lubią komfort, styl i bezproblemową rezerwację.</p>
 <div class="ultra-actions">
-<a class="ultra-btn" href="#booking-form">Sprawdź cenę i dostępność</a>
+<a class="ultra-btn" href="#booking-widget">Sprawdź cenę i dostępność</a>
 <a class="ultra-btn whatsapp" href="https://wa.me/48786207695">Napisz na WhatsApp</a>
 </div>
 <div class="ultra-trust-card" id="opinie">
@@ -69,18 +71,13 @@
 </div>
 </div>
 </section>
-<section aria-label="Szybkie zapytanie o dostępność" class="ultra-booking-strip">
-<h2>Szybkie zapytanie</h2>
-<form accept-charset="UTF-8" action="https://formsubmit.co/adagostay@gmail.com" class="ultra-mini-form" data-form-type="contact" data-subject="Adago Stay szybkie zapytanie" method="POST">
-<input name="_template" type="hidden" value="table"><input name="_subject" type="hidden" value="Adago Stay szybkie zapytanie"><input name="_captcha" type="hidden" value="false">
-<div aria-hidden="true" class="form-honeypot" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"><label for="mini-honey">Nie wypełniaj</label><input id="mini-honey" name="_honey" tabindex="-1" type="text" autocomplete="off"></div>
-<div><label for="mini-apartment">Apartament</label><select id="mini-apartment" name="apartment" required=""><option value="" disabled selected>Wybierz apartament</option><option>Oaza — Szczawno-Zdrój</option><option>Antracyt — Szczawno-Zdrój</option><option>Gold — Wałbrzych</option></select></div>
-<div><label for="mini-check-in">Przyjazd</label><input id="mini-check-in" name="check_in" required="" type="date"></div><div><label for="mini-check-out">Wyjazd</label><input id="mini-check-out" name="check_out" required="" type="date"></div>
-<div><label for="mini-guests">Goście</label><select id="mini-guests" name="guests"><option>1 osoba</option><option selected>2 osoby</option><option>3 osoby</option><option>4 osoby</option></select></div>
-<div><label for="mini-contact">Kontakt</label><input id="mini-contact" name="contact" placeholder="telefon lub e-mail" required="" type="text" autocomplete="on"></div>
-<div class="submit-cell"><button class="ultra-btn" data-default="Wyślij" data-loading="Wysyłanie..." type="submit">Wyślij</button></div>
-<p class="form-consent">Wysyłając zapytanie, potwierdzasz zapoznanie się z <a href="/pl/polityka-prywatnosci/">Polityką prywatności</a>. Formularz jest zapytaniem o dostępność, a nie automatycznym potwierdzeniem rezerwacji. Cena i warunki zostaną potwierdzone osobno przed zawarciem umowy.</p><div class="success-box" style="display:none">Dziękujemy! Odezwiemy się najszybciej, jak to możliwe.</div>
-</form>
+<section aria-label="Rezerwacja online" class="ultra-booking-strip" id="booking-widget">
+<h2>Zarezerwuj apartament online</h2>
+<p class="idobooking-widget-lead">Wybierz termin i apartament, sprawdź cenę, podaj dane gości i opłać rezerwację — bez opuszczania strony.</p>
+<div class="idobooking-engine-card">
+<iframe allow="payment" class="idobooking-engine-frame" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://client60336.idobooking.com/book-now/booking/defaultchoice/currency/0/language/1&amp;transparentbackground=1&amp;from_own_button=1" title="Rezerwacja online Adago Stay po polsku"></iframe>
+</div>
+<noscript><p class="idobooking-widget-fallback">Aby skorzystać z rezerwacji online, włącz JavaScript. Możesz też zadzwonić pod <a href="tel:+48786207695">+48 786 207 695</a> lub napisać przez <a href="https://wa.me/48786207695">WhatsApp</a>.</p></noscript>
 </section>
 <section class="ultra-section" id="apartments">
 <div class="container">
@@ -219,7 +216,8 @@
 </div>
 </div>
 <aside class="ultra-form-panel">
-<h3>Sprawdź termin</h3>
+<h3>Potrzebujesz pomocy?</h3>
+<p>Jeśli masz pytanie przed rezerwacją, potrzebujesz faktury VAT lub ustaleń dotyczących pobytu firmowego, wyślij wiadomość.</p>
 <form accept-charset="UTF-8" action="https://formsubmit.co/adagostay@gmail.com" class="ultra-form" data-alert-success="Dziękujemy! Odezwiemy się najszybciej, jak to możliwe." data-error-message="Nie udało się wysłać formularza automatycznie. Zadzwoń lub napisz na WhatsApp." data-form-type="contact" data-subject="Adago Stay enquiry" id="booking-form" method="POST">
 <input name="_template" type="hidden" value="table">
 <input name="_subject" type="hidden" value="Adago Stay enquiry">
@@ -259,13 +257,13 @@
 <div class="ultra-info-panel"><h3>Czy wystawiacie fakturę VAT?</h3><p>Tak, współpracujemy z firmami i osobami prywatnymi oraz wystawiamy faktury VAT.</p></div>
 <div class="ultra-info-panel"><h3>Czy rezerwacja jest bezpośrednia?</h3><p>Tak. Kontaktujesz się bezpośrednio z Adago Stay — bez prowizji i bez pośredników.</p></div>
 <div class="ultra-info-panel"><h3>Czy jest self check-in?</h3><p>Tak, szczegóły zameldowania przekazujemy po potwierdzeniu rezerwacji.</p></div>
-<div class="ultra-info-panel"><h3>Czy ceny są na stronie?</h3><p>Najlepiej zapytać o dostępność i cenę konkretnego terminu — wtedy odpowiadamy precyzyjnie.</p></div>
+<div class="ultra-info-panel"><h3>Czy ceny są na stronie?</h3><p>Tak. Wybierz termin, liczbę osób i lokalizację w wyszukiwarce IdoBooking, aby zobaczyć aktualną dostępność i ceny.</p></div>
 <div class="ultra-info-panel optional-services-faq"><h3>Czy można zamówić pranie, suszenie lub dodatkowe ręczniki?</h3><p>Tak. Pranie i suszenie ubrań gościa oraz dodatkowe ręczniki ponad komplet przygotowany na pobyt są dostępne odpłatnie, po wcześniejszym uzgodnieniu. Cenę i termin realizacji potwierdzamy przed przyjęciem zlecenia.</p></div></div>
 </div>
 </section>
 </main>
 <a aria-label="Napisz na WhatsApp" class="floating-whatsapp" href="https://wa.me/48786207695">WhatsApp</a>
-<div class="mobile-cta-bar"><a class="premium-button ghost" href="https://wa.me/48786207695">WhatsApp</a><a class="premium-button" href="#booking-form">Sprawdź cenę i dostępność</a></div>
+<div class="mobile-cta-bar"><a class="premium-button ghost" href="https://wa.me/48786207695">WhatsApp</a><a class="premium-button" href="#booking-widget">Sprawdź cenę i dostępność</a></div>
 <footer class="footer">
 <div class="container footer-grid">
 <div>
