@@ -947,17 +947,26 @@ body.ultra-wow .mobile-toggle{color:#fff;border-color:rgba(255,255,255,.25);back
 .ultra-trust-card strong{display:block;font-size:25px;font-family:Georgia,serif;margin-bottom:9px}
 .ultra-stars{color:var(--uw-gold2);font-weight:900;letter-spacing:.08em}
 .ultra-booking-strip{
-  position:relative;z-index:5;transform:translateY(-50%);
-  width:min(1180px,calc(100% - 32px));margin:0 auto -35px;
-  background:rgba(255,248,236,.97);
-  color:var(--uw-text);
-  border:1px solid rgba(211,166,78,.55);
-  border-radius:26px;
-  padding:22px;
-  box-shadow:0 30px 90px rgba(0,0,0,.22)
+  position:relative;z-index:5;isolation:isolate;overflow:hidden;
+  transform:translateY(-62px);
+  width:min(1280px,calc(100% - 32px));margin:0 auto -24px;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(240,211,139,.16),transparent 32%),
+    linear-gradient(145deg,#15100a 0%,#090705 58%,#171108 100%);
+  color:var(--uw-cream);
+  border:1px solid rgba(240,211,139,.58);
+  border-radius:34px;
+  padding:30px;
+  box-shadow:0 42px 110px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.08)
 }
-.ultra-booking-strip h2{font-family:Georgia,serif;font-size:28px;margin:0 0 14px}
-.idobooking-widget-lead{margin:0 0 16px;color:#675a4b;line-height:1.6}
+.ultra-booking-strip::before{
+  content:"";position:absolute;z-index:-1;inset:-1px;
+  background:linear-gradient(115deg,rgba(240,211,139,.18),transparent 28%,transparent 72%,rgba(211,166,78,.12));
+  pointer-events:none
+}
+.ultra-booking-strip h2{font-family:Georgia,serif;font-size:clamp(38px,4.6vw,64px);line-height:1;margin:0 0 14px;letter-spacing:-.04em}
+.ultra-booking-strip h2 em{color:var(--uw-gold2);font-style:normal}
+.idobooking-widget-lead{margin:0;color:#dcccb4;line-height:1.7;font-size:17px;max-width:820px}
 .idobooking-widget-shell{min-height:92px;padding:16px;border:1px solid #e2cda2;border-radius:18px;background:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
 .idobooking-widget-shell .iai-search{width:100%;min-height:58px}
 .idobooking-widget-status,.idobooking-widget-fallback{margin:10px 0 0;color:#675a4b;font-size:14px;line-height:1.5}
@@ -966,31 +975,61 @@ body.ultra-wow .mobile-toggle{color:#fff;border-color:rgba(255,255,255,.25);back
 .hero-booking-prompt .premium-button{width:100%;margin-top:4px}
 .idobooking-engine-section{
   width:min(1240px,calc(100% - 32px));
-  margin:26px auto 70px;
+  margin:32px auto 70px;
+  padding:32px;
   scroll-margin-top:110px;
+  color:#fff7ea;
+  border:1px solid rgba(211,166,78,.42);
+  border-radius:32px;
+  background:
+    radial-gradient(circle at 10% 0%,rgba(240,211,139,.14),transparent 34%),
+    linear-gradient(145deg,#17110b,#090705 62%,#151008);
+  box-shadow:0 34px 90px rgba(29,18,8,.28)
 }
-.idobooking-engine-heading{max-width:820px;margin:0 auto 20px;text-align:center;color:#231a13}
-.idobooking-engine-heading h2{margin:0 0 9px;font-family:Georgia,serif;font-size:clamp(30px,4vw,46px);line-height:1.08}
-.idobooking-engine-heading p{margin:0;color:#675a4b;font-size:16px;line-height:1.65}
+.idobooking-engine-heading{max-width:940px;margin:0 auto 24px;text-align:center;color:#fff7ea}
+.idobooking-engine-heading h2{margin:0 0 10px;font-family:Georgia,serif;font-size:clamp(34px,4vw,54px);line-height:1.04;letter-spacing:-.035em}
+.idobooking-engine-heading p{margin:0 auto;color:#dcccb4;font-size:17px;line-height:1.7;max-width:820px}
+.booking-kicker{
+  display:inline-flex;align-items:center;gap:10px;margin:0 0 14px;
+  color:#f0d38b;font-size:12px;font-weight:900;letter-spacing:.17em;text-transform:uppercase
+}
+.booking-kicker::before,.booking-kicker::after{content:"";width:30px;height:1px;background:rgba(240,211,139,.7)}
+.booking-apartment-order{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+  max-width:880px;margin:24px auto 0
+}
+.booking-apartment-order span{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  min-height:54px;padding:10px 14px;border:1px solid rgba(240,211,139,.32);
+  border-radius:16px;background:rgba(255,248,236,.055);color:#fff7ea;font-weight:850;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)
+}
+.booking-apartment-order b{color:#f0d38b;font-size:12px;letter-spacing:.08em}
 .idobooking-engine-card{
-  padding:18px;
-  border:1px solid rgba(211,166,78,.45);
-  border-radius:24px;
-  background:#fff;
-  box-shadow:0 24px 70px rgba(31,22,14,.14);
-  overflow:hidden;
+  position:relative;padding:10px;
+  border:1px solid transparent;border-radius:26px;
+  background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#f0d38b,#8f6422 44%,#f8e4ad) border-box;
+  box-shadow:0 28px 90px rgba(0,0,0,.46),0 0 0 1px rgba(255,255,255,.05);
+  overflow:hidden
 }
 .idobooking-engine-frame{
   display:block;
   width:100%;
-  height:790px;
+  height:1180px;
   border:0;
-  border-radius:14px;
+  border-radius:18px;
   background:#fff;
 }
-.idobooking-engine-fallback{margin:14px 0 0;text-align:center;color:#675a4b;font-size:14px;line-height:1.55}
-.idobooking-engine-fallback a{color:inherit;font-weight:800;text-decoration:underline;text-underline-offset:3px}
-.ultra-booking-strip .idobooking-engine-card{margin-top:18px}
+.idobooking-engine-fallback{margin:16px 0 0;text-align:center;color:#cdbb9f;font-size:14px;line-height:1.55}
+.idobooking-engine-fallback a{color:#f0d38b;font-weight:850;text-decoration:underline;text-underline-offset:3px}
+.ultra-booking-strip .idobooking-engine-heading{margin:0 0 24px;text-align:left;max-width:none}
+.ultra-booking-strip .idobooking-engine-card{margin-top:22px}
+.booking-trust-row{
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px 24px;
+  margin:18px 0 0;color:#e7d7bf;font-size:14px;font-weight:760
+}
+.booking-trust-row span{display:inline-flex;align-items:center;gap:8px}
+.booking-trust-row span::before{content:"\2713";display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(211,166,78,.18);color:#f0d38b;font-weight:950}
 .ultra-mini-form{display:grid;grid-template-columns:1.2fr .9fr .9fr .8fr 1.1fr auto;gap:12px;align-items:end}
 .ultra-mini-form label{display:block;font-size:12px;font-weight:800;color:#77664e;margin-bottom:6px}
 .ultra-mini-form input,.ultra-mini-form select,.ultra-form input,.ultra-form select,.ultra-form textarea{
@@ -1067,13 +1106,15 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
   .ultra-hero{min-height:760px}
   .ultra-hero-grid,.ultra-proof-grid,.ultra-detail-layout{grid-template-columns:1fr}
   .ultra-side-collage{display:none}
-  .ultra-booking-strip{transform:none;margin:0 auto;padding:18px;border-radius:0;width:100%}
+  .ultra-booking-strip{transform:none;margin:0 auto;padding:22px 14px;border-radius:0;width:100%}
   .idobooking-widget-shell{padding:12px;border-radius:14px}
-  .idobooking-engine-section{width:calc(100% - 20px);margin:16px auto 52px;scroll-margin-top:82px}
+  .idobooking-engine-section{width:calc(100% - 20px);margin:16px auto 52px;padding:20px 10px;scroll-margin-top:82px;border-radius:24px}
   .idobooking-engine-heading{margin-bottom:15px;padding:0 6px}
   .idobooking-engine-heading h2{font-size:30px}
-  .idobooking-engine-card{padding:8px;border-radius:16px}
-  .idobooking-engine-frame{height:920px;border-radius:10px}
+  .idobooking-engine-card{padding:6px;border-radius:18px}
+  .idobooking-engine-frame{height:1040px;border-radius:13px}
+  .booking-apartment-order{gap:8px}
+  .booking-apartment-order span{min-height:48px;padding:8px;font-size:14px}
   .ultra-mini-form{grid-template-columns:1fr 1fr}
   .ultra-mini-form .submit-cell{grid-column:1/-1}
   .ultra-apartment-grid{grid-template-columns:1fr}
@@ -1090,6 +1131,12 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
   .ultra-hero h1{font-size:46px}
   .ultra-lead{font-size:17px}
   .ultra-trust-card{padding:18px;border-radius:22px}
+  .ultra-booking-strip h2{font-size:40px}
+  .booking-apartment-order{grid-template-columns:1fr}
+  .booking-apartment-order span{justify-content:flex-start;padding-left:18px}
+  .booking-trust-row{align-items:flex-start;justify-content:flex-start;gap:9px}
+  .booking-trust-row span{width:100%}
+  .idobooking-engine-frame{height:1120px}
   .ultra-mini-form{grid-template-columns:1fr}
   .ultra-section{padding:56px 0}
   .ultra-section-head{display:block}
