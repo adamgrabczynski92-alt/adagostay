@@ -1,0 +1,23 @@
+Zmiany po zgłoszeniu użytkownika:
+
+1. Przycisk „Udostępnij Raport” w wygenerowanym raporcie nie korzysta już z niedostępnego/niepewnego systemowego udostępniania pliku.
+   Teraz otwiera WhatsApp bezpośrednio do Administratora: +48 786 207 695.
+
+2. Przyciski „Udostępnij zdjęcia przed” i „Udostępnij zdjęcia po” nie otwierają już wyboru plików w aplikacji.
+   Teraz otwierają WhatsApp bezpośrednio do Administratora: +48 786 207 695.
+   Zdjęcia Beata wybiera ręcznie w otwartej rozmowie WhatsApp.
+
+3. Raport można wygenerować niezależnie od tego, czy zdjęcia zostały już wysłane.
+
+4. Utrzymano ograniczenie techniczne: zwykła aplikacja webowa nie może automatycznie dołączyć zdjęć do wiadomości WhatsApp ani wysłać ich bez potwierdzenia użytkownika.
+
+Kontrola techniczna:
+- HTML: 134 pliki
+- brak brakujących linków lokalnych
+- JavaScript: składnia OK
+- manifesty JSON: OK
+- Oaza bez młynka WC
+- Gold i Antracyt z młynkiem WC
+- numer Administratora: +48 786 207 695
+- numer Beaty: +48 792 607 695
+- cache PWA: adago-room-service-v23-whatsapp-admin

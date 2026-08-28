@@ -1,0 +1,15 @@
+Adago Stay – pakiet po poprawkach technicznych SEO
+
+Najważniejsze zmiany:
+1. Dodano twarde przekierowania 301 do wdrożenia po stronie serwera:
+   - .htaccess (Apache / LiteSpeed)
+   - nginx-redirects.conf (Nginx)
+   - _redirects (Netlify)
+2. Wzmocniono strony-aliasy: noindex,nofollow,noarchive,nosnippet.
+3. Dodano podstawowe zabezpieczenie formularzy antyspam (honeypot + time trap).
+4. Dodano width/height i loading/decoding do obrazów dla ograniczenia CLS.
+
+Ważne:
+- Jeśli serwer obsługuje Apache lub LiteSpeed, wgraj również plik .htaccess.
+- Jeśli serwer stoi na Nginx, trzeba wkleić reguły z nginx-redirects.conf do konfiguracji serwera.
+- Same pliki HTML nie wymuszą prawdziwego 301 bez wsparcia serwera.

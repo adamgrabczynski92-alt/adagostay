@@ -1,0 +1,1 @@
+Zmiana nazewnictwa przycisków i raportów: „Rozpoczęcie sprzątania” oraz „Zakończenie sprzątania”. Godziny są zapisywane automatycznie przez aplikację i nie mają pól ręcznej edycji. Checklisty w strefach pokazują się po kliknięciu „Rozpoczęcie sprzątania”. Cache PWA: v19-rozpoczecie-zakonczenie.

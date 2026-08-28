@@ -1,0 +1,10 @@
+Room Service zostało usunięte z publicznej paczki strony.
+
+Powód:
+- poprzednia wersja miała logowanie i hasła zapisane w plikach JavaScript po stronie przeglądarki,
+- noindex nie zabezpiecza dostępu,
+- bez backendu/ochrony po stronie serwera nie jest to bezpieczne jako publiczny katalog.
+
+Rekomendacja:
+- jeśli Room Service ma wrócić, zabezpiecz katalog przez hosting/serwer, np. HTTP Basic Auth, panel hostingowy albo backendowe logowanie,
+- nie umieszczaj haseł w plikach JS dostępnych publicznie.

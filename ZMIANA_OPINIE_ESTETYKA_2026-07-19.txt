@@ -1,0 +1,23 @@
+ADAGO STAY — REDESIGN SEKCJI OPINII
+Data: 2026-07-19
+
+Wprowadzone zmiany:
+- przeprojektowanie sekcji opinii na stronie głównej w stylu premium,
+- większy i czytelniejszy nagłówek,
+- dwie estetyczne karty ocen: Google 4,9 oraz Booking 9,6,
+- trzy opinie na komputerze i jedna na telefonie,
+- zachowana spokojna rotacja opinii,
+- wyraźne, nieklikalne oznaczenie źródła Booking,
+- przeniesienie informacji „Jak prezentujemy opinie?” na sam dół sekcji,
+- informacja o zasadach jest rozwijana i domyślnie zamknięta,
+- zmiana przycisku na „Zobacz wszystkie opinie”,
+- na podstronie /pl/opinie/ recenzje są pokazane przed zasadami,
+- zasady prezentowania opinii znajdują się dopiero pod recenzjami,
+- brak odnośników do Booking.
+
+Kontrola:
+- 134 pliki HTML,
+- 0 brakujących zasobów,
+- 0 zewnętrznych linków do Booking,
+- 0 powielonych identyfikatorów,
+- poprawna składnia skryptów JavaScript.

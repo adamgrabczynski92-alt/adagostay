@@ -1,0 +1,9 @@
+ZMIANA OPINII — 2026-07-19
+
+- Strona główna: karuzela 10 publicznych opinii z oznaczeniem Google lub Booking.
+- Opinie Booking są nieklikalne; w całej paczce nie ma linku do booking.com.
+- Dodano osobną stronę /pl/opinie/ z 26 opiniami przesłanymi bezpośrednio do Adago Stay.
+- Formularz dodawania opinii przeniesiono na stronę /pl/opinie/.
+- Nawigacja „Opinie” na polskich stronach prowadzi do /pl/opinie/.
+- Dodano stronę opinii do sitemap.xml.
+- Publiczne opinie w karuzeli są skróconymi parafrazami; źródło jest widoczne na każdej karcie.

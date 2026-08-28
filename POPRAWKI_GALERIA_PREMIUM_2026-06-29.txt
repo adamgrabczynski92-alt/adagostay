@@ -1,0 +1,22 @@
+ADAGO STAY — poprawki galerii premium 2026-06-29
+
+Wprowadzone zmiany:
+1. Galeria zdjęć na stronach apartamentów została wizualnie podniesiona do stylu premium.
+2. Polskie strony apartamentów otrzymały przewijaną poziomo galerię z dużymi kaflami zdjęć.
+3. Dodano przyciski przewijania galerii w lewo/prawo na polskich stronach apartamentów.
+4. Zaktualizowano komunikat przy galerii: informuje o przewijaniu poziomym, pełnym ekranie, strzałkach, klawiaturze i gestach na telefonie.
+5. Wersje EN/DE/CZ/UA otrzymały ulepszone duże zdjęcie, przewijany pasek miniatur, strzałki na głównym zdjęciu oraz gest przesuwania palcem.
+6. Ulepszono lightbox: bardziej eleganckie tło, większy podgląd zdjęć, lepsze miniatury i zachowanie na mobile.
+7. Dodano przewijanie aktywnej miniatury do środka paska.
+8. Nie usunięto żadnych zdjęć ani lokalnych assetów.
+
+Sprawdzenie techniczne:
+- Sprawdzono składnię JS: site.js i adago-gallery.js poprawne.
+- Sprawdzono lokalne linki i assety w HTML: 0 brakujących plików.
+- Strony z galerią klasyczną: 12.
+- Strony z galerią WOW PL: 3.
+
+Po wdrożeniu:
+- Wyczyść cache hostingu/CDN/przeglądarki.
+- Sprawdź na telefonie: przewijanie palcem po galerii i pełny ekran po kliknięciu zdjęcia.
+- Sprawdź na komputerze: strzałki, klawiatura w pełnym ekranie i pasek miniatur.

@@ -1,0 +1,1 @@
+Dodano przyciski zbiorcze w checklistach: Strefa wykonana oraz Odznacz strefę dla sekcji innych niż Zdjęcia. Sekcja Zdjęcia nadal wymaga otwarcia WhatsAppa do Administratora. Cache PWA: v24-strefy-wykonane.

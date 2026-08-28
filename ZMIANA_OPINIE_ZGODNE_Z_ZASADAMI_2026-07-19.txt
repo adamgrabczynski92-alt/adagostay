@@ -1,0 +1,14 @@
+ADAGO STAY — PORZĄDKOWANIE OPINII
+
+Wprowadzono:
+- usunięcie 26 niepotwierdzonych opinii bezpośrednich,
+- usunięcie formularza publikowania opinii na stronie,
+- pozostawienie wyłącznie wybranych opinii z oznaczeniem Google lub Booking,
+- brak jakiegokolwiek linku do Booking,
+- jasna informacja, że Adago Stay nie prowadzi niezależnej weryfikacji autorów,
+- informacja, że prezentowana jest wybrana, głównie pozytywna część opinii,
+- informacja o skracaniu/parafrazowaniu bez zmiany sensu,
+- osobna zakładka z zasadami prezentowania opinii,
+- dopiski transparentności w wersjach EN, DE, CZ i UA.
+
+Uwaga: treść ma charakter informacyjny i nie zastępuje indywidualnej porady prawnej.

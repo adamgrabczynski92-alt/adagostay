@@ -1,0 +1,8 @@
+ADAGO STAY — POPRAWKI SPÓJNOŚCI
+
+1. Ujednolicono komunikaty dotyczące źródła i weryfikacji opinii.
+2. Skrócono etykietę przycisku do „Zobacz opinie”.
+3. Ograniczono formularze apartamentu Antracyt do maksymalnie 2 osób we wszystkich językach.
+4. Usunięto niespójne stałe ceny 240/250 PLN z wersji EN/DE/CZ/UA.
+5. Zastąpiono ceny komunikatem o cenie dla wybranego terminu.
+6. Dopracowano wspólne elementy wizualne starszych wersji językowych, aby lepiej pasowały do nowego projektu PL.

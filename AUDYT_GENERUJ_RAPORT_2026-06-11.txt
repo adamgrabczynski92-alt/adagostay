@@ -1,0 +1,18 @@
+AUDYT / ZMIANY — 2026-06-11
+
+Zakres zmian:
+- Zmieniono widoczną nazwę przycisku raportu na: „Generuj Raport”.
+- Usunięto słowo „premium” z widocznych etykiet raportu.
+- W widoku Beaty usunięto zwykły raport WhatsApp oraz kopiowanie raportu tekstowego.
+- Beata widzi tylko raport generowany przez aplikację: „Generuj Raport”.
+- Raport generowany ma własny układ, czcionkę i styl niezależny od WhatsAppa.
+- W raporcie dodano przycisk „Udostępnij Raport” przez systemowe udostępnianie telefonu, jeśli przeglądarka to obsługuje.
+- Zaktualizowano instrukcję w wiadomości do Beaty: po sprzątaniu ma kliknąć „Generuj Raport”, a nie wysyłać zwykły raport tekstowy WhatsApp.
+- Zaktualizowano cache PWA do v21-generuj-raport.
+
+Kontrola:
+- Brak widocznych etykiet „Raport premium” / „Generuj raport premium”.
+- W widoku Beaty nie ma przycisku „Raport WhatsApp”, „Wyślij raport WhatsApp” ani „Kopiuj raport”.
+- JavaScript Room Service przechodzi kontrolę składni.
+- Numer Beaty pozostaje: +48 792 607 695.
+- Nazwa aplikacji pozostaje: AdagoStay Room Service.

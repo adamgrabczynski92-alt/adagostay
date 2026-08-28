@@ -1,0 +1,8 @@
+Zmiany wprowadzone po uwadze użytkownika:
+
+- Widok Beaty pokazuje teraz od razu pełną checklistę pod każdym aktywnym zadaniem.
+- Checklista pozostaje podzielona na strefy: Zdjęcia, Pilne przed check-in, Kuchnia, Łazienka, Sypialnia / salon, Uzupełnienia i standard premium, Problemy techniczne.
+- Beata może odhaczać punkty bez otwierania dodatkowego modala.
+- W widoku zadania są od razu pola: Uwagi Room Service, Braki / do uzupełnienia, Udostępnij zdjęcia przed, Udostępnij zdjęcia po, Zakończ jako gotowe, Alert jakości i Wyślij raport WhatsApp.
+- Modal szczegółów został zachowany jako dodatkowy podgląd.
+- Service worker podbity do v17-zones-inline.

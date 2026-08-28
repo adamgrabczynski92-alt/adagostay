@@ -1,0 +1,5 @@
+Dodano odnośniki do wizytówki Google z opiniami:
+- strona główna PL: link w pierwszej sekcji opinii, klikalna ocena Google i przycisk CTA,
+- strony główne EN/DE/CZ/UA: lokalizowane przyciski pod sekcjami opinii,
+- polskie strony apartamentów: klikalna ocena Google i przycisk CTA.
+Adres docelowy: https://www.google.com/maps?cid=9439642969662825551

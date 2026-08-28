@@ -1,0 +1,22 @@
+RAPORT TESTÓW KOŃCOWYCH — ADAGO STAY
+Data: 2026-07-27
+
+ZAKRES KONTROLI
+- Pliki HTML: 134
+- Strony indeksowalne: 56
+- Adresy w sitemap.xml: 56
+
+WYNIKI
+- Brakujące lokalne zasoby: 0
+- Uszkodzone linki wewnętrzne: 0
+- Błędy składni JSON-LD: 0
+- Strony indeksowalne bez pojedynczego H1: 0
+- Strony indeksowalne brakujące w sitemap.xml: 0
+- Nadmiarowe adresy w sitemap.xml: 0
+- Błędy składni JavaScript: 0
+- Błędne obrazy social dla stron apartamentów: 0
+- Formularz szybkiego zapytania: osobne pola check_in i check_out — OK
+- Polskie nagłówki apartamentów: poprawna odmiana lokalizacji — OK
+
+OGRANICZENIE ŚRODOWISKA TESTOWEGO
+Automatyczna kontrola DOM, linków, zasobów, skryptów i danych strukturalnych zakończyła się poprawnie. Przed publikacją zalecany jest jeszcze test wizualny na docelowym hostingu oraz rzeczywista wysyłka formularza.

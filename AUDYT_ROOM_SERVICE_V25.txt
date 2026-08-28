@@ -1,0 +1,6 @@
+Zmiany v25:
+- Checklista pozostaje ukryta do kliknięcia „Rozpoczęcie sprzątania”.
+- W strefach checklisty dodane są przyciski „Strefa wykonana” i „Odznacz strefę” — poza sekcją zdjęć.
+- „Zakończenie sprzątania / Gotowe” zapisuje godzinę automatycznie, generuje Raport i kieruje do WhatsApp Administratora +48 786 207 695.
+- Raport generuje się także, gdy zdjęcia/punkty checklisty nie są kompletne; wtedy status przechodzi w Alert jakości.
+- Oaza pozostaje bez młynka WC; Gold i Antracyt z młynkiem WC.

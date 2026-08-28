@@ -1,0 +1,1 @@
+Finalny audyt deploy: poprawiono wymóg realnego udostępnienia zdjęć przed/po, zabezpieczono import ID zadań z linku WhatsApp, usunięto zbędne pliki robocze z paczki. AdagoStay Room Service pozostaje noindex i działa jako aplikacja lokalna z przekazywaniem zadań przez WhatsApp.
