@@ -2266,3 +2266,17 @@ body.ultra-wow .section .card{
   #zapytanie-firmowe .booking-grid select,
   #zapytanie-firmowe .booking-grid textarea{font-size:16px}
 }
+
+/* Keep the horizontal apartment gallery inside its grid column. */
+.ultra-detail-layout,
+.ultra-detail-layout > *{
+  min-width:0;
+}
+.ultra-gallery-intro,
+.ultra-gallery-scroll-controls,
+.ultra-gallery-showcase,
+.ultra-feature-row,
+.ultra-rules-accordion{
+  max-width:100%;
+  min-width:0;
+}
