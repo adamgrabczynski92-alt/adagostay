@@ -11,130 +11,189 @@
     ua: 171
   };
 
-  var errorMessages = {
-    1: 'Kalendarz nie załadował się. Odśwież stronę albo skontaktuj się z nami telefonicznie lub przez WhatsApp.',
-    2: 'The booking calendar did not load. Refresh the page or contact us by phone or WhatsApp.',
-    3: 'Der Buchungskalender konnte nicht geladen werden. Laden Sie die Seite neu oder kontaktieren Sie uns per Telefon oder WhatsApp.',
-    37: 'Rezervační kalendář se nenačetl. Obnovte stránku nebo nás kontaktujte telefonicky či přes WhatsApp.',
-    171: 'Календар бронювання не завантажився. Оновіть сторінку або зв’яжіться з нами телефоном чи через WhatsApp.'
+  var translations = {
+    1: {
+      formLabel: 'Szybkie sprawdzanie dostępności',
+      arrival: 'Przyjazd',
+      departure: 'Wyjazd',
+      guests: 'Goście',
+      button: 'Sprawdź dostępność',
+      invalid: 'Data wyjazdu musi być późniejsza niż data przyjazdu.',
+      ready: 'Terminy zostały przekazane do kalendarza poniżej.'
+    },
+    2: {
+      formLabel: 'Quick availability search',
+      arrival: 'Arrival',
+      departure: 'Departure',
+      guests: 'Guests',
+      button: 'Check availability',
+      invalid: 'The departure date must be later than the arrival date.',
+      ready: 'Your dates have been sent to the booking calendar below.'
+    },
+    3: {
+      formLabel: 'Schnelle Verfügbarkeitssuche',
+      arrival: 'Anreise',
+      departure: 'Abreise',
+      guests: 'Gäste',
+      button: 'Verfügbarkeit prüfen',
+      invalid: 'Das Abreisedatum muss nach dem Anreisedatum liegen.',
+      ready: 'Ihre Termine wurden an den Buchungskalender unten übergeben.'
+    },
+    37: {
+      formLabel: 'Rychlé ověření dostupnosti',
+      arrival: 'Příjezd',
+      departure: 'Odjezd',
+      guests: 'Hosté',
+      button: 'Ověřit dostupnost',
+      invalid: 'Datum odjezdu musí být pozdější než datum příjezdu.',
+      ready: 'Termín byl předán do rezervačního kalendáře níže.'
+    },
+    171: {
+      formLabel: 'Швидка перевірка наявності',
+      arrival: 'Заїзд',
+      departure: 'Виїзд',
+      guests: 'Гості',
+      button: 'Перевірити наявність',
+      invalid: 'Дата виїзду має бути пізнішою за дату заїзду.',
+      ready: 'Дати передано до календаря бронювання нижче.'
+    }
   };
 
-  document.addEventListener('DOMContentLoaded', function () {
-    var status = document.querySelector('[data-idobooking-status]');
-    var documentLanguage = (document.documentElement.lang || 'pl').toLowerCase();
-    var languageId = languageIds[documentLanguage] || languageIds[documentLanguage.split('-')[0]] || 1;
+  function localDate(date) {
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, '0');
+    var day = String(date.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
+  }
 
-    if (typeof window.iai_booking_search !== 'function') {
-      if (status) {
-        status.textContent = errorMessages[languageId];
-        status.classList.add('is-error');
-      }
+  function nextDay(value) {
+    var parts = value.split('-').map(Number);
+    var date = new Date(parts[0], parts[1] - 1, parts[2]);
+    date.setDate(date.getDate() + 1);
+    return localDate(date);
+  }
+
+  function createField(labelText, control) {
+    var label = document.createElement('label');
+    label.className = 'idobooking-quick-field';
+
+    var text = document.createElement('span');
+    text.textContent = labelText;
+    label.appendChild(text);
+    label.appendChild(control);
+    return label;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var mount = document.querySelector('.conversion-home-search .iai-search');
+    var status = document.querySelector('[data-idobooking-status]');
+    var iframe = document.querySelector('.idobooking-engine-frame');
+    var bookingSection = document.getElementById('booking-widget');
+
+    if (!mount || !iframe || !bookingSection) {
       return;
     }
 
-    try {
-      window.iai_booking_search({
-        showPersons: 1,
-        label3: {
-          1: 'Osoby',
-          2: 'Guests',
-          3: 'Gäste',
-          37: 'Hosté',
-          171: 'Гості'
-        },
-        showRooms: 0,
-        showLocation: 1,
-        icon: 'bed',
-        button: {
-          1: 'Sprawdź dostępność',
-          2: 'Check availability',
-          3: 'Verfügbarkeit prüfen',
-          37: 'Ověřit dostupnost',
-          171: 'Перевірити наявність'
-        },
-        mode: 'horizontal',
-        langNew: String(languageId),
-        locationUrl: 'https://client60336.idobooking.com/locations.js',
-        clientId: '60336',
-        langIdCodes: {
-          1: 'pl',
-          pl: 1,
-          2: 'en',
-          en: 2,
-          3: 'de',
-          de: 3,
-          37: 'cs',
-          cs: 37,
-          171: 'uk',
-          uk: 171
-        },
-        literalsInLang: {
-          1: {
-            label1: 'Przyjazd',
-            label2: 'Wyjazd',
-            label3: 'Osoby',
-            label4: null,
-            label5: 'Lokalizacje',
-            button: 'Sprawdź dostępność',
-            days: ['Nd', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'],
-            months: ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'],
-            trigger: 'Rezerwacja online'
-          },
-          2: {
-            label1: 'Arrival',
-            label2: 'Departure',
-            label3: 'Guests',
-            label4: null,
-            label5: 'Locations',
-            button: 'Check availability',
-            days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            trigger: 'Book online'
-          },
-          3: {
-            label1: 'Anreise',
-            label2: 'Abreise',
-            label3: 'Gäste',
-            label4: null,
-            label5: 'Standorte',
-            button: 'Verfügbarkeit prüfen',
-            days: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
-            months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
-            trigger: 'Online buchen'
-          },
-          37: {
-            label1: 'Příjezd',
-            label2: 'Odjezd',
-            label3: 'Hosté',
-            label4: null,
-            label5: 'Lokality',
-            button: 'Ověřit dostupnost',
-            days: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
-            months: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'],
-            trigger: 'Online rezervace'
-          },
-          171: {
-            label1: 'Заїзд',
-            label2: 'Виїзд',
-            label3: 'Гості',
-            label4: null,
-            label5: 'Локації',
-            button: 'Перевірити наявність',
-            days: ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-            months: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'],
-            trigger: 'Онлайн-бронювання'
-          }
+    var documentLanguage = (document.documentElement.lang || 'pl').toLowerCase();
+    var languageId = languageIds[documentLanguage] || languageIds[documentLanguage.split('-')[0]] || 1;
+    var text = translations[languageId];
+    var tomorrow = new Date();
+    tomorrow.setHours(12, 0, 0, 0);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var dayAfterTomorrow = new Date(tomorrow);
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+
+    var form = document.createElement('form');
+    form.className = 'idobooking-quick-form';
+    form.setAttribute('aria-label', text.formLabel);
+
+    var arrival = document.createElement('input');
+    arrival.type = 'date';
+    arrival.name = 'arrival';
+    arrival.required = true;
+    arrival.min = localDate(new Date());
+    arrival.value = localDate(tomorrow);
+
+    var departure = document.createElement('input');
+    departure.type = 'date';
+    departure.name = 'departure';
+    departure.required = true;
+    departure.min = localDate(dayAfterTomorrow);
+    departure.value = localDate(dayAfterTomorrow);
+
+    var guests = document.createElement('select');
+    guests.name = 'guests';
+    guests.setAttribute('aria-label', text.guests);
+    for (var guestCount = 1; guestCount <= 4; guestCount += 1) {
+      var option = document.createElement('option');
+      option.value = String(guestCount);
+      option.textContent = String(guestCount);
+      option.selected = guestCount === 2;
+      guests.appendChild(option);
+    }
+
+    var fields = document.createElement('div');
+    fields.className = 'idobooking-quick-fields';
+    fields.appendChild(createField(text.arrival, arrival));
+    fields.appendChild(createField(text.departure, departure));
+    fields.appendChild(createField(text.guests, guests));
+
+    var submit = document.createElement('button');
+    submit.type = 'submit';
+    submit.className = 'idobooking-quick-submit';
+    submit.textContent = text.button;
+
+    form.appendChild(fields);
+    form.appendChild(submit);
+    mount.replaceChildren(form);
+
+    if (status) {
+      status.hidden = true;
+      status.setAttribute('aria-live', 'polite');
+    }
+
+    arrival.addEventListener('change', function () {
+      departure.min = nextDay(arrival.value);
+      if (!departure.value || departure.value <= arrival.value) {
+        departure.value = nextDay(arrival.value);
+      }
+    });
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      if (!arrival.value || !departure.value || departure.value <= arrival.value) {
+        if (status) {
+          status.hidden = false;
+          status.classList.add('is-error');
+          status.classList.remove('is-ready');
+          status.textContent = text.invalid;
         }
-      });
+        return;
+      }
+
+      var bookingUrl = 'https://client60336.idobooking.com/book-now/booking/defaultchoice' +
+        '/currency/0/language/' + languageId +
+        '/start_date/' + encodeURIComponent(arrival.value) +
+        '/end_date/' + encodeURIComponent(departure.value) +
+        '/persons-adult/' + encodeURIComponent(guests.value) +
+        '?transparentbackground=1&from_own_button=1';
+
+      iframe.src = bookingUrl;
+
+      var fallback = bookingSection.querySelector('.idobooking-engine-fallback a');
+      if (fallback) {
+        fallback.href = bookingUrl;
+      }
 
       if (status) {
-        status.hidden = true;
+        status.hidden = false;
+        status.classList.remove('is-error');
+        status.classList.add('is-ready');
+        status.textContent = text.ready;
       }
-    } catch (error) {
-      if (status) {
-        status.textContent = errorMessages[languageId];
-        status.classList.add('is-error');
-      }
-    }
+
+      bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   });
-})();
+}());
