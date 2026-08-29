@@ -2701,3 +2701,160 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .page-home .idobooking-engine-section.is-open{animation:none}
 }
+
+/* Professional audit implementation — booking continuity and brand coherence */
+.idobooking-external-cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  margin-top:18px;
+  padding:12px 18px;
+  border:1px solid rgba(240,211,139,.58);
+  border-radius:999px;
+  background:linear-gradient(135deg,#d3a64e,#f0d38b);
+  color:#0b0806;
+  box-shadow:0 16px 36px rgba(0,0,0,.24);
+  font-size:14px;
+  font-weight:900;
+  line-height:1.35;
+  text-align:center;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.idobooking-external-cta:hover{
+  transform:translateY(-2px);
+  box-shadow:0 21px 46px rgba(0,0,0,.32);
+  filter:saturate(1.08);
+}
+.page-home .idobooking-engine-heading .idobooking-external-cta{color:#0b0806}
+
+/* Apartment pages already contain strong contextual CTAs; extra floating pills obscured the offer. */
+.page-apartment .sticky-cta,
+.page-apartment .floating-whatsapp{display:none!important}
+.page-apartment .page-breadcrumbs{
+  position:sticky;
+  top:86px;
+  z-index:45;
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+}
+.page-apartment .ultra-apartment-hero{background:linear-gradient(145deg,#100c08,#080604)}
+.page-apartment .ultra-apartment-hero .hero-img{filter:saturate(.96) contrast(1.03)}
+
+/* One recognisable dark-and-gold brand frame across marketing and information pages. */
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .header{
+  background:rgba(7,7,8,.94);
+  border-bottom:1px solid rgba(211,166,78,.24);
+  backdrop-filter:blur(16px);
+}
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .header .logo img{
+  filter:brightness(0) invert(1) sepia(.25);
+}
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .header .nav a{color:#fff7ea}
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .header .nav .cta{
+  color:#0b0806;
+  background:linear-gradient(135deg,#d3a64e,#f0d38b);
+  border-radius:999px;
+}
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .header .lang-switch a{
+  color:#fff7ea;
+  background:rgba(255,255,255,.09);
+  border-color:rgba(255,255,255,.18);
+}
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .header .lang-switch a.active{
+  color:#0b0806;
+  background:#fff7ea;
+  border-color:#fff7ea;
+}
+.brand-consistent .header .nav a{color:#fff7ea}
+.brand-consistent .header .lang-switch a{
+  color:#fff7ea;
+  background:rgba(255,255,255,.09);
+  border-color:rgba(255,255,255,.18);
+}
+.brand-consistent .header .lang-switch a.active{
+  color:#0b0806;
+  background:#fff7ea;
+  border-color:#fff7ea;
+}
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .footer{
+  color:#fff7ea;
+  background:#070604;
+  border-top-color:rgba(211,166,78,.26);
+}
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .footer img{
+  filter:brightness(0) invert(1) sepia(.25);
+}
+:is(.page-contact,.page-blog,.page-business,.page-legal,.page-seo-local) .footer :is(p,li,small,a){color:#e7d9c6}
+
+/* The business landing page should sell comfort, not look like a plain information block. */
+.business-hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(9,7,5,.96) 0%,rgba(17,12,9,.88) 46%,rgba(17,12,9,.58) 100%),
+    url('/assets/img/gold/4.webp') center 46%/cover no-repeat;
+  border-bottom:1px solid rgba(211,166,78,.24);
+}
+.business-hero>.container{position:relative;z-index:1}
+.business-hero .business-summary{
+  background:rgba(255,250,242,.95);
+  border-color:rgba(211,166,78,.38);
+  box-shadow:0 30px 80px rgba(0,0,0,.34);
+  backdrop-filter:blur(12px);
+}
+.business-hero .eyebrow{
+  color:#7b5312;
+  background:#fff8ec;
+  border-color:rgba(211,166,78,.48);
+}
+
+/* At tablet widths the full desktop navigation no longer has enough horizontal space. */
+@media(min-width:781px) and (max-width:1240px){
+  .header .container{flex-wrap:wrap;align-items:center}
+  .mobile-toggle{
+    display:block;
+    padding:10px 12px;
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:14px;
+    background:rgba(255,255,255,.08);
+    color:#fff;
+  }
+  .nav{display:none;flex-basis:100%;width:100%;padding:14px 16px 16px}
+  .nav.open{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:13px;
+    border:1px solid rgba(211,166,78,.24);
+    border-radius:18px;
+    background:rgba(7,7,8,.98);
+    box-shadow:0 24px 55px rgba(0,0,0,.3);
+  }
+  .nav.open a{color:#fff7ea}
+  .nav.open .cta{color:#0b0806}
+}
+@media(max-width:980px){
+  .page-apartment .page-breadcrumbs{top:78px}
+}
+@media(max-width:780px){
+  .header .container{flex-wrap:wrap;align-items:center}
+  .nav{flex-basis:100%;padding:12px 14px 14px}
+  .nav.open{
+    gap:12px;
+    border:1px solid rgba(211,166,78,.24);
+    border-radius:18px;
+    background:rgba(7,7,8,.98);
+    box-shadow:0 22px 48px rgba(0,0,0,.3);
+  }
+  .nav.open a{color:#fff7ea}
+  .nav.open .cta{color:#0b0806}
+}
+@media(max-width:640px){
+  .idobooking-external-cta{width:100%;margin-top:14px;padding:12px 14px;font-size:13px}
+  .page-apartment .page-breadcrumbs{top:72px}
+  .business-hero{background-position:62% center}
+}
+@media(prefers-reduced-motion:reduce){
+  .idobooking-external-cta{transition:none}
+}

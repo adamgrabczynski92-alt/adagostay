@@ -195,9 +195,16 @@
       }
       iframe.src = bookingUrl;
 
-      var fallback = bookingSection.querySelector('.idobooking-engine-fallback a');
-      if (fallback) {
-        fallback.href = bookingUrl;
+      bookingSection.querySelectorAll('.idobooking-engine-fallback a, .idobooking-external-cta').forEach(function (link) {
+        link.href = bookingUrl;
+      });
+
+      if (typeof window.adagoTrack === 'function') {
+        window.adagoTrack('booking_start', {
+          link_url: bookingUrl,
+          page_path: window.location.pathname,
+          guests: Number(guests.value)
+        });
       }
 
       if (status) {
