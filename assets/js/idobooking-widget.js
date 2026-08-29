@@ -18,6 +18,7 @@
       departure: 'Wyjazd',
       guests: 'Goście',
       button: 'Sprawdź dostępność',
+      loading: 'Ładowanie bezpiecznego kalendarza…',
       invalid: 'Data wyjazdu musi być późniejsza niż data przyjazdu.',
       ready: 'Terminy zostały przekazane do kalendarza poniżej.'
     },
@@ -27,6 +28,7 @@
       departure: 'Departure',
       guests: 'Guests',
       button: 'Check availability',
+      loading: 'Loading the secure booking calendar…',
       invalid: 'The departure date must be later than the arrival date.',
       ready: 'Your dates have been sent to the booking calendar below.'
     },
@@ -36,6 +38,7 @@
       departure: 'Abreise',
       guests: 'Gäste',
       button: 'Verfügbarkeit prüfen',
+      loading: 'Der sichere Buchungskalender wird geladen…',
       invalid: 'Das Abreisedatum muss nach dem Anreisedatum liegen.',
       ready: 'Ihre Termine wurden an den Buchungskalender unten übergeben.'
     },
@@ -45,6 +48,7 @@
       departure: 'Odjezd',
       guests: 'Hosté',
       button: 'Ověřit dostupnost',
+      loading: 'Načítá se zabezpečený rezervační kalendář…',
       invalid: 'Datum odjezdu musí být pozdější než datum příjezdu.',
       ready: 'Termín byl předán do rezervačního kalendáře níže.'
     },
@@ -54,6 +58,7 @@
       departure: 'Виїзд',
       guests: 'Гості',
       button: 'Перевірити наявність',
+      loading: 'Завантажується безпечний календар бронювання…',
       invalid: 'Дата виїзду має бути пізнішою за дату заїзду.',
       ready: 'Дати передано до календаря бронювання нижче.'
     }
@@ -89,6 +94,7 @@
     var status = document.querySelector('[data-idobooking-status]');
     var iframe = document.querySelector('.idobooking-engine-frame');
     var bookingSection = document.getElementById('booking-widget');
+    var engineCard = bookingSection && bookingSection.querySelector('.idobooking-engine-card');
 
     if (!mount || !iframe || !bookingSection) {
       return;
@@ -142,6 +148,8 @@
     submit.type = 'submit';
     submit.className = 'idobooking-quick-submit';
     submit.textContent = text.button;
+    submit.setAttribute('aria-controls', 'booking-widget');
+    submit.setAttribute('aria-expanded', 'false');
 
     form.appendChild(fields);
     form.appendChild(submit);
@@ -179,6 +187,12 @@
         '/persons-adult/' + encodeURIComponent(guests.value) +
         '?transparentbackground=1&from_own_button=1';
 
+      bookingSection.hidden = false;
+      bookingSection.classList.add('is-open', 'is-loading');
+      submit.setAttribute('aria-expanded', 'true');
+      if (engineCard) {
+        engineCard.setAttribute('data-loading-label', text.loading);
+      }
       iframe.src = bookingUrl;
 
       var fallback = bookingSection.querySelector('.idobooking-engine-fallback a');
@@ -193,7 +207,13 @@
         status.textContent = text.ready;
       }
 
-      bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.requestAnimationFrame(function () {
+        bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    iframe.addEventListener('load', function () {
+      bookingSection.classList.remove('is-loading');
     });
   });
 }());

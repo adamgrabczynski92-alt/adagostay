@@ -2600,7 +2600,7 @@ body.ultra-wow .section .card{
 
 /* 10/10 conversion and consistency polish — 2026-08-29 */
 html{scroll-behavior:smooth}
-.page-home :is(#booking-widget,#apartments,#benefits,#reviews,#guest-reviews,#dla-firm,#contact,#faq){scroll-margin-top:92px}
+.page-home :is(#availability-search,#booking-widget,#apartments,#benefits,#reviews,#guest-reviews,#dla-firm,#contact,#faq){scroll-margin-top:92px}
 .page-home .floating-whatsapp{display:none!important}
 .home-refined .header{top:0}
 .home-refined main>.section{padding-block:82px}
@@ -2666,4 +2666,38 @@ html{scroll-behavior:smooth}
   .home-refined .mobile-toggle{display:block;padding:10px 12px;border:1px solid rgba(255,255,255,.22);border-radius:14px;background:rgba(255,255,255,.08);color:#fff}
   .home-refined .nav{display:none;flex-basis:100%;width:100%;padding:12px 0 4px}
   .home-refined .nav.open{display:flex;flex-direction:column;align-items:flex-start}
+}
+
+/* Booking Engine is revealed only after the guest checks availability. */
+.page-home .idobooking-engine-section[hidden]{display:none!important}
+.page-home .idobooking-engine-section.is-open{
+  animation:booking-engine-reveal .45s cubic-bezier(.2,.75,.25,1) both;
+}
+.page-home .idobooking-engine-card{position:relative;isolation:isolate}
+.page-home .idobooking-engine-section.is-loading .idobooking-engine-card::after{
+  content:attr(data-loading-label);
+  position:absolute;
+  inset:8px;
+  z-index:2;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  border-radius:18px;
+  color:#f4d894;
+  background:linear-gradient(145deg,rgba(15,12,10,.97),rgba(31,24,18,.94));
+  font-size:16px;
+  font-weight:850;
+  letter-spacing:.01em;
+  text-align:center;
+}
+.page-home .conversion-home-engine-link{
+  cursor:default;
+  text-decoration:none;
+}
+@keyframes booking-engine-reveal{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .page-home .idobooking-engine-section.is-open{animation:none}
 }

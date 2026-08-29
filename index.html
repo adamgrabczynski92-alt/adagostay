@@ -8,10 +8,10 @@
 <link href="/assets/img/logo.svg" rel="icon" type="image/svg+xml">
 <link href="/manifest.webmanifest" rel="manifest">
 <meta content="#080604" name="theme-color">
-<link href="/assets/css/style.css?v=20260829-8" rel="stylesheet">
+<link href="/assets/css/style.css?v=20260829-9" rel="stylesheet">
 <script defer src="/assets/js/site.js?v=20260829-3"></script>
 <link crossorigin="" href="https://client60336.idobooking.com" rel="preconnect">
-<script defer src="/assets/js/idobooking-widget.js?v=20260829-3"></script>
+<script defer src="/assets/js/idobooking-widget.js?v=20260829-4"></script>
 <link href="https://adagostay.pl/" rel="canonical">
 <link href="https://adagostay.pl/" hreflang="pl" rel="alternate">
 <link href="https://adagostay.pl/en/" hreflang="en" rel="alternate">
@@ -39,7 +39,7 @@
 <button aria-controls="site-nav" aria-expanded="false" aria-label="Menu" class="mobile-toggle">☰</button>
 <nav class="nav" id="site-nav">
 <a href="/">Start</a><a href="/#apartments">Apartamenty</a><a href="/#guest-reviews">Opinie</a><a href="/#dla-firm">Dla firm</a><a href="/#faq">FAQ</a><a href="/pl/kontakt/">Kontakt</a>
-<a class="cta" href="#booking-widget">Sprawdź cenę i dostępność</a>
+<a class="cta" href="#availability-search">Sprawdź cenę i dostępność</a>
 <div class="lang-switch"><a class="active" href="/">PL</a><a href="/en/">EN</a><a href="/de/">DE</a><a href="/cz/">CZ</a><a href="/ua/">UA</a></div>
 </nav>
 </div>
@@ -53,22 +53,23 @@
 <h1>Pobyt z klimatem. <span>Rezerwuj bezpośrednio.</span></h1>
 <p class="conversion-home-lead">Oaza, Antracyt i Gold — trzy dopracowane apartamenty w Szczawnie-Zdroju i Wałbrzychu. Zobacz prawdziwe wnętrza, wybierz termin i zarezerwuj bez prowizji.</p>
 <div class="conversion-home-actions">
-<a class="conversion-home-primary" href="#booking-widget">Sprawdź cenę i dostępność</a>
+<a class="conversion-home-primary" href="#availability-search">Sprawdź cenę i dostępność</a>
 <a class="conversion-home-secondary" href="https://wa.me/48786207695">Napisz na WhatsApp</a>
 </div>
 <div class="conversion-home-proof" id="opinie"><span class="conversion-home-stars">★★★★★</span><strong>4,9 Google</strong><span>9,6 Booking</span><span>Self check-in 24/7</span></div>
 </div>
-<aside aria-label="Wyszukiwarka rezerwacji" class="conversion-home-search">
+<aside aria-label="Wyszukiwarka rezerwacji" class="conversion-home-search" id="availability-search">
 <span class="conversion-home-search-kicker">Rezerwacja bez pośredników</span>
 <h2>Sprawdź wolny termin</h2>
 <p>Wybierz daty i liczbę gości. Zobaczysz aktualną dostępność apartamentów oraz cenę.</p>
 <div class="idobooking-widget-shell"><div class="iai-search"></div></div>
 <p class="idobooking-widget-status" data-idobooking-status>Ładowanie wyszukiwarki rezerwacji…</p>
-<a class="conversion-home-engine-link" href="#booking-widget">Przejdź do pełnego kalendarza ↓</a>
+<span class="conversion-home-engine-link">Pełny kalendarz pojawi się po sprawdzeniu dostępności.</span>
+<noscript><p class="idobooking-widget-fallback">Włącz JavaScript albo <a href="https://client60336.idobooking.com/book-now/booking/defaultchoice/currency/0/language/1?transparentbackground=1&amp;from_own_button=1" rel="noopener noreferrer" target="_blank">otwórz system rezerwacji w nowej karcie</a>.</p></noscript>
 </aside>
 </div>
 </section>
-<section aria-label="Rezerwacja online" class="ultra-booking-strip" id="booking-widget">
+<section aria-label="Rezerwacja online" class="ultra-booking-strip idobooking-engine-section" hidden id="booking-widget">
 <div class="idobooking-engine-heading">
 <span class="booking-kicker">Rezerwacja bezpośrednia</span>
 <h2>Twój pobyt. <em>Twój wybór.</em></h2>
@@ -76,7 +77,7 @@
 <div aria-label="Kolejność apartamentów" class="booking-apartment-order"><span><b>01</b> Oaza</span><span><b>02</b> Antracyt</span><span><b>03</b> Gold</span></div>
 </div>
 <div class="idobooking-engine-card">
-<iframe allow="payment *" class="idobooking-engine-frame" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://client60336.idobooking.com/book-now/booking/defaultchoice/currency/0/language/1?transparentbackground=1&amp;from_own_button=1" title="Rezerwacja online Adago Stay po polsku"></iframe>
+<iframe allow="payment *" class="idobooking-engine-frame" data-src="https://client60336.idobooking.com/book-now/booking/defaultchoice/currency/0/language/1?transparentbackground=1&amp;from_own_button=1" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="Rezerwacja online Adago Stay po polsku"></iframe>
 </div>
 <div aria-label="Korzyści rezerwacji bezpośredniej" class="booking-trust-row"><span>Bez prowizji</span><span>Bezpieczna płatność</span><span>Natychmiastowe potwierdzenie</span></div>
 <p class="idobooking-engine-fallback">Jeśli Twoja przeglądarka blokuje zewnętrzne pliki cookies lub nie wyświetli modułu, <a href="https://client60336.idobooking.com/book-now/booking/defaultchoice/currency/0/language/1?transparentbackground=1&amp;from_own_button=1" rel="noopener noreferrer" target="_blank">otwórz bezpieczny system rezerwacji w nowej karcie</a>.</p>
@@ -266,7 +267,7 @@
 </section>
 </main>
 <a aria-label="Napisz na WhatsApp" class="floating-whatsapp" href="https://wa.me/48786207695">WhatsApp</a>
-<div class="mobile-cta-bar"><a class="premium-button ghost" href="https://wa.me/48786207695">WhatsApp</a><a class="premium-button" href="#booking-widget">Sprawdź cenę i dostępność</a></div>
+<div class="mobile-cta-bar"><a class="premium-button ghost" href="https://wa.me/48786207695">WhatsApp</a><a class="premium-button" href="#availability-search">Sprawdź cenę i dostępność</a></div>
 <footer class="footer">
 <div class="container footer-grid">
 <div>
