@@ -13,11 +13,11 @@
 
   var locale = getLocale();
   var labels = {
-    pl: { text: 'Zarezerwuj pobyt', mobile: 'Zarezerwuj pobyt', href: '/#booking-widget' },
-    en: { text: 'Book your stay', mobile: 'Book your stay', href: '/en/#booking-widget' },
-    de: { text: 'Aufenthalt buchen', mobile: 'Aufenthalt buchen', href: '/de/#booking-widget' },
-    cz: { text: 'Rezervovat pobyt', mobile: 'Rezervovat pobyt', href: '/cz/#booking-widget' },
-    ua: { text: 'Забронювати проживання', mobile: 'Забронювати проживання', href: '/ua/#booking-widget' }
+    pl: { text: 'Zarezerwuj pobyt', mobile: 'Zarezerwuj pobyt', href: '/#availability-search' },
+    en: { text: 'Book your stay', mobile: 'Book your stay', href: '/en/#availability-search' },
+    de: { text: 'Aufenthalt buchen', mobile: 'Aufenthalt buchen', href: '/de/#availability-search' },
+    cz: { text: 'Rezervovat pobyt', mobile: 'Rezervovat pobyt', href: '/cz/#availability-search' },
+    ua: { text: 'Забронювати проживання', mobile: 'Забронювати проживання', href: '/ua/#availability-search' }
   };
   var cfg = labels[locale] || labels.pl;
 

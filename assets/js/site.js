@@ -38,11 +38,11 @@ function adagoLoadAnalytics() {
 function adagoConsentCopy() {
   const lang = adagoLanguage();
   const copy = {
-    pl: { title: 'Analityka i prywatność', text: 'Za Twoją zgodą używamy Google Analytics, aby sprawdzać, jak działa strona i ulepszać rezerwację. Możesz odmówić bez wpływu na działanie strony.', accept: 'Akceptuję analitykę', reject: 'Odrzucam', settings: 'Ustawienia cookies', policy: '/pl/polityka-cookies/' },
-    en: { title: 'Analytics and privacy', text: 'With your consent, we use Google Analytics to understand how the website works and improve booking. You can refuse without affecting the website.', accept: 'Accept analytics', reject: 'Reject', settings: 'Cookie settings', policy: '/en/polityka-cookies/' },
-    de: { title: 'Analyse und Datenschutz', text: 'Mit Ihrer Einwilligung nutzen wir Google Analytics, um die Website und den Buchungsweg zu verbessern. Eine Ablehnung beeinträchtigt die Website nicht.', accept: 'Analyse akzeptieren', reject: 'Ablehnen', settings: 'Cookie-Einstellungen', policy: '/de/polityka-cookies/' },
-    cs: { title: 'Analytika a soukromí', text: 'S vaším souhlasem používáme Google Analytics ke zlepšení webu a rezervace. Odmítnutí nemá vliv na fungování webu.', accept: 'Přijmout analytiku', reject: 'Odmítnout', settings: 'Nastavení cookies', policy: '/cz/polityka-cookies/' },
-    uk: { title: 'Аналітика та конфіденційність', text: 'За вашою згодою ми використовуємо Google Analytics для покращення сайту та бронювання. Відмова не впливає на роботу сайту.', accept: 'Прийняти аналітику', reject: 'Відхилити', settings: 'Налаштування cookies', policy: '/ua/polityka-cookies/' }
+    pl: { title: 'Analityka i prywatność', text: 'Za zgodą używamy Google Analytics do ulepszania strony. Odmowa nie wpływa na rezerwację.', accept: 'Akceptuję', reject: 'Odrzucam', settings: 'Ustawienia cookies', policy: '/pl/polityka-cookies/' },
+    en: { title: 'Analytics and privacy', text: 'With your consent, we use Google Analytics to improve the website. Refusal does not affect booking.', accept: 'Accept', reject: 'Reject', settings: 'Cookie settings', policy: '/en/polityka-cookies/' },
+    de: { title: 'Analyse und Datenschutz', text: 'Mit Ihrer Einwilligung nutzen wir Google Analytics zur Verbesserung der Website. Eine Ablehnung hat keinen Einfluss auf die Buchung.', accept: 'Akzeptieren', reject: 'Ablehnen', settings: 'Cookie-Einstellungen', policy: '/de/polityka-cookies/' },
+    cs: { title: 'Analytika a soukromí', text: 'S vaším souhlasem používáme Google Analytics ke zlepšení webu. Odmítnutí nemá vliv na rezervaci.', accept: 'Přijmout', reject: 'Odmítnout', settings: 'Nastavení cookies', policy: '/cz/polityka-cookies/' },
+    uk: { title: 'Аналітика та конфіденційність', text: 'За згодою ми використовуємо Google Analytics для покращення сайту. Відмова не впливає на бронювання.', accept: 'Прийняти', reject: 'Відхилити', settings: 'Налаштування cookies', policy: '/ua/polityka-cookies/' }
   };
   return copy[lang] || copy.pl;
 }
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('a[href^="https://wa.me"], a[href*="whatsapp"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_whatsapp', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="tel:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_phone', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="mailto:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_email', { href: link.getAttribute('href') || '' })));
-  document.querySelectorAll('a[href*="#booking-widget"], a[href*="idobooking.com/book-now"]').forEach(link => link.addEventListener('click', () => adagoTrack('booking_start', { link_url: link.href, page_path: location.pathname })));
+  document.querySelectorAll('a[href*="#availability-search"], a[href*="#booking-widget"], a[href*="idobooking.com/book-now"]').forEach(link => link.addEventListener('click', () => adagoTrack('booking_start', { link_url: link.href, page_path: location.pathname })));
   if (location.pathname.includes('/apartament/')) adagoTrack('view_apartment', { path: location.pathname });
 
   contactForms.forEach(form => {
