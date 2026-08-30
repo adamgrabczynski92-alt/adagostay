@@ -2858,3 +2858,39 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .idobooking-external-cta{transition:none}
 }
+
+/* Audit 2026-08-30 — one premium multilingual experience. */
+html[lang^="en"] .ultra-gallery-showcase button:first-child::after{
+  content:"View gallery — " attr(data-gallery-total) " photos";
+}
+html[lang^="de"] .ultra-gallery-showcase button:first-child::after{
+  content:"Galerie ansehen — " attr(data-gallery-total) " Fotos";
+}
+html:is([lang^="cs"],[lang^="cz"]) .ultra-gallery-showcase button:first-child::after{
+  content:"Zobrazit galerii — " attr(data-gallery-total) " fotografií";
+}
+html:is([lang^="uk"],[lang^="ua"]) .ultra-gallery-showcase button:first-child::after{
+  content:"Переглянути галерею — " attr(data-gallery-total) " фото";
+}
+
+.header .nav>a{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+}
+.header .lang-switch a{
+  display:inline-flex;
+  min-width:44px;
+  min-height:44px;
+  align-items:center;
+  justify-content:center;
+}
+.international-apartment-content .international-gallery{
+  margin-top:0;
+}
+.international-apartment-content .content-wrap{
+  margin-top:32px;
+}
+@media(max-width:780px){
+  .international-apartment-content .content-wrap{margin-top:24px}
+}
