@@ -2809,6 +2809,14 @@ html{scroll-behavior:smooth}
   border-color:rgba(211,166,78,.48);
 }
 
+@media(max-width:720px){
+  .business-hero{
+    background:
+      linear-gradient(90deg,rgba(9,7,5,.96) 0%,rgba(17,12,9,.88) 58%,rgba(17,12,9,.68) 100%),
+      url('/assets/img/gold/4-640.webp') center 46%/cover no-repeat;
+  }
+}
+
 /* At tablet widths the full desktop navigation no longer has enough horizontal space. */
 @media(min-width:781px) and (max-width:1240px){
   .header .container{flex-wrap:wrap;align-items:center}
