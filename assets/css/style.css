@@ -2873,6 +2873,61 @@ html:is([lang^="uk"],[lang^="ua"]) .ultra-gallery-showcase button:first-child::a
   content:"Переглянути галерею — " attr(data-gallery-total) " фото";
 }
 
+/* V14 live-audit polish — booking focus, balanced FAQ and robust form layout. */
+.page-home .idobooking-engine-card{
+  scroll-margin-top:104px;
+}
+.page-home .ultra-form-panel,
+.page-home .ultra-form,
+.page-home .ultra-form > *,
+.page-home .ultra-form .two,
+.page-home .ultra-form .two > *{
+  min-width:0;
+}
+.page-home .ultra-form :is(input,select,textarea,button){
+  width:100%;
+  max-width:100%;
+}
+
+@media (min-width:981px){
+  .page-home .ultra-detail-layout{
+    grid-template-columns:minmax(0,1fr) minmax(390px,420px);
+  }
+  .page-home #faq .ultra-feature-row{
+    grid-template-columns:repeat(6,minmax(0,1fr));
+  }
+  .page-home #faq .ultra-feature-row > *{
+    grid-column:span 2;
+  }
+  .page-home #faq .ultra-feature-row > :nth-last-child(2){
+    grid-column:2 / span 2;
+  }
+  .page-home #faq .ultra-feature-row > :last-child{
+    grid-column:4 / span 2;
+  }
+  .page-apartment:is(.lang-en,.lang-de,.lang-cz,.lang-ua) .ultra-apartment-hero h1{
+    font-size:clamp(64px,4.8vw,74px);
+    line-height:.94;
+  }
+}
+
+@media (min-width:641px) and (max-width:980px){
+  .page-apartment:is(.lang-en,.lang-de,.lang-cz,.lang-ua) .ultra-apartment-hero h1{
+    font-size:clamp(58px,7.4vw,70px);
+    line-height:.95;
+  }
+}
+
+@media (max-width:640px){
+  .page-home .idobooking-engine-card{
+    scroll-margin-top:82px;
+  }
+  .page-apartment:is(.lang-en,.lang-de,.lang-cz,.lang-ua) .ultra-apartment-hero h1{
+    font-size:clamp(44px,12vw,54px);
+    line-height:.96;
+  }
+}
+
 .header .nav>a{
   display:inline-flex;
   min-height:44px;

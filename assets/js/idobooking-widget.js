@@ -215,7 +215,14 @@
       }
 
       window.requestAnimationFrame(function () {
-        bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.setTimeout(function () {
+          var scrollTarget = engineCard || bookingSection;
+          var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          scrollTarget.scrollIntoView({
+            behavior: reducedMotion ? 'auto' : 'smooth',
+            block: 'start'
+          });
+        }, 120);
       });
     });
 
