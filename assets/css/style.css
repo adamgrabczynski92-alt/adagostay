@@ -2793,7 +2793,7 @@ html{scroll-behavior:smooth}
   overflow:hidden;
   background:
     linear-gradient(90deg,rgba(9,7,5,.96) 0%,rgba(17,12,9,.88) 46%,rgba(17,12,9,.58) 100%),
-    url('/assets/img/gold/4.webp') center 46%/cover no-repeat;
+    url('/assets/img/gold/4-v18.webp') center 46%/cover no-repeat;
   border-bottom:1px solid rgba(211,166,78,.24);
 }
 .business-hero>.container{position:relative;z-index:1}
@@ -2813,7 +2813,7 @@ html{scroll-behavior:smooth}
   .business-hero{
     background:
       linear-gradient(90deg,rgba(9,7,5,.96) 0%,rgba(17,12,9,.88) 58%,rgba(17,12,9,.68) 100%),
-      url('/assets/img/gold/4-640.webp') center 46%/cover no-repeat;
+      url('/assets/img/gold/4-v18-640.webp') center 46%/cover no-repeat;
   }
 }
 

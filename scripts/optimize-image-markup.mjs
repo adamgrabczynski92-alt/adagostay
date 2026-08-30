@@ -27,7 +27,7 @@ async function htmlFiles(directory) {
 let changed = 0;
 for (const file of await htmlFiles(root)) {
   const source = await readFile(file, 'utf8');
-  const updated = source.replace(/<img\b[^>]*\bsrc="\/assets\/img\/(oaza|antracyt|gold)\/(hero|[1-9])\.webp"[^>]*>/g, (tag, apartment, image) => {
+  const updated = source.replace(/<img\b[^>]*\bsrc="\/assets\/img\/(oaza|antracyt|gold)\/(hero|[1-9])(-v\d+)?\.webp"[^>]*>/g, (tag, apartment, image, version = '') => {
     if (/\bsrcset=/.test(tag)) return tag;
     const key = `${apartment}/${image}`;
     const originalWidth = widths[key];
@@ -36,8 +36,9 @@ for (const file of await htmlFiles(root)) {
     const sizes = image === 'hero'
       ? '100vw'
       : '(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw';
-    const marker = `src="/assets/img/${key}.webp"`;
-    const attrs = `srcset="/assets/img/${key}-${responsiveWidth}.webp ${responsiveWidth}w, /assets/img/${key}.webp ${originalWidth}w" sizes="${sizes}"`;
+    const versionedKey = `${key}${version}`;
+    const marker = `src="/assets/img/${versionedKey}.webp"`;
+    const attrs = `srcset="/assets/img/${versionedKey}-${responsiveWidth}.webp ${responsiveWidth}w, /assets/img/${versionedKey}.webp ${originalWidth}w" sizes="${sizes}"`;
     return tag.replace(marker, `${marker} ${attrs}`);
   });
   if (updated !== source) {

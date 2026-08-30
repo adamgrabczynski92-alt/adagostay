@@ -92,8 +92,11 @@ for (const file of htmlFiles) {
     }
   }
 
-  for (const match of html.matchAll(/<img\b[^>]*\bsrc=["']\/assets\/img\/(?:oaza|antracyt|gold)\/(hero|\d+)\.webp["'][^>]*>/gi)) {
-    const expected = match[1] === 'hero' ? 'hero-960.webp' : `${match[1]}-640.webp`;
+  for (const match of html.matchAll(/<img\b[^>]*\bsrc=["']\/assets\/img\/(?:oaza|antracyt|gold)\/(hero|\d+)(-v\d+)?\.webp["'][^>]*>/gi)) {
+    const version = match[2] || '';
+    const expected = match[1] === 'hero'
+      ? `hero${version}-960.webp`
+      : `${match[1]}${version}-640.webp`;
     if (!match[0].includes(expected)) errors.push(`${label}: responsive variant ${expected} is not declared`);
   }
 }
