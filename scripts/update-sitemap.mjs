@@ -5,6 +5,16 @@ import path from 'node:path';
 const root = path.resolve(new URL('..', import.meta.url).pathname);
 const domain = 'https://adagostay.pl';
 const today = new Date().toISOString().slice(0, 10);
+const sitemapPath = path.join(root, 'sitemap.xml');
+let existingLastmod = new Map();
+
+try {
+  const existingSitemap = await readFile(sitemapPath, 'utf8');
+  existingLastmod = new Map(
+    [...existingSitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>\s*<\/url>/g)]
+      .map(match => [match[1], match[2]])
+  );
+} catch {}
 
 async function findIndexFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -30,12 +40,13 @@ function publicUrl(file) {
 
 function lastModified(file) {
   const relative = path.relative(root, file);
+  const gitOptions = { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] };
   try {
-    const status = execFileSync('git', ['status', '--porcelain', '--', relative], { cwd: root, encoding: 'utf8' }).trim();
+    const status = execFileSync('git', ['status', '--porcelain', '--', relative], gitOptions).trim();
     if (status) return today;
-    return execFileSync('git', ['log', '-1', '--format=%cs', '--', relative], { cwd: root, encoding: 'utf8' }).trim() || today;
+    return execFileSync('git', ['log', '-1', '--format=%cs', '--', relative], gitOptions).trim() || today;
   } catch {
-    return today;
+    return existingLastmod.get(publicUrl(file)) || today;
   }
 }
 
@@ -54,5 +65,5 @@ const xml = [
   '',
 ].join('\n');
 
-await writeFile(path.join(root, 'sitemap.xml'), xml);
+await writeFile(sitemapPath, xml);
 console.log(`Generated sitemap.xml with ${pages.length} indexable URLs.`);

@@ -1,8 +1,13 @@
+const adagoPendingAnalyticsEvents = [];
+
 function adagoTrack(eventName, payload = {}) {
   try {
     document.dispatchEvent(new CustomEvent('adago:' + eventName, { detail: payload }));
     if (window.__adagoAnalyticsConsent === 'granted' && typeof window.gtag === 'function') {
       window.gtag('event', eventName, payload);
+    } else if (window.__adagoAnalyticsConsent !== 'denied') {
+      adagoPendingAnalyticsEvents.push({ eventName, payload });
+      if (adagoPendingAnalyticsEvents.length > 20) adagoPendingAnalyticsEvents.shift();
     }
   } catch (e) {}
 }
@@ -29,6 +34,10 @@ function adagoLoadAnalytics() {
     allow_google_signals: false,
     allow_ad_personalization_signals: false
   });
+  while (adagoPendingAnalyticsEvents.length) {
+    const event = adagoPendingAnalyticsEvents.shift();
+    window.gtag('event', event.eventName, event.payload);
+  }
   const script = document.createElement('script');
   script.async = true;
   script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ADAGO_GA_ID);
@@ -58,6 +67,7 @@ function adagoSaveConsent(value) {
       ad_personalization: 'denied'
     });
   }
+  if (value === 'denied') adagoPendingAnalyticsEvents.length = 0;
   document.querySelector('.adago-consent')?.remove();
   if (value === 'granted') adagoLoadAnalytics();
 }
@@ -223,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('a[href^="https://wa.me"], a[href*="whatsapp"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_whatsapp', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="tel:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_phone', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="mailto:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_email', { href: link.getAttribute('href') || '' })));
-  document.querySelectorAll('a[href*="#availability-search"], a[href*="#booking-widget"], a[href*="idobooking.com/book-now"]').forEach(link => link.addEventListener('click', () => adagoTrack('booking_start', { link_url: link.href, page_path: location.pathname })));
+  document.querySelectorAll('a[href*="#availability-search"], a[href*="#booking-widget"], a[href*="idobooking.com/book-now"]').forEach(link => link.addEventListener('click', () => adagoTrack('booking_cta_click', { link_url: link.href, page_path: location.pathname })));
   if (location.pathname.includes('/apartament/')) adagoTrack('view_apartment', { path: location.pathname });
 
   contactForms.forEach(form => {
@@ -266,7 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let data = {};
         try { data = await res.json(); } catch (e) {}
         if (!res.ok) throw new Error(data.message || 'Form error');
-        adagoTrack('form_submit', { form_type: form.dataset.formType || 'contact' });
+        const formType = form.dataset.formType || 'contact';
+        adagoTrack('form_submit', { form_type: formType });
+        adagoTrack('generate_lead', { form_type: formType });
         form.reset();
         form.querySelectorAll('select').forEach(sel => sel.dispatchEvent(new Event('change', { bubbles: true })));
         applyGuestLimit(form);

@@ -25,6 +25,9 @@ jobs:
       - name: Generate sitemap
         run: node scripts/update-sitemap.mjs
 
+      - name: Generate Cloudflare redirects
+        run: node scripts/generate-cloudflare-redirects.mjs
+
       - name: Validate JavaScript syntax
         shell: bash
         run: |
@@ -40,7 +43,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sitemap.xml
+          git add sitemap.xml CLOUDFLARE_REDIRECTS.csv
           if ! git diff --cached --quiet; then
             git commit -m "chore: update sitemap"
             git push
