@@ -105,6 +105,7 @@
     var iframe = document.querySelector('.idobooking-engine-frame');
     var bookingSection = document.getElementById('booking-widget');
     var engineCard = bookingSection && bookingSection.querySelector('.idobooking-engine-card');
+    var directLinks = document.querySelectorAll('[data-idobooking-direct]');
 
     if (!mount || !iframe || !bookingSection) {
       return;
@@ -192,6 +193,7 @@
       status.setAttribute('role', 'status');
       status.setAttribute('aria-live', 'polite');
       status.setAttribute('aria-atomic', 'true');
+      status.tabIndex = -1;
     }
 
     arrival.addEventListener('change', function () {
@@ -213,23 +215,21 @@
     apartment.addEventListener('change', applyApartmentGuestLimit);
     applyApartmentGuestLimit();
 
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault();
+    function validDates() {
+      return Boolean(arrival.value && departure.value && departure.value > arrival.value);
+    }
 
-      if (!arrival.value || !departure.value || departure.value <= arrival.value) {
-        if (status) {
-          status.setAttribute('role', 'alert');
-          status.hidden = false;
-          status.classList.add('is-error');
-          status.classList.remove('is-ready');
-          status.textContent = text.invalid;
-        }
-        return;
-      }
+    function showInvalidDates() {
+      if (!status) return;
+      status.setAttribute('role', 'alert');
+      status.hidden = false;
+      status.classList.add('is-error');
+      status.classList.remove('is-ready');
+      status.textContent = text.invalid;
+      status.focus?.({ preventScroll: true });
+    }
 
-      submit.disabled = true;
-      form.setAttribute('aria-busy', 'true');
-
+    function buildBookingUrl() {
       var bookingUrl = 'https://client60336.idobooking.com/book-now/booking/defaultchoice' +
         '/currency/0/language/' + languageId +
         '/start_date/' + encodeURIComponent(arrival.value) +
@@ -240,6 +240,57 @@
       if (objectId) {
         bookingUrl += '&ob%5B' + encodeURIComponent(objectId) + '%5D=&showOtherOffers=0';
       }
+      return { bookingUrl: bookingUrl, objectId: objectId || '' };
+    }
+
+    function syncDirectLinks() {
+      var booking = buildBookingUrl();
+      directLinks.forEach(function (link) {
+        link.href = booking.bookingUrl;
+      });
+    }
+
+    [arrival, departure, apartment, guests].forEach(function (control) {
+      control.addEventListener('change', syncDirectLinks);
+    });
+    syncDirectLinks();
+
+    directLinks.forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        if (!validDates()) {
+          event.preventDefault();
+          showInvalidDates();
+          return;
+        }
+        var booking = buildBookingUrl();
+        link.href = booking.bookingUrl;
+        if (typeof window.adagoTrack === 'function') {
+          window.adagoTrack('booking_start', {
+            link_url: booking.bookingUrl,
+            page_path: window.location.pathname,
+            guests: Number(guests.value),
+            apartment: apartment.value || 'all',
+            item_id: booking.objectId || 'all',
+            booking_mode: 'top_level'
+          });
+        }
+      });
+    });
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      if (!validDates()) {
+        showInvalidDates();
+        return;
+      }
+
+      submit.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+
+      var booking = buildBookingUrl();
+      var bookingUrl = booking.bookingUrl;
+      var objectId = booking.objectId;
       if (typeof window.adagoDecorateBookingUrl === 'function') {
         bookingUrl = await window.adagoDecorateBookingUrl(bookingUrl);
       }
@@ -254,7 +305,7 @@
       }
       iframe.src = bookingUrl;
 
-      bookingSection.querySelectorAll('.idobooking-engine-fallback a, .idobooking-external-cta').forEach(function (link) {
+      document.querySelectorAll('.idobooking-engine-fallback a, .idobooking-external-cta, [data-idobooking-direct]').forEach(function (link) {
         link.href = bookingUrl;
       });
 
@@ -264,7 +315,8 @@
           page_path: window.location.pathname,
           guests: Number(guests.value),
           apartment: apartment.value || 'all',
-          item_id: objectId || 'all'
+          item_id: objectId || 'all',
+          booking_mode: 'embedded'
         });
       }
 

@@ -38,6 +38,9 @@ jobs:
       - name: Validate site structure and links
         run: node scripts/validate-site.mjs
 
+      - name: Validate V21 booking, forms and structured data
+        run: node scripts/validate-v21.mjs
+
       - name: Commit updated sitemap
         shell: bash
         run: |

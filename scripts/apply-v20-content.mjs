@@ -59,10 +59,10 @@ for (const file of htmlFiles) {
   successFinal += Array.from(html.matchAll(/<div class="success-box[^>]*role="status"/g)).length;
 
   html = html
-    .replace(/\/assets\/css\/style\.css\?v=[^"']+/g, '/assets/css/style.css?v=20260906-20')
-    .replace(/\/assets\/js\/site\.js\?v=[^"']+/g, '/assets/js/site.js?v=20260906-20')
-    .replace(/\/assets\/js\/idobooking-widget\.js(?:\?v=[^"']+)?/g, '/assets/js/idobooking-widget.js?v=20260906-20')
-    .replace(/\/assets\/js\/reviews-carousel\.js(?:\?v=[^"']+)?/g, '/assets/js/reviews-carousel.js?v=20260906-20');
+    .replace(/\/assets\/css\/style(?:\.min)?\.css\?v=[^"']+/g, '/assets/css/style.min.css?v=20260906-21')
+    .replace(/\/assets\/js\/site\.js\?v=[^"']+/g, '/assets/js/site.js?v=20260906-21')
+    .replace(/\/assets\/js\/idobooking-widget\.js(?:\?v=[^"']+)?/g, '/assets/js/idobooking-widget.js?v=20260906-21')
+    .replace(/\/assets\/js\/reviews-carousel\.js(?:\?v=[^"']+)?/g, '/assets/js/reviews-carousel.js?v=20260906-21');
 
   if (html !== original) await writeFile(file, html);
 }
@@ -180,8 +180,8 @@ for (const lang of Object.keys(privacy)) {
 const generatorFile = path.join(root, 'scripts', 'generate-i18n-pages.mjs');
 let generator = await readFile(generatorFile, 'utf8');
 generator = generator
-  .replace(/style\.css\?v=\d+-\d+/g, 'style.css?v=20260906-20')
-  .replace(/site\.js\?v=\d+-\d+/g, 'site.js?v=20260906-20')
+  .replace(/style(?:\.min)?\.css\?v=\d+-\d+/g, 'style.min.css?v=20260906-21')
+  .replace(/site\.js\?v=\d+-\d+/g, 'site.js?v=20260906-21')
   .replace('<div class="success-box full" style="display:none">${c.fields.success}</div>', '<div class="success-box full" style="display:none" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">${c.fields.success}</div>');
 await writeFile(generatorFile, generator);
 

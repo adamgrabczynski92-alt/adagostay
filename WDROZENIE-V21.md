@@ -1,8 +1,16 @@
-# Adago Stay V20 — wdrożenie i pomiar rezerwacji
+# Adago Stay V21 — wdrożenie, rezerwacje i SEO
 
 ## 1. Wgranie strony
 
-Wgraj zawartość paczki V20 tak samo jak poprzednią wersję strony. Po wdrożeniu wyczyść pamięć podręczną Cloudflare, aby nowe pliki CSS i JavaScript były widoczne od razu.
+Wgraj całą zawartość paczki V21 do katalogu głównego hostingu, zastępując poprzednią wersję. Plik `index.html` ma znajdować się bezpośrednio w katalogu głównym. Po wdrożeniu wykonaj jednorazowe czyszczenie pamięci podręcznej Cloudflare.
+
+Przed spakowaniem lub wdrożeniem można odtworzyć zminimalizowany arkusz i uruchomić kontrole:
+
+```bash
+node scripts/minify-css.mjs
+node scripts/validate-site.mjs
+node scripts/validate-v21.mjs
+```
 
 ## 2. Jednorazowe ustawienie IdoBooking dla GA4
 
@@ -22,7 +30,7 @@ IdoBooking powinien raportować kolejne etapy lejka oraz finalizację zakupu dop
 4. Wykonaj jedną testową, opłaconą rezerwację.
 5. W Google Analytics sprawdź zdarzenia rezerwacji i brak podwójnej transakcji.
 
-## 4. Co zostało dodane w V20
+## 4. Co zachowano z V20
 
 - link do Facebooka w stopkach, kontaktach i danych strukturalnych,
 - pomiar kliknięć Facebooka bez osadzania ciężkiego feedu,
@@ -33,6 +41,21 @@ IdoBooking powinien raportować kolejne etapy lejka oraz finalizację zakupu dop
 - bezpośrednie przekazanie Oazy, Antracytu lub Gold do kalendarza,
 - przygotowanie pomiaru między adagostay.pl a IdoBooking.
 - zoptymalizowana instrukcja obsługi klamki używana w automatycznych wiadomościach przed przyjazdem.
+
+## 5. Co poprawiono w V21
+
+- stale widoczny link do pełnej rezerwacji IdoBooking z zachowaniem dat, liczby gości i wybranego apartamentu,
+- nadal dostępny osadzony kalendarz oraz bezpieczna alternatywa przy blokadzie cookies zewnętrznych,
+- mocniejsza lokalna fraza przy głównym nagłówku we wszystkich pięciu językach,
+- krótsza polska strona główna bez powtórzonej sekcji opinii,
+- osobne, poprawnie typowane pola e-mail i telefonu w czterech formularzach zapytań,
+- usunięta niepotwierdzona deklaracja parkingu Gold z wersji EN, DE, CZ i UA,
+- jeden model marki `Organization` i trzy stabilne identyfikatory apartamentów w danych strukturalnych,
+- usunięta nieprawidłowa właściwość `provider` z encji `Apartment`,
+- zminimalizowany CSS, spójny cache-buster V21 oraz poprawki safe-area i menu mobilnego,
+- rozszerzona automatyczna walidacja wdrożenia.
+
+Wartości ocen Google i Booking nie zostały zmienione.
 
 Po wdrożeniu sprawdź, czy działa adres:
 
