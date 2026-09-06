@@ -8,10 +8,10 @@
 <link href="/assets/img/logo.svg" rel="icon" type="image/svg+xml">
 <link href="/manifest.webmanifest" rel="manifest">
 <meta content="#080604" name="theme-color">
-<link href="/assets/css/style.css?v=20260830-18" rel="stylesheet">
-<script defer src="/assets/js/site.js?v=20260906-1"></script>
+<link href="/assets/css/style.css?v=20260906-20" rel="stylesheet">
+<script defer src="/assets/js/site.js?v=20260906-20"></script>
 <link crossorigin="" href="https://client60336.idobooking.com" rel="preconnect">
-<script defer src="/assets/js/idobooking-widget.js?v=20260830-6"></script>
+<script defer src="/assets/js/idobooking-widget.js?v=20260906-20"></script>
 <link href="https://adagostay.pl/" rel="canonical">
 <link href="https://adagostay.pl/" hreflang="pl" rel="alternate">
 <link href="https://adagostay.pl/en/" hreflang="en" rel="alternate">
@@ -30,7 +30,7 @@
 <meta content="Adago Stay – apartamenty, do których chce się wracać" name="twitter:title">
 <meta content="Nie tylko nocleg. Pobyt z klimatem w apartamentach Oaza, Antracyt i Gold. Rezerwacja bezpośrednia, WhatsApp, self check-in i faktura VAT." name="twitter:description">
 <meta content="https://adagostay.pl/assets/img/social/adago-home-og.jpg" name="twitter:image"><meta content="Adago Stay – apartamenty, do których chce się wracać" name="twitter:image:alt">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Adago Stay","url":"https://adagostay.pl/","description":"Apartamenty boutique w Szczawnie-Zdroju i Wałbrzychu: Oaza, Antracyt i Gold. Rezerwacja bezpośrednia, self check-in, WhatsApp i faktura VAT.","image":"https://adagostay.pl/assets/img/social/adago-home-og.jpg","telephone":"+48 786 207 695","email":"adagostay@gmail.com","address":{"@type":"PostalAddress","streetAddress":"ul. Górna 5","postalCode":"58-310","addressLocality":"Szczawno-Zdrój","addressCountry":"PL"},"areaServed":["Szczawno-Zdrój","Wałbrzych","Zamek Książ","Dolny Śląsk"],"sameAs":["https://wa.me/48786207695","https://www.google.com/maps?cid=9439642969662825551"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Adago Stay","url":"https://adagostay.pl/","description":"Apartamenty boutique w Szczawnie-Zdroju i Wałbrzychu: Oaza, Antracyt i Gold. Rezerwacja bezpośrednia, self check-in, WhatsApp i faktura VAT.","image":"https://adagostay.pl/assets/img/social/adago-home-og.jpg","telephone":"+48 786 207 695","email":"adagostay@gmail.com","address":{"@type":"PostalAddress","streetAddress":"ul. Górna 5","postalCode":"58-310","addressLocality":"Szczawno-Zdrój","addressCountry":"PL"},"areaServed":["Szczawno-Zdrój","Wałbrzych","Zamek Książ","Dolny Śląsk"],"sameAs":["https://wa.me/48786207695","https://www.google.com/maps?cid=9439642969662825551","https://www.facebook.com/adagostay/"]}</script>
 <link crossorigin="" href="https://formsubmit.co" rel="preconnect"></head>
 <body class="ultra-wow lang-pl page-home"><a class="skip-link" href="#main-content">Przejdź do treści</a>
 <header class="header">
@@ -192,6 +192,7 @@
 <button aria-label="Pokaż poprzednie opinie" class="guest-carousel-arrow" data-review-prev="" type="button">‹</button>
 <div aria-hidden="true" class="guest-carousel-progress"><span></span></div>
 <button aria-label="Pokaż następne opinie" class="guest-carousel-arrow" data-review-next="" type="button">›</button>
+<button aria-label="Wstrzymaj automatyczne zmienianie opinii" aria-pressed="false" class="guest-carousel-pause" data-review-pause="" type="button">Pauza</button>
 </div>
 <span aria-live="polite" class="guest-carousel-status" data-review-status=""></span>
 </div>
@@ -248,7 +249,7 @@
 <div><label for="home-main-message">Wiadomość opcjonalna</label><textarea id="home-main-message" name="message" placeholder="Napisz, czy potrzebujesz faktury VAT, parkingu albo pobytu firmowego." rows="3"></textarea></div>
 <button class="ultra-btn" data-default="Wyślij zapytanie" data-loading="Wysyłanie..." type="submit">Wyślij zapytanie</button>
 <p class="form-consent">Wysyłając zapytanie, potwierdzasz zapoznanie się z <a href="/pl/polityka-prywatnosci/">Polityką prywatności</a>. Formularz jest zapytaniem o dostępność, a nie automatycznym potwierdzeniem rezerwacji. Cena i warunki zostaną potwierdzone osobno przed zawarciem umowy.</p>
-<div class="success-box" style="display:none">Dziękujemy! Odezwiemy się najszybciej, jak to możliwe.</div>
+<div class="success-box" style="display:none" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">Dziękujemy! Odezwiemy się najszybciej, jak to możliwe.</div>
 </form>
 </aside>
 </div>
@@ -280,7 +281,7 @@
 <ul>
 <li><a href="tel:+48786207695">+48 786 207 695</a></li>
 <li><a href="mailto:adagostay@gmail.com">adagostay@gmail.com</a></li>
-<li><a href="https://wa.me/48786207695">WhatsApp</a></li>
+<li><a href="https://wa.me/48786207695">WhatsApp</a></li><li><a href="https://www.facebook.com/adagostay/" data-social="facebook" data-placement="footer" target="_blank" rel="noopener noreferrer">Facebook</a></li>
 </ul>
 </div>
 <div>
@@ -297,7 +298,7 @@
 </div>
 </div>
 </footer>
-<script defer src="/assets/js/reviews-carousel.js"></script>
+<script defer src="/assets/js/reviews-carousel.js?v=20260906-20"></script>
 <script defer src="/assets/js/micro-animations.js"></script>
 <script defer src="/assets/js/sticky-cta.js?v=20260829-3"></script>
 <script>

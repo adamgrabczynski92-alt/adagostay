@@ -32,7 +32,10 @@ function adagoLoadAnalytics() {
   window.gtag('config', ADAGO_GA_ID, {
     anonymize_ip: true,
     allow_google_signals: false,
-    allow_ad_personalization_signals: false
+    allow_ad_personalization_signals: false,
+    linker: {
+      domains: ['adagostay.pl', 'client60336.idobooking.com', 'engine60336.idobooking.com']
+    }
   });
   while (adagoPendingAnalyticsEvents.length) {
     const event = adagoPendingAnalyticsEvents.shift();
@@ -108,6 +111,44 @@ function adagoInitConsent() {
 
 window.adagoShowConsent = adagoShowConsent;
 
+function adagoDecorateBookingUrl(url) {
+  if (
+    window.__adagoAnalyticsConsent !== 'granted' ||
+    typeof window.gtag !== 'function'
+  ) return Promise.resolve(url);
+
+  return new Promise(resolve => {
+    let settled = false;
+    let clientId = '';
+    let sessionId = '';
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      try {
+        const decorated = new URL(url);
+        if (clientId) decorated.searchParams.set('gClientId', clientId);
+        if (sessionId) decorated.searchParams.set('gSessionId', sessionId);
+        resolve(decorated.toString());
+      } catch (e) {
+        resolve(url);
+      }
+    };
+    const done = () => {
+      if (clientId && sessionId) finish();
+    };
+    window.gtag('get', ADAGO_GA_ID, 'client_id', value => {
+      clientId = String(value || '');
+      done();
+    });
+    window.gtag('get', ADAGO_GA_ID, 'session_id', value => {
+      sessionId = String(value || '');
+      done();
+    });
+    window.setTimeout(finish, 800);
+  });
+}
+window.adagoDecorateBookingUrl = adagoDecorateBookingUrl;
+
 function adagoLanguage() {
   const lang = (document.documentElement.lang || 'pl').toLowerCase();
   if (lang.startsWith('en')) return 'en';
@@ -118,12 +159,75 @@ function adagoLanguage() {
 }
 
 const adagoMessages = {
-  pl: { required: 'Uzupełnij wymagane pola.', dates: 'Data wyjazdu musi być późniejsza niż data przyjazdu.', guests: 'Apartament Antracyt jest przeznaczony dla maksymalnie 2 osób.' },
-  en: { required: 'Please complete the required fields.', dates: 'The check-out date must be later than the check-in date.', guests: 'Antracyt Apartment accommodates a maximum of 2 guests.' },
-  de: { required: 'Bitte füllen Sie die Pflichtfelder aus.', dates: 'Das Abreisedatum muss nach dem Anreisedatum liegen.', guests: 'Das Apartment Antracyt ist für maximal 2 Gäste geeignet.' },
-  cs: { required: 'Vyplňte prosím povinná pole.', dates: 'Datum odjezdu musí být pozdější než datum příjezdu.', guests: 'Apartmán Antracyt je určen maximálně pro 2 hosty.' },
-  uk: { required: 'Будь ласка, заповніть обов’язкові поля.', dates: 'Дата виїзду має бути пізнішою за дату заїзду.', guests: 'Апартаменти Antracyt розраховані максимум на 2 гостей.' }
+  pl: { required: 'Uzupełnij wymagane pola.', dates: 'Data wyjazdu musi być późniejsza niż data przyjazdu.', guests: 'Apartament Antracyt jest przeznaczony dla maksymalnie 2 osób.', error: 'Nie udało się wysłać formularza automatycznie. Zadzwoń lub napisz do nas na WhatsApp.', success: 'Dziękujemy. Odezwiemy się możliwie szybko.' },
+  en: { required: 'Please complete the required fields.', dates: 'The check-out date must be later than the check-in date.', guests: 'Antracyt Apartment accommodates a maximum of 2 guests.', error: 'The form could not be sent automatically. Please call or contact us on WhatsApp.', success: 'Thank you. We will reply as soon as possible.' },
+  de: { required: 'Bitte füllen Sie die Pflichtfelder aus.', dates: 'Das Abreisedatum muss nach dem Anreisedatum liegen.', guests: 'Das Apartment Antracyt ist für maximal 2 Gäste geeignet.', error: 'Das Formular konnte nicht automatisch gesendet werden. Bitte rufen Sie an oder schreiben Sie uns über WhatsApp.', success: 'Vielen Dank. Wir melden uns so bald wie möglich.' },
+  cs: { required: 'Vyplňte prosím povinná pole.', dates: 'Datum odjezdu musí být pozdější než datum příjezdu.', guests: 'Apartmán Antracyt je určen maximálně pro 2 hosty.', error: 'Formulář se nepodařilo automaticky odeslat. Zavolejte nám nebo napište přes WhatsApp.', success: 'Děkujeme. Ozveme se co nejdříve.' },
+  uk: { required: 'Будь ласка, заповніть обов’язкові поля.', dates: 'Дата виїзду має бути пізнішою за дату заїзду.', guests: 'Апартаменти Antracyt розраховані максимум на 2 гостей.', error: 'Не вдалося автоматично надіслати форму. Зателефонуйте або напишіть нам у WhatsApp.', success: 'Дякуємо. Ми відповімо якнайшвидше.' }
 };
+
+const adagoWhatsAppMessages = {
+  pl: {
+    general: 'Dzień dobry, interesuje mnie pobyt w Adago Stay. Apartament: ___. Termin: od ___ do ___. Liczba gości: ___. Proszę o informację o dostępności i cenie.',
+    business: 'Dzień dobry, interesuje mnie pobyt firmowy w Adago Stay. Termin: od ___ do ___. Liczba gości: ___. Potrzebuję faktury VAT. Proszę o informację o dostępności i ofercie.'
+  },
+  en: {
+    general: 'Hello, I am interested in a stay at Adago Stay. Apartment: ___. Dates: from ___ to ___. Number of guests: ___. Please let me know about availability and price.',
+    business: 'Hello, I am interested in a corporate stay at Adago Stay. Dates: from ___ to ___. Number of guests: ___. I need a VAT invoice. Please let me know about availability and the offer.'
+  },
+  de: {
+    general: 'Guten Tag, ich interessiere mich für einen Aufenthalt bei Adago Stay. Apartment: ___. Zeitraum: von ___ bis ___. Anzahl der Gäste: ___. Bitte teilen Sie mir Verfügbarkeit und Preis mit.',
+    business: 'Guten Tag, ich interessiere mich für einen Firmenaufenthalt bei Adago Stay. Zeitraum: von ___ bis ___. Anzahl der Gäste: ___. Ich benötige eine MwSt.-Rechnung. Bitte senden Sie mir Verfügbarkeit und Angebot.'
+  },
+  cs: {
+    general: 'Dobrý den, mám zájem o pobyt v Adago Stay. Apartmán: ___. Termín: od ___ do ___. Počet hostů: ___. Prosím o informaci o dostupnosti a ceně.',
+    business: 'Dobrý den, mám zájem o firemní pobyt v Adago Stay. Termín: od ___ do ___. Počet hostů: ___. Potřebuji fakturu s DPH. Prosím o informaci o dostupnosti a nabídce.'
+  },
+  uk: {
+    general: 'Добрий день, мене цікавить проживання в Adago Stay. Апартаменти: ___. Дати: з ___ до ___. Кількість гостей: ___. Будь ласка, повідомте про наявність і ціну.',
+    business: 'Добрий день, мене цікавить корпоративне проживання в Adago Stay. Дати: з ___ до ___. Кількість гостей: ___. Потрібен рахунок-фактура з ПДВ. Будь ласка, повідомте про наявність і пропозицію.'
+  }
+};
+
+function adagoApartmentFromPath() {
+  const match = location.pathname.toLowerCase().match(/\/apartament\/(oaza|antracyt|gold)\//);
+  return match ? match[1] : '';
+}
+
+function adagoInitWhatsAppLinks() {
+  const lang = adagoLanguage();
+  const copy = adagoWhatsAppMessages[lang] || adagoWhatsAppMessages.pl;
+  const apartment = adagoApartmentFromPath();
+  const isBusiness = document.body.classList.contains('page-business');
+  let message = isBusiness ? copy.business : copy.general;
+  if (apartment) {
+    const label = apartment.charAt(0).toUpperCase() + apartment.slice(1);
+    message = message.replace('___', label);
+  }
+  document.querySelectorAll('a[href^="https://wa.me/48786207695"]').forEach(link => {
+    link.href = 'https://wa.me/48786207695?text=' + encodeURIComponent(message);
+    if (!link.dataset.placement) {
+      link.dataset.placement = link.closest('.footer') ? 'footer'
+        : link.classList.contains('floating-whatsapp') ? 'floating'
+          : link.closest('.mobile-cta-bar') ? 'mobile_bar' : 'content';
+    }
+  });
+}
+
+function adagoFormError(form) {
+  let box = form.querySelector('.form-error');
+  if (box) return box;
+  box = document.createElement('div');
+  box.className = 'form-error full';
+  box.id = (form.id || 'adago-form') + '-error';
+  box.hidden = true;
+  box.setAttribute('role', 'alert');
+  box.setAttribute('aria-live', 'assertive');
+  box.setAttribute('aria-atomic', 'true');
+  box.tabIndex = -1;
+  form.appendChild(box);
+  return box;
+}
 
 function localISODate(date) {
   const d = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -213,6 +317,7 @@ function validateGuestLimit(form) {
 
 document.addEventListener('DOMContentLoaded', () => {
   adagoInitConsent();
+  adagoInitWhatsAppLinks();
   const toggle = document.querySelector('.mobile-toggle');
   const nav = document.querySelector('.nav');
   if (toggle && nav) {
@@ -230,7 +335,15 @@ document.addEventListener('DOMContentLoaded', () => {
     apartment?.addEventListener('change', () => applyGuestLimit(form));
   });
 
-  document.querySelectorAll('a[href^="https://wa.me"], a[href*="whatsapp"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_whatsapp', { href: link.getAttribute('href') || '' })));
+  document.querySelectorAll('a[href^="https://wa.me"], a[href*="whatsapp"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_whatsapp', {
+    page_path: location.pathname,
+    placement: link.dataset.placement || 'unknown',
+    apartment: adagoApartmentFromPath() || 'unspecified'
+  })));
+  document.querySelectorAll('[data-social="facebook"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_facebook', {
+    page_path: location.pathname,
+    placement: link.dataset.placement || 'unknown'
+  })));
   document.querySelectorAll('a[href^="tel:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_phone', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href^="mailto:"]').forEach(link => link.addEventListener('click', () => adagoTrack('click_email', { href: link.getAttribute('href') || '' })));
   document.querySelectorAll('a[href*="#availability-search"], a[href*="#booking-widget"], a[href*="idobooking.com/book-now"]').forEach(link => link.addEventListener('click', () => adagoTrack('booking_cta_click', { link_url: link.href, page_path: location.pathname })));
@@ -238,32 +351,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
   contactForms.forEach(form => {
     const successBox = form.parentElement?.querySelector('.success-box') || form.querySelector('.success-box');
-    form.dataset.loadedAt = String(Date.now());
+    const errorBox = adagoFormError(form);
+    if (successBox) {
+      successBox.setAttribute('role', 'status');
+      successBox.setAttribute('aria-live', 'polite');
+      successBox.setAttribute('aria-atomic', 'true');
+      successBox.tabIndex = -1;
+    }
+    const clearStatus = field => {
+      errorBox.hidden = true;
+      errorBox.textContent = '';
+      if (successBox) successBox.style.display = 'none';
+      if (field) {
+        field.removeAttribute('aria-invalid');
+        if (field.getAttribute('aria-describedby') === errorBox.id) field.removeAttribute('aria-describedby');
+      }
+    };
+    const showError = (message, field) => {
+      errorBox.textContent = message;
+      errorBox.hidden = false;
+      if (field) {
+        field.setAttribute('aria-invalid', 'true');
+        field.setAttribute('aria-describedby', errorBox.id);
+      }
+      errorBox.focus();
+    };
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const lang = adagoLanguage();
       const msg = adagoMessages[lang] || adagoMessages.pl;
       const submit = form.querySelector('button[type="submit"]');
+      clearStatus();
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
       if (!validateDates(form)) {
-        alert(msg.dates);
-        form.querySelector('input[name="check_out"]')?.focus();
+        showError(msg.dates, form.querySelector('input[name="check_out"]'));
         return;
       }
       if (!validateGuestLimit(form)) {
-        alert(msg.guests);
+        showError(msg.guests, form.querySelector('select[name="guests"], select[data-original-name="guests"]'));
         applyGuestLimit(form);
         return;
       }
       const formData = new FormData(form);
-      const loadedAt = Number(form.dataset.loadedAt || Date.now());
       const filledHoney = String(formData.get('_honey') || '').trim();
-      if (filledHoney || (Date.now() - loadedAt) < 2500) return;
+      if (filledHoney) return;
       if (!formData.has('_subject')) formData.append('_subject', form.dataset.subject || 'New enquiry from adagostay.pl');
       if (!formData.has('_captcha')) formData.append('_captcha', 'false');
+      form.setAttribute('aria-busy', 'true');
       if (submit) {
         if (!submit.dataset.default) submit.dataset.default = submit.textContent;
         submit.disabled = true;
@@ -284,21 +421,30 @@ document.addEventListener('DOMContentLoaded', () => {
         applyGuestLimit(form);
         form.adagoSyncDates?.();
         if (successBox) {
+          if (!successBox.textContent.trim()) successBox.textContent = form.dataset.alertSuccess || msg.success;
           successBox.style.display = 'block';
-          successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          successBox.focus();
         } else {
-          alert(form.dataset.alertSuccess || 'Thank you! We will reply as soon as possible.');
+          const fallbackSuccess = document.createElement('div');
+          fallbackSuccess.className = 'success-box full';
+          fallbackSuccess.setAttribute('role', 'status');
+          fallbackSuccess.setAttribute('aria-live', 'polite');
+          fallbackSuccess.tabIndex = -1;
+          fallbackSuccess.textContent = form.dataset.alertSuccess || msg.success;
+          form.appendChild(fallbackSuccess);
+          fallbackSuccess.focus();
         }
       } catch (err) {
-        alert(form.dataset.errorMessage || 'Unable to send the form automatically right now. Please call or write on WhatsApp.');
+        showError(form.dataset.errorMessage || msg.error);
       } finally {
+        form.removeAttribute('aria-busy');
         if (submit) {
           submit.disabled = false;
           submit.textContent = submit.dataset.default || submit.textContent;
         }
       }
     });
-    form.addEventListener('input', () => { if (successBox) successBox.style.display = 'none'; });
-    form.addEventListener('change', () => { if (successBox) successBox.style.display = 'none'; });
+    form.addEventListener('input', event => clearStatus(event.target));
+    form.addEventListener('change', event => clearStatus(event.target));
   });
 });

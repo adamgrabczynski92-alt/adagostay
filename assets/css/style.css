@@ -1826,9 +1826,11 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
 .guest-review-author span{display:none}
 .guest-review-author strong{font-size:15px;letter-spacing:.01em}
 .guest-carousel-controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;margin:26px 0 14px}
-.guest-carousel-nav{display:flex;align-items:center;gap:12px;justify-self:start}
+.guest-carousel-nav{display:flex;align-items:center;gap:12px;justify-self:start;flex-wrap:wrap}
 .guest-carousel-arrow{width:44px;height:44px;border-radius:999px;border:1px solid rgba(240,211,139,.38);background:rgba(255,255,255,.055);color:#fff7ea;font-size:30px;line-height:1;cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease}
 .guest-carousel-arrow:hover,.guest-carousel-arrow:focus-visible{transform:translateY(-2px);background:rgba(240,211,139,.14);border-color:rgba(240,211,139,.78);outline:none}
+.guest-carousel-pause{min-width:68px;min-height:44px;padding:8px 14px;border:1px solid rgba(240,211,139,.38);border-radius:999px;background:rgba(255,255,255,.055);color:#fff7ea;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.guest-carousel-pause:hover,.guest-carousel-pause:focus-visible{background:rgba(240,211,139,.14);border-color:rgba(240,211,139,.78);outline:3px solid rgba(240,211,139,.28);outline-offset:2px}
 .guest-carousel-progress{width:110px;height:3px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.13)}
 .guest-carousel-progress span{display:block;width:100%;height:100%;border-radius:inherit;background:#f0d38b;transform-origin:left center;animation:guestReviewProgress 9s linear infinite}
 .guest-reviews-section.is-paused .guest-carousel-progress span,.guest-reviews-section.is-expanded .guest-carousel-progress span{animation-play-state:paused}
@@ -1858,6 +1860,7 @@ body.ultra-wow .mobile-cta-bar .premium-button.ghost{background:#133b2a;color:#f
 @media(prefers-reduced-motion:reduce){
   .guest-reviews-section.is-carousel-ready .guest-review-card.is-active{animation:none}
   .guest-carousel-progress span{animation:none;transform:scaleX(1)}
+  .guest-carousel-pause{display:none}
 }
 
 
@@ -2496,7 +2499,7 @@ body.ultra-wow .section .card{
 }
 .idobooking-quick-fields{
   display:grid;
-  grid-template-columns:1fr 1fr .68fr;
+  grid-template-columns:1fr 1fr 1.35fr .68fr;
   gap:8px;
 }
 .idobooking-quick-field{
@@ -2534,6 +2537,8 @@ body.ultra-wow .section .card{
   border-color:#a87c43;
   box-shadow:0 0 0 3px rgba(168,124,67,.14);
 }
+.form-error{margin-top:16px;padding:16px;border:1px solid #fecaca;border-radius:16px;background:#fff1f2;color:#9f1239;font-weight:700}
+.form-error[hidden]{display:none}
 .idobooking-quick-submit{
   width:100%;
   min-height:49px;
@@ -2595,6 +2600,7 @@ body.ultra-wow .section .card{
   .conversion-home-search{padding:20px;border-radius:20px}
   .conversion-home-search h2{font-size:31px}
   .idobooking-quick-fields{grid-template-columns:1fr 1fr}
+  .idobooking-quick-field:nth-child(3){grid-column:1/-1}
   .idobooking-quick-field:last-child{grid-column:1/-1}
 }
 

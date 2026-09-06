@@ -9,6 +9,7 @@
 
   const prevButton = carousel.querySelector('[data-review-prev]');
   const nextButton = carousel.querySelector('[data-review-next]');
+  const pauseButton = carousel.querySelector('[data-review-pause]');
   const toggleButton = carousel.querySelector('[data-review-toggle]');
   const status = carousel.querySelector('[data-review-status]');
   const interval = Math.max(6500, Number(carousel.dataset.interval) || 9000);
@@ -44,6 +45,7 @@
   let timer = null;
   let resizeTimer = null;
   let expanded = false;
+  let userPaused = false;
 
   function createDeck(avoidAtStart = []) {
     const remaining = shuffle(cards.map((_, index) => index));
@@ -175,6 +177,7 @@
     stopAutoplay();
     if (
       expanded ||
+      userPaused ||
       reduceMotion.matches ||
       document.hidden ||
       carousel.matches(':hover') ||
@@ -201,6 +204,17 @@
   nextButton?.addEventListener('click', () => {
     showNext(true);
     startAutoplay();
+  });
+
+  pauseButton?.addEventListener('click', () => {
+    userPaused = !userPaused;
+    pauseButton.setAttribute('aria-pressed', String(userPaused));
+    pauseButton.textContent = userPaused ? 'Wznów' : 'Pauza';
+    pauseButton.setAttribute('aria-label', userPaused
+      ? 'Wznów automatyczne zmienianie opinii'
+      : 'Wstrzymaj automatyczne zmienianie opinii');
+    if (userPaused) stopAutoplay();
+    else startAutoplay();
   });
 
   toggleButton?.addEventListener('click', () => {
@@ -234,13 +248,23 @@
     else startAutoplay();
   });
 
-  reduceMotion.addEventListener?.('change', startAutoplay);
+  reduceMotion.addEventListener?.('change', () => {
+    if (pauseButton) {
+      pauseButton.hidden = reduceMotion.matches;
+      pauseButton.disabled = reduceMotion.matches;
+    }
+    startAutoplay();
+  });
   window.addEventListener('resize', () => {
     window.clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(resetForViewport, 180);
   }, { passive: true });
 
   section.classList.add('is-carousel-ready');
+  if (pauseButton && reduceMotion.matches) {
+    pauseButton.hidden = true;
+    pauseButton.disabled = true;
+  }
   deck = createDeck();
   showNext(false);
   startAutoplay();

@@ -16,6 +16,8 @@
       formLabel: 'Szybkie sprawdzanie dostępności',
       arrival: 'Przyjazd',
       departure: 'Wyjazd',
+      apartment: 'Apartament',
+      allApartments: 'Wszystkie apartamenty',
       guests: 'Goście',
       button: 'Sprawdź dostępność',
       loading: 'Ładowanie bezpiecznego kalendarza…',
@@ -26,6 +28,8 @@
       formLabel: 'Quick availability search',
       arrival: 'Arrival',
       departure: 'Departure',
+      apartment: 'Apartment',
+      allApartments: 'All apartments',
       guests: 'Guests',
       button: 'Check availability',
       loading: 'Loading the secure booking calendar…',
@@ -36,6 +40,8 @@
       formLabel: 'Schnelle Verfügbarkeitssuche',
       arrival: 'Anreise',
       departure: 'Abreise',
+      apartment: 'Apartment',
+      allApartments: 'Alle Apartments',
       guests: 'Gäste',
       button: 'Verfügbarkeit prüfen',
       loading: 'Der sichere Buchungskalender wird geladen…',
@@ -46,6 +52,8 @@
       formLabel: 'Rychlé ověření dostupnosti',
       arrival: 'Příjezd',
       departure: 'Odjezd',
+      apartment: 'Apartmán',
+      allApartments: 'Všechny apartmány',
       guests: 'Hosté',
       button: 'Ověřit dostupnost',
       loading: 'Načítá se zabezpečený rezervační kalendář…',
@@ -56,6 +64,8 @@
       formLabel: 'Швидка перевірка наявності',
       arrival: 'Заїзд',
       departure: 'Виїзд',
+      apartment: 'Апартаменти',
+      allApartments: 'Усі апартаменти',
       guests: 'Гості',
       button: 'Перевірити наявність',
       loading: 'Завантажується безпечний календар бронювання…',
@@ -138,10 +148,32 @@
       guests.appendChild(option);
     }
 
+    var apartment = document.createElement('select');
+    apartment.name = 'apartment';
+    apartment.setAttribute('aria-label', text.apartment);
+    [
+      ['', text.allApartments, ''],
+      ['oaza', 'Oaza — Szczawno-Zdrój', '10'],
+      ['antracyt', 'Antracyt — Szczawno-Zdrój', '11'],
+      ['gold', 'Gold — Wałbrzych', '12']
+    ].forEach(function (item) {
+      var option = document.createElement('option');
+      option.value = item[0];
+      option.textContent = item[1];
+      option.dataset.objectId = item[2];
+      apartment.appendChild(option);
+    });
+
+    var requestedApartment = new URLSearchParams(window.location.search).get('apartment') || '';
+    if (['oaza', 'antracyt', 'gold'].includes(requestedApartment)) {
+      apartment.value = requestedApartment;
+    }
+
     var fields = document.createElement('div');
     fields.className = 'idobooking-quick-fields';
     fields.appendChild(createField(text.arrival, arrival));
     fields.appendChild(createField(text.departure, departure));
+    fields.appendChild(createField(text.apartment, apartment));
     fields.appendChild(createField(text.guests, guests));
 
     var submit = document.createElement('button');
@@ -157,7 +189,9 @@
 
     if (status) {
       status.hidden = true;
+      status.setAttribute('role', 'status');
       status.setAttribute('aria-live', 'polite');
+      status.setAttribute('aria-atomic', 'true');
     }
 
     arrival.addEventListener('change', function () {
@@ -167,11 +201,24 @@
       }
     });
 
-    form.addEventListener('submit', function (event) {
+    function applyApartmentGuestLimit() {
+      var maxGuests = apartment.value === 'antracyt' ? 2 : 4;
+      Array.from(guests.options).forEach(function (option) {
+        var overLimit = Number(option.value) > maxGuests;
+        option.disabled = overLimit;
+        option.hidden = overLimit;
+      });
+      if (Number(guests.value) > maxGuests) guests.value = String(maxGuests);
+    }
+    apartment.addEventListener('change', applyApartmentGuestLimit);
+    applyApartmentGuestLimit();
+
+    form.addEventListener('submit', async function (event) {
       event.preventDefault();
 
       if (!arrival.value || !departure.value || departure.value <= arrival.value) {
         if (status) {
+          status.setAttribute('role', 'alert');
           status.hidden = false;
           status.classList.add('is-error');
           status.classList.remove('is-ready');
@@ -180,12 +227,24 @@
         return;
       }
 
+      submit.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+
       var bookingUrl = 'https://client60336.idobooking.com/book-now/booking/defaultchoice' +
         '/currency/0/language/' + languageId +
         '/start_date/' + encodeURIComponent(arrival.value) +
         '/end_date/' + encodeURIComponent(departure.value) +
         '/persons-adult/' + encodeURIComponent(guests.value) +
         '?transparentbackground=1&from_own_button=1';
+      var objectId = apartment.selectedOptions[0] && apartment.selectedOptions[0].dataset.objectId;
+      if (objectId) {
+        bookingUrl += '&ob%5B' + encodeURIComponent(objectId) + '%5D=&showOtherOffers=0';
+      }
+      if (typeof window.adagoDecorateBookingUrl === 'function') {
+        bookingUrl = await window.adagoDecorateBookingUrl(bookingUrl);
+      }
+      submit.disabled = false;
+      form.removeAttribute('aria-busy');
 
       bookingSection.hidden = false;
       bookingSection.classList.add('is-open', 'is-loading');
@@ -203,11 +262,14 @@
         window.adagoTrack('booking_start', {
           link_url: bookingUrl,
           page_path: window.location.pathname,
-          guests: Number(guests.value)
+          guests: Number(guests.value),
+          apartment: apartment.value || 'all',
+          item_id: objectId || 'all'
         });
       }
 
       if (status) {
+        status.setAttribute('role', 'status');
         status.hidden = false;
         status.classList.remove('is-error');
         status.classList.add('is-ready');
