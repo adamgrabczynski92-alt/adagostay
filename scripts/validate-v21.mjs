@@ -50,7 +50,7 @@ for (const { file, html } of documents) {
     try { data = JSON.parse(match[1]); }
     catch (error) { throw new Error(`Niepoprawny JSON-LD w ${file}: ${error.message}`); }
     const serialized = JSON.stringify(data);
-    if (serialized.includes('"sameAs"') && serialized.includes('https://www.facebook.com/adagostay/')) facebookSameAs += 1;
+    if (serialized.includes('"sameAs"') && serialized.includes('https://www.facebook.com/AdagoStayApartamenty')) facebookSameAs += 1;
     const graph = Array.isArray(data['@graph']) ? data['@graph'] : [data];
     if (/"(?:AggregateRating|Review|ratingValue|reviewRating)"/.test(serialized)) forbiddenRatingSchemas += 1;
     if (/"LodgingBusiness"/.test(serialized)) lodgingBusinessSchemas += 1;
@@ -59,7 +59,7 @@ for (const { file, html } of documents) {
         expect(node['@id'] === 'https://adagostay.pl/#organization', `Niestabilne @id Organization: ${file}`);
         expect(node.legalName === 'Adam Grabczyński Adago Apartamenty' && node.taxID === '6922479250', `Niepełna identyfikacja firmy: ${file}`);
         expect(node.brand?.['@id'] === 'https://adagostay.pl/#brand', `Brak spójnej marki: ${file}`);
-        expect(Array.isArray(node.sameAs) && node.sameAs.includes('https://www.facebook.com/adagostay/'), `Brak Facebooka w Organization: ${file}`);
+        expect(Array.isArray(node.sameAs) && node.sameAs.includes('https://www.facebook.com/AdagoStayApartamenty'), `Brak Facebooka w Organization: ${file}`);
         expect(!node.sameAs.includes('https://wa.me/48786207695') && node.contactPoint?.[0]?.url === 'https://wa.me/48786207695', `WhatsApp powinien być ContactPoint: ${file}`);
         normalizedOrganizations += 1;
       }

@@ -3,8 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const facebook = 'https://www.facebook.com/adagostay/';
-const facebookFooter = '<li><a href="https://www.facebook.com/adagostay/" data-social="facebook" data-placement="footer" target="_blank" rel="noopener noreferrer">Facebook</a></li>';
+const facebook = 'https://www.facebook.com/AdagoStayApartamenty';
+const facebookFooter = '<li><a href="https://www.facebook.com/AdagoStayApartamenty" data-social="facebook" data-placement="footer" target="_blank" rel="noopener noreferrer">Facebook</a></li>';
 
 async function walk(directory) {
   const result = [];
@@ -80,7 +80,7 @@ for (const file of contactFiles) {
   if (!html.includes('data-placement="contact"')) {
     const whatsappRow = /<div><strong>WhatsApp:<\/strong>\s*<a href="https:\/\/wa\.me\/48786207695">(?:\+48 786 207 695|WhatsApp)<\/a><\/div>/;
     if (!whatsappRow.test(html)) throw new Error(`Brak oczekiwanego wiersza kontaktu: ${file}`);
-    const facebookRow = '<div><strong>Facebook:</strong> <a href="https://www.facebook.com/adagostay/" data-social="facebook" data-placement="contact" target="_blank" rel="noopener noreferrer">Adago Stay</a></div>';
+    const facebookRow = '<div><strong>Facebook:</strong> <a href="https://www.facebook.com/AdagoStayApartamenty" data-social="facebook" data-placement="contact" target="_blank" rel="noopener noreferrer">Adago Stay</a></div>';
     html = html.replace(whatsappRow, match => match + facebookRow);
     contactAdditions += 1;
     await writeFile(file, html);

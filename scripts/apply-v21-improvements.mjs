@@ -91,7 +91,7 @@ function organization() {
     }],
     sameAs: [
       'https://www.google.com/maps?cid=9439642969662825551',
-      'https://www.facebook.com/adagostay/'
+      'https://www.facebook.com/AdagoStayApartamenty'
     ]
   };
 }

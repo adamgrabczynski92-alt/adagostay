@@ -42,7 +42,7 @@ for (const { file, html } of documents) {
     try { data = JSON.parse(match[1]); }
     catch (error) { throw new Error(`Niepoprawny JSON-LD w ${file}: ${error.message}`); }
     const serialized = JSON.stringify(data);
-    if (serialized.includes('"sameAs"') && serialized.includes('https://www.facebook.com/adagostay/')) facebookSameAs += 1;
+    if (serialized.includes('"sameAs"') && serialized.includes('https://www.facebook.com/AdagoStayApartamenty')) facebookSameAs += 1;
   }
 }
 expect(facebookSameAs === 21, `Oczekiwano 21 schematów sameAs z Facebookiem, znaleziono ${facebookSameAs}`);

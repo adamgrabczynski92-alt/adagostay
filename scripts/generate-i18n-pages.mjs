@@ -4,7 +4,7 @@ import path from 'node:path';
 const root = path.resolve(new URL('..', import.meta.url).pathname);
 const google = 'https://www.google.com/maps?cid=9439642969662825551';
 const whatsapp = 'https://wa.me/48786207695';
-const facebook = 'https://www.facebook.com/adagostay/';
+const facebook = 'https://www.facebook.com/AdagoStayApartamenty';
 
 const routes = {
   pl: { home: '/', business: '/pl/dla-firm/', reviews: '/pl/opinie/' },
