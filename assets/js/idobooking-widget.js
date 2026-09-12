@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  var minimumStayNights = 2;
+
   var languageIds = {
     pl: 1,
     en: 2,
@@ -15,61 +17,61 @@
     1: {
       formLabel: 'Szybkie sprawdzanie dostępności',
       arrival: 'Przyjazd',
-      departure: 'Wyjazd',
+      departure: 'Wyjazd (min. 2 noce)',
       apartment: 'Apartament',
       allApartments: 'Wszystkie apartamenty',
       guests: 'Goście',
       button: 'Sprawdź dostępność',
       loading: 'Ładowanie bezpiecznego kalendarza…',
-      invalid: 'Data wyjazdu musi być późniejsza niż data przyjazdu.',
+      invalid: 'Minimalny pobyt to 2 noce. Wybierz późniejszą datę wyjazdu.',
       ready: 'Terminy zostały przekazane do kalendarza poniżej.'
     },
     2: {
       formLabel: 'Quick availability search',
       arrival: 'Arrival',
-      departure: 'Departure',
+      departure: 'Departure (min. 2 nights)',
       apartment: 'Apartment',
       allApartments: 'All apartments',
       guests: 'Guests',
       button: 'Check availability',
       loading: 'Loading the secure booking calendar…',
-      invalid: 'The departure date must be later than the arrival date.',
+      invalid: 'The minimum stay is 2 nights. Choose a later departure date.',
       ready: 'Your dates have been sent to the booking calendar below.'
     },
     3: {
       formLabel: 'Schnelle Verfügbarkeitssuche',
       arrival: 'Anreise',
-      departure: 'Abreise',
+      departure: 'Abreise (mind. 2 Nächte)',
       apartment: 'Apartment',
       allApartments: 'Alle Apartments',
       guests: 'Gäste',
       button: 'Verfügbarkeit prüfen',
       loading: 'Der sichere Buchungskalender wird geladen…',
-      invalid: 'Das Abreisedatum muss nach dem Anreisedatum liegen.',
+      invalid: 'Der Mindestaufenthalt beträgt 2 Nächte. Wählen Sie ein späteres Abreisedatum.',
       ready: 'Ihre Termine wurden an den Buchungskalender unten übergeben.'
     },
     37: {
       formLabel: 'Rychlé ověření dostupnosti',
       arrival: 'Příjezd',
-      departure: 'Odjezd',
+      departure: 'Odjezd (min. 2 noci)',
       apartment: 'Apartmán',
       allApartments: 'Všechny apartmány',
       guests: 'Hosté',
       button: 'Ověřit dostupnost',
       loading: 'Načítá se zabezpečený rezervační kalendář…',
-      invalid: 'Datum odjezdu musí být pozdější než datum příjezdu.',
+      invalid: 'Minimální délka pobytu jsou 2 noci. Zvolte pozdější datum odjezdu.',
       ready: 'Termín byl předán do rezervačního kalendáře níže.'
     },
     171: {
       formLabel: 'Швидка перевірка наявності',
       arrival: 'Заїзд',
-      departure: 'Виїзд',
+      departure: 'Виїзд (мін. 2 ночі)',
       apartment: 'Апартаменти',
       allApartments: 'Усі апартаменти',
       guests: 'Гості',
       button: 'Перевірити наявність',
       loading: 'Завантажується безпечний календар бронювання…',
-      invalid: 'Дата виїзду має бути пізнішою за дату заїзду.',
+      invalid: 'Мінімальний термін проживання — 2 ночі. Виберіть пізнішу дату виїзду.',
       ready: 'Дати передано до календаря бронювання нижче.'
     }
   };
@@ -81,10 +83,10 @@
     return year + '-' + month + '-' + day;
   }
 
-  function nextDay(value) {
+  function addDays(value, numberOfDays) {
     var parts = value.split('-').map(Number);
     var date = new Date(parts[0], parts[1] - 1, parts[2]);
-    date.setDate(date.getDate() + 1);
+    date.setDate(date.getDate() + numberOfDays);
     return localDate(date);
   }
 
@@ -117,8 +119,8 @@
     var tomorrow = new Date();
     tomorrow.setHours(12, 0, 0, 0);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    var dayAfterTomorrow = new Date(tomorrow);
-    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+    var defaultDeparture = new Date(tomorrow);
+    defaultDeparture.setDate(defaultDeparture.getDate() + minimumStayNights);
 
     var form = document.createElement('form');
     form.className = 'idobooking-quick-form';
@@ -135,8 +137,8 @@
     departure.type = 'date';
     departure.name = 'departure';
     departure.required = true;
-    departure.min = localDate(dayAfterTomorrow);
-    departure.value = localDate(dayAfterTomorrow);
+    departure.min = localDate(defaultDeparture);
+    departure.value = localDate(defaultDeparture);
 
     var guests = document.createElement('select');
     guests.name = 'guests';
@@ -197,9 +199,10 @@
     }
 
     arrival.addEventListener('change', function () {
-      departure.min = nextDay(arrival.value);
-      if (!departure.value || departure.value <= arrival.value) {
-        departure.value = nextDay(arrival.value);
+      var minimumDeparture = addDays(arrival.value, minimumStayNights);
+      departure.min = minimumDeparture;
+      if (!departure.value || departure.value < minimumDeparture) {
+        departure.value = minimumDeparture;
       }
     });
 
@@ -216,7 +219,11 @@
     applyApartmentGuestLimit();
 
     function validDates() {
-      return Boolean(arrival.value && departure.value && departure.value > arrival.value);
+      return Boolean(
+        arrival.value &&
+        departure.value &&
+        departure.value >= addDays(arrival.value, minimumStayNights)
+      );
     }
 
     function showInvalidDates() {

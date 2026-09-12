@@ -168,7 +168,11 @@ for (const [relative, prefix] of splitForms) {
 const styledDocuments = documents.filter(item => item.html.includes('/assets/css/'));
 const scriptedDocuments = documents.filter(item => item.html.includes('/assets/js/site.js'));
 expect(styledDocuments.every(item => item.html.includes('/assets/css/style.min.css?v=20260906-21') && !item.html.includes('/assets/css/style.css?')), 'Niespójny plik lub token CSS V21');
-expect(scriptedDocuments.every(item => item.html.includes('/assets/js/site.js?v=20260906-21')), 'Niespójny token site.js V21');
+expect(scriptedDocuments.every(item => item.html.includes('/assets/js/site.js?v=20260912-23')), 'Niespójny token site.js V23');
+for (const relative of ['index.html', 'en/index.html', 'de/index.html', 'cz/index.html', 'ua/index.html']) {
+  const html = await readFile(path.join(root, relative), 'utf8');
+  expect(html.includes('/assets/js/idobooking-widget.js?v=20260912-23'), `Niespójny token widgetu V23: ${relative}`);
+}
 await access(path.join(root, 'assets/css/style.min.css'));
 
 const policyDates = [
@@ -211,6 +215,10 @@ expect(bookingJs.includes("['gold', 'Gold — Wałbrzych', '12']"), 'Brak mapowa
 expect(bookingJs.includes("booking_mode: 'top_level'"), 'Brak pomiaru rezerwacji w pełnym oknie');
 expect(bookingJs.includes("booking_mode: 'embedded'"), 'Brak pomiaru osadzonej rezerwacji');
 expect(bookingJs.includes("document.querySelectorAll('[data-idobooking-direct]')"), 'Brak synchronizacji bezpośrednich linków IdoBooking');
+expect(bookingJs.includes('var minimumStayNights = 2;'), 'Brak minimalnego pobytu 2 noce w wyszukiwarce');
+expect(bookingJs.includes('departure.value >= addDays(arrival.value, minimumStayNights)'), 'Brak walidacji minimalnego pobytu w wyszukiwarce');
+expect(siteJs.includes('const ADAGO_MINIMUM_STAY_NIGHTS = 2;'), 'Brak minimalnego pobytu 2 noce w formularzach');
+expect(siteJs.includes("window.gtag('consent', 'update'"), 'Brak aktualizacji zgody po ponownej akceptacji analityki');
 expect(reviewsJs.includes('userPaused'), 'Brak trwałej pauzy opinii');
 
 console.log(JSON.stringify({

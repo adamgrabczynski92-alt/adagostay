@@ -15,9 +15,20 @@ window.adagoTrack = adagoTrack;
 
 const ADAGO_GA_ID = 'G-CR12PM6B8M';
 const ADAGO_CONSENT_KEY = 'adago_analytics_consent_v1';
+const ADAGO_MINIMUM_STAY_NIGHTS = 2;
 
 function adagoLoadAnalytics() {
-  if (window.__adagoAnalyticsLoaded) return;
+  if (window.__adagoAnalyticsLoaded) {
+    if (typeof window.gtag === 'function') {
+      window.gtag('consent', 'update', {
+        analytics_storage: 'granted',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied'
+      });
+    }
+    return;
+  }
   window.__adagoAnalyticsLoaded = true;
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
@@ -159,11 +170,11 @@ function adagoLanguage() {
 }
 
 const adagoMessages = {
-  pl: { required: 'Uzupełnij wymagane pola.', dates: 'Data wyjazdu musi być późniejsza niż data przyjazdu.', guests: 'Apartament Antracyt jest przeznaczony dla maksymalnie 2 osób.', error: 'Nie udało się wysłać formularza automatycznie. Zadzwoń lub napisz do nas na WhatsApp.', success: 'Dziękujemy. Odezwiemy się możliwie szybko.' },
-  en: { required: 'Please complete the required fields.', dates: 'The check-out date must be later than the check-in date.', guests: 'Antracyt Apartment accommodates a maximum of 2 guests.', error: 'The form could not be sent automatically. Please call or contact us on WhatsApp.', success: 'Thank you. We will reply as soon as possible.' },
-  de: { required: 'Bitte füllen Sie die Pflichtfelder aus.', dates: 'Das Abreisedatum muss nach dem Anreisedatum liegen.', guests: 'Das Apartment Antracyt ist für maximal 2 Gäste geeignet.', error: 'Das Formular konnte nicht automatisch gesendet werden. Bitte rufen Sie an oder schreiben Sie uns über WhatsApp.', success: 'Vielen Dank. Wir melden uns so bald wie möglich.' },
-  cs: { required: 'Vyplňte prosím povinná pole.', dates: 'Datum odjezdu musí být pozdější než datum příjezdu.', guests: 'Apartmán Antracyt je určen maximálně pro 2 hosty.', error: 'Formulář se nepodařilo automaticky odeslat. Zavolejte nám nebo napište přes WhatsApp.', success: 'Děkujeme. Ozveme se co nejdříve.' },
-  uk: { required: 'Будь ласка, заповніть обов’язкові поля.', dates: 'Дата виїзду має бути пізнішою за дату заїзду.', guests: 'Апартаменти Antracyt розраховані максимум на 2 гостей.', error: 'Не вдалося автоматично надіслати форму. Зателефонуйте або напишіть нам у WhatsApp.', success: 'Дякуємо. Ми відповімо якнайшвидше.' }
+  pl: { required: 'Uzupełnij wymagane pola.', dates: 'Minimalny pobyt to 2 noce. Wybierz późniejszą datę wyjazdu.', guests: 'Apartament Antracyt jest przeznaczony dla maksymalnie 2 osób.', error: 'Nie udało się wysłać formularza automatycznie. Zadzwoń lub napisz do nas na WhatsApp.', success: 'Dziękujemy. Odezwiemy się możliwie szybko.' },
+  en: { required: 'Please complete the required fields.', dates: 'The minimum stay is 2 nights. Choose a later check-out date.', guests: 'Antracyt Apartment accommodates a maximum of 2 guests.', error: 'The form could not be sent automatically. Please call or contact us on WhatsApp.', success: 'Thank you. We will reply as soon as possible.' },
+  de: { required: 'Bitte füllen Sie die Pflichtfelder aus.', dates: 'Der Mindestaufenthalt beträgt 2 Nächte. Wählen Sie ein späteres Abreisedatum.', guests: 'Das Apartment Antracyt ist für maximal 2 Gäste geeignet.', error: 'Das Formular konnte nicht automatisch gesendet werden. Bitte rufen Sie an oder schreiben Sie uns über WhatsApp.', success: 'Vielen Dank. Wir melden uns so bald wie möglich.' },
+  cs: { required: 'Vyplňte prosím povinná pole.', dates: 'Minimální délka pobytu jsou 2 noci. Zvolte pozdější datum odjezdu.', guests: 'Apartmán Antracyt je určen maximálně pro 2 hosty.', error: 'Formulář se nepodařilo automaticky odeslat. Zavolejte nám nebo napište přes WhatsApp.', success: 'Děkujeme. Ozveme se co nejdříve.' },
+  uk: { required: 'Будь ласка, заповніть обов’язкові поля.', dates: 'Мінімальний термін проживання — 2 ночі. Виберіть пізнішу дату виїзду.', guests: 'Апартаменти Antracyt розраховані максимум на 2 гостей.', error: 'Не вдалося автоматично надіслати форму. Зателефонуйте або напишіть нам у WhatsApp.', success: 'Дякуємо. Ми відповімо якнайшвидше.' }
 };
 
 const adagoWhatsAppMessages = {
@@ -291,7 +302,7 @@ function initDateRules(form) {
 
   const sync = () => {
     const base = checkIn.value ? new Date(checkIn.value + 'T12:00:00') : new Date();
-    base.setDate(base.getDate() + 1);
+    base.setDate(base.getDate() + ADAGO_MINIMUM_STAY_NIGHTS);
     const minCheckout = localISODate(base);
     checkOut.min = minCheckout;
     if (checkOut.value && checkOut.value < minCheckout) checkOut.value = '';
@@ -305,7 +316,9 @@ function validateDates(form) {
   const checkIn = form.querySelector('input[name="check_in"]');
   const checkOut = form.querySelector('input[name="check_out"]');
   if (!checkIn || !checkOut || !checkIn.value || !checkOut.value) return true;
-  return checkOut.value > checkIn.value;
+  const minimumCheckout = new Date(checkIn.value + 'T12:00:00');
+  minimumCheckout.setDate(minimumCheckout.getDate() + ADAGO_MINIMUM_STAY_NIGHTS);
+  return checkOut.value >= localISODate(minimumCheckout);
 }
 
 function validateGuestLimit(form) {
